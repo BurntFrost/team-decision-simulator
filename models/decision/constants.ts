@@ -35,48 +35,84 @@ export const factorInfo: FactorInfoMap = {
   },
 };
 
-// Preset scenarios for decision situations
+// Descriptions for preset scenarios
+export const presetDescriptions = {
+  "Buying a Car":
+    "Deciding whether to purchase a new or used car, considering budget, needs, and long-term value",
+  "Moving to a New City":
+    "Evaluating a potential move, weighing job opportunities, cost of living, and quality of life",
+  "Starting a Side Hustle":
+    "Assessing the viability of starting a part-time business or freelance work",
+  "Home Renovation":
+    "Planning home improvements, balancing budget, functionality, and aesthetic goals",
+  "Career Development":
+    "Choosing between different professional development paths or educational opportunities",
+  "Major Purchase":
+    "Making a significant financial decision like buying electronics, furniture, or appliances",
+  "Health & Fitness":
+    "Deciding on a new health routine, diet plan, or fitness program",
+  "Relationship Decision":
+    "Navigating important relationship choices or commitments",
+};
+
+// Default weights for each scenario
 export const presetScenarios = {
-  "High Quality Data": {
-    data_quality: 0.9,
+  "Buying a Car": {
+    data_quality: 0.8,
+    roi_visibility: 0.7,
+    autonomy_scope: 0.6,
+    time_pressure: 0.4,
+    social_complexity: 0.3,
+  },
+  "Moving to a New City": {
+    data_quality: 0.6,
+    roi_visibility: 0.5,
+    autonomy_scope: 0.8,
+    time_pressure: 0.4,
+    social_complexity: 0.7,
+  },
+  "Starting a Side Hustle": {
+    data_quality: 0.7,
     roi_visibility: 0.6,
-    autonomy_scope: 0.7,
+    autonomy_scope: 0.9,
+    time_pressure: 0.3,
+    social_complexity: 0.5,
+  },
+  "Home Renovation": {
+    data_quality: 0.8,
+    roi_visibility: 0.7,
+    autonomy_scope: 0.5,
+    time_pressure: 0.4,
+    social_complexity: 0.6,
+  },
+  "Career Development": {
+    data_quality: 0.7,
+    roi_visibility: 0.8,
+    autonomy_scope: 0.6,
+    time_pressure: 0.5,
+    social_complexity: 0.4,
+  },
+  "Major Purchase": {
+    data_quality: 0.8,
+    roi_visibility: 0.7,
+    autonomy_scope: 0.4,
     time_pressure: 0.3,
     social_complexity: 0.2,
   },
-  "Time Critical": {
+  "Health & Fitness": {
     data_quality: 0.6,
     roi_visibility: 0.5,
-    autonomy_scope: 0.4,
-    time_pressure: 0.9,
+    autonomy_scope: 0.9,
+    time_pressure: 0.4,
     social_complexity: 0.3,
   },
-  "Limited Information": {
-    data_quality: 0.3,
-    roi_visibility: 0.4,
-    autonomy_scope: 0.5,
-    time_pressure: 0.6,
-    social_complexity: 0.4,
-  },
-  "Complex Stakeholders": {
+  "Relationship Decision": {
     data_quality: 0.5,
-    roi_visibility: 0.6,
-    autonomy_scope: 0.4,
-    time_pressure: 0.2,
+    roi_visibility: 0.4,
+    autonomy_scope: 0.7,
+    time_pressure: 0.6,
     social_complexity: 0.8,
   },
-};
-
-// Descriptions for preset scenarios
-export const presetDescriptions = {
-  "High Quality Data":
-    "Scenario with reliable, complete data and clear metrics for evaluation",
-  "Time Critical":
-    "Urgent decision needed with significant time pressure and immediate impact",
-  "Limited Information":
-    "Decision context with incomplete or uncertain data and unclear outcomes",
-  "Complex Stakeholders":
-    "Multiple stakeholders involved with diverse and potentially conflicting interests",
 };
 
 // Default input values

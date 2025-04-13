@@ -14,11 +14,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
+// Import react-icons
+import { FaBrain, FaCheck, FaInfoCircle } from "react-icons/fa";
+import {
+  BsFileText,
+  BsGrid1X2,
+  BsPeople,
+  BsGear,
+  BsClockFill,
+  BsGeoAlt,
+} from "react-icons/bs";
+import { IoMdAnalytics } from "react-icons/io";
+import {
+  MdOutlineScenario,
+  MdFactCheck,
+  MdPsychology,
+  MdOutlineLeaderboard,
+} from "react-icons/md";
 
 // iOS Status Bar Component
 const IOSStatusBar = () => {
@@ -43,14 +64,10 @@ const IOSStatusBar = () => {
       <div className="text-xs font-bold">{time}</div>
       <div className="flex items-center space-x-1">
         <div className="w-3 h-3">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12.33 4.3c.28 0 .5.22.5.5v1.94c3.83.65 6.76 3.96 6.76 7.97 0 .3-.16.55-.4.7-.14.1-.34.2-.54.2-.44 0-.87-.36-.87-.9 0-3.03-2.46-5.5-5.45-5.5-3 0-5.45 2.47-5.45 5.5 0 .54-.43.9-.87.9-.2 0-.4-.1-.54-.2-.24-.15-.4-.4-.4-.7 0-4 2.93-7.32 6.76-7.98V4.8c0-.28.22-.5.5-.5zM12 13.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm-5.37-3.12c.6-.6 1.54-.6 2.12 0 .6.58.6 1.54 0 2.12-.6.6-1.54.6-2.12 0-.6-.58-.6-1.53 0-2.12zm10.74 0c.6.58.6 1.54 0 2.12-.6.6-1.54.6-2.12 0-.6-.58-.6-1.54 0-2.12.6-.6 1.54-.6 2.12 0z" />
-          </svg>
+          <img src="/icons/clock.svg" alt="" className="w-full h-full" />
         </div>
         <div className="w-4 h-4">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
-          </svg>
+          <img src="/icons/location.svg" alt="" className="w-full h-full" />
         </div>
         <div className="w-6 h-5">
           <div className="h-full relative">
@@ -302,28 +319,26 @@ const SliderInput: React.FC<SliderInputProps> = ({
       <label htmlFor={id} className="font-medium text-md text-[#1d1d1f]">
         {info.label}
       </label>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full">
-              ⓘ
-            </span>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3">
-            <p className="font-medium text-[#1d1d1f]">{info.description}</p>
-            <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
-                <span className="font-bold text-[#1d1d1f]">Low:</span>{" "}
-                {info.lowDesc}
-              </div>
-              <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
-                <span className="font-bold text-[#1d1d1f]">High:</span>{" "}
-                {info.highDesc}
-              </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full">
+            ⓘ
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3">
+          <p className="font-medium text-[#1d1d1f]">{info.description}</p>
+          <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
+              <span className="font-bold text-[#1d1d1f]">Low:</span>{" "}
+              {info.lowDesc}
             </div>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+            <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
+              <span className="font-bold text-[#1d1d1f]">High:</span>{" "}
+              {info.highDesc}
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
     <div className="flex items-center space-x-4">
       <input
@@ -461,88 +476,21 @@ export default function UserDecisionDashboard() {
     <div className="bg-[#f5f5f7] min-h-screen safe-area-inset-bottom relative">
       {/* Background decorative elements */}
       <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] opacity-[0.08] text-blue-900 dark:text-blue-300">
-          <Image
-            src="/brain-waves.svg"
-            alt=""
-            width={400}
-            height={400}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute top-[5%] right-[-10%] w-[300px] h-[300px] opacity-[0.1] text-blue-900 dark:text-blue-300">
-          <Image
-            src="/data-nodes.svg"
-            alt=""
-            width={300}
-            height={300}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute bottom-[5%] left-[10%] w-[250px] h-[250px] opacity-[0.09] text-blue-900 dark:text-blue-300">
-          <Image
-            src="/charts-pattern.svg"
-            alt=""
-            width={250}
-            height={250}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute bottom-[10%] right-[5%] w-[200px] h-[200px] opacity-[0.08] text-blue-900 dark:text-blue-300">
-          <Image
-            src="/data-nodes.svg"
-            alt=""
-            width={200}
-            height={200}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute bottom-[40%] right-[20%] w-[500px] h-[500px] opacity-[0.07] text-blue-900 dark:text-blue-300">
-          <Image
-            src="/data-circles.svg"
-            alt=""
-            width={500}
-            height={500}
-            className="w-full h-full"
-          />
-        </div>
+        <div className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] opacity-[0.08] text-blue-900 dark:text-blue-300 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full blur-3xl"></div>
+        <div className="absolute top-[5%] right-[-10%] w-[300px] h-[300px] opacity-[0.1] text-blue-900 dark:text-blue-300 bg-gradient-to-tl from-blue-800 to-purple-700 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-[5%] left-[10%] w-[250px] h-[250px] opacity-[0.09] text-blue-900 dark:text-blue-300 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-[10%] right-[5%] w-[200px] h-[200px] opacity-[0.08] text-blue-900 dark:text-blue-300 bg-gradient-to-bl from-blue-700 to-indigo-800 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-[40%] right-[20%] w-[500px] h-[500px] opacity-[0.07] text-blue-900 dark:text-blue-300 bg-gradient-to-tr from-purple-700 to-blue-800 rounded-full blur-3xl"></div>
       </div>
 
       {/* iOS-style Hero Section with App Description */}
       <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 pt-6 sm:p-6 sm:pt-8 rounded-b-[2rem] shadow-sm relative overflow-hidden z-10">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
-        <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15]">
-          <Image
-            src="/charts-pattern.svg"
-            alt=""
-            width={200}
-            height={200}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15]">
-          <Image
-            src="/brain-waves.svg"
-            alt=""
-            width={300}
-            height={150}
-            className="w-full h-full"
-          />
-        </div>
+        <div className="absolute inset-0 bg-grid opacity-20"></div>
+        <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15] bg-gradient-to-br from-white/20 to-white/10 rounded-full blur-lg"></div>
+        <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15] bg-gradient-to-tr from-white/20 to-white/10 rounded-full blur-lg"></div>
         <div className="relative flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-2 mb-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-white/90"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <FaBrain className="h-6 w-6 text-white/90" />
             <h2 className="text-xl sm:text-2xl font-bold text-white/95">
               MBTI Brain
             </h2>
@@ -572,18 +520,7 @@ export default function UserDecisionDashboard() {
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <MdOutlineScenario className="h-4 w-4" />
                       <span className="text-xs">Scenarios</span>
                     </div>
                   </TabsTrigger>
@@ -592,19 +529,7 @@ export default function UserDecisionDashboard() {
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                        <path
-                          fillRule="evenodd"
-                          d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <MdFactCheck className="h-4 w-4" />
                       <span className="text-xs">Factors</span>
                     </div>
                   </TabsTrigger>
@@ -613,14 +538,7 @@ export default function UserDecisionDashboard() {
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                      </svg>
+                      <IoMdAnalytics className="h-4 w-4" />
                       <span className="text-xs">Results</span>
                     </div>
                   </TabsTrigger>
@@ -629,18 +547,7 @@ export default function UserDecisionDashboard() {
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <MdPsychology className="h-4 w-4" />
                       <span className="text-xs">Types</span>
                     </div>
                   </TabsTrigger>
@@ -654,15 +561,7 @@ export default function UserDecisionDashboard() {
                   className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95 relative"
                 >
                   <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute top-10 right-10 w-[150px] h-[150px]">
-                      <Image
-                        src="/charts-pattern.svg"
-                        alt=""
-                        width={150}
-                        height={150}
-                        className="w-full h-full"
-                      />
-                    </div>
+                    <div className="absolute top-10 right-10 w-[150px] h-[150px] bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full blur-xl"></div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {Object.keys(DecisionService.presetScenarios).map(
@@ -711,31 +610,12 @@ export default function UserDecisionDashboard() {
                 {/* Factors Tab */}
                 <TabsContent value="factors" className="space-y-6 relative">
                   <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute bottom-10 left-10 w-[200px] h-[200px]">
-                      <Image
-                        src="/data-nodes.svg"
-                        alt=""
-                        width={200}
-                        height={200}
-                        className="w-full h-full"
-                      />
-                    </div>
+                    <div className="absolute bottom-10 left-10 w-[200px] h-[200px] bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-full blur-xl"></div>
                   </div>
                   {activePreset && (
                     <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
                       <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                        <FaCheck className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
                         <span className="text-sm font-medium text-[#1d1d1f]">
@@ -794,15 +674,7 @@ export default function UserDecisionDashboard() {
                 {/* Results Tab */}
                 <TabsContent value="results" className="space-y-6 relative">
                   <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute top-10 right-10 w-[180px] h-[180px]">
-                      <Image
-                        src="/brain-waves.svg"
-                        alt=""
-                        width={180}
-                        height={180}
-                        className="w-full h-full rotate-180"
-                      />
-                    </div>
+                    <div className="absolute top-10 right-10 w-[180px] h-[180px] bg-gradient-to-bl from-blue-500 to-purple-600 rounded-full blur-xl"></div>
                   </div>
                   {results.length > 0 ? (
                     <>
@@ -989,20 +861,7 @@ export default function UserDecisionDashboard() {
                   ) : (
                     <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
                       <div className="text-[#8e8e93] mb-4">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-12 w-12 mx-auto"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
+                        <BsFileText className="h-12 w-12 mx-auto" />
                       </div>
                       <p className="text-[#1d1d1f] font-medium">
                         No simulation results yet
@@ -1026,15 +885,7 @@ export default function UserDecisionDashboard() {
                   className="space-y-4 relative"
                 >
                   <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute bottom-10 right-10 w-[120px] h-[120px]">
-                      <Image
-                        src="/charts-pattern.svg"
-                        alt=""
-                        width={120}
-                        height={120}
-                        className="w-full h-full"
-                      />
-                    </div>
+                    <div className="absolute bottom-10 right-10 w-[120px] h-[120px] bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-full blur-xl"></div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {Object.entries(DecisionService.mbtiDescriptions).map(

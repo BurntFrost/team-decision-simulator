@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -26,6 +26,9 @@ import {
   Line,
   Dot,
 } from "recharts";
+import { Tree as TreeChart } from "@visx/hierarchy";
+import { hierarchy } from "d3-hierarchy";
+import { LinkHorizontal } from "@visx/shape";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { StyledTabs } from "./UserDecisionDashboard";
@@ -635,6 +638,23 @@ const UserDecisionCharts: React.FC<Props> = ({
 }) => {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("radar");
+  const [dimensions, setDimensions] = useState({ width: 800, height: 800 });
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const updateDimensions = () => {
+      setDimensions({
+        width: window.innerWidth < 768 ? 400 : 800,
+        height: window.innerWidth < 768 ? 400 : 800,
+      });
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
 
   const handleMouseEnter = (type: string) => {
     setHoveredType(type);
@@ -1313,244 +1333,223 @@ const UserDecisionCharts: React.FC<Props> = ({
 
       <TabsContent value="flow" className="mt-2">
         <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
-          This circular flow diagram shows how personality types process
-          different factors to reach decisions. The outer ring shows personality
-          types, the inner connections show their decision paths, and the center
-          shows final decisions.
-          <div className="mt-2 flex items-center gap-4 text-xs">
-            <div className="flex items-center">
-              <div className="w-3 h-2 bg-blue-500 opacity-70 mr-1"></div>
-              <span>Strong influence</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-2 bg-red-500 opacity-70 mr-1"></div>
-              <span>Weak influence</span>
-            </div>
-          </div>
+          This visualization shows how decision factors influence personality
+          types and lead to final decisions. Different colors represent
+          different personalities and decision paths.
         </div>
-        {inputs ? (
-          <div className="relative">
-            <ResponsiveContainer
-              width="100%"
-              height={window.innerWidth < 768 ? 250 : 600}
-            >
-              <svg width="100%" height="100%" viewBox="0 0 800 800">
-                {/* Define gradients for paths */}
-                <defs>
-                  {Object.entries(mbtiDescriptions).map(
-                    ([type, info], index) => (
-                      <linearGradient
-                        key={`gradient-${type}`}
-                        id={`flow-gradient-${type}`}
-                        gradientUnits="userSpaceOnUse"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor={info.color}
-                          stopOpacity={0.2}
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor={info.color}
-                          stopOpacity={0.8}
-                        />
-                      </linearGradient>
-                    )
-                  )}
-                </defs>
-
-                {/* Draw personality type nodes in a circle */}
-                <g transform="translate(400, 400)">
-                  {Object.entries(mbtiDescriptions).map(
-                    ([type, info], index) => {
-                      const angle = (index / 16) * 2 * Math.PI - Math.PI / 2;
-                      const x = 300 * Math.cos(angle);
-                      const y = 300 * Math.sin(angle);
-                      const isHovered = hoveredType === type;
-
-                      return (
-                        <g
-                          key={type}
-                          onMouseEnter={() => handleMouseEnter(type)}
-                          onMouseLeave={handleMouseLeave}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {/* Personality node */}
-                          <circle
-                            cx={x}
-                            cy={y}
-                            r={isHovered ? 25 : 20}
-                            fill={info.color}
-                            fillOpacity={isHovered ? 1 : 0.7}
-                            stroke={isHovered ? "#000" : "none"}
-                            strokeWidth={isHovered ? 2 : 0}
-                          />
-
-                          {/* Personality label */}
-                          <text
-                            x={x + (x > 0 ? 30 : -30)}
-                            y={y}
-                            textAnchor={x > 0 ? "start" : "end"}
-                            alignmentBaseline="middle"
-                            fill={info.color}
-                            fontSize={isHovered ? 14 : 12}
-                            fontWeight={isHovered ? "bold" : "normal"}
-                          >
-                            {type}
-                          </text>
-
-                          {/* Draw decision paths */}
-                          {results.map((result) => {
-                            if (result.name === type) {
-                              // Calculate target position based on decision
-                              const targetAngle = (() => {
-                                switch (result.decision) {
-                                  case "Full Speed Ahead":
-                                    return -Math.PI / 2;
-                                  case "Proceed Strategically":
-                                    return -Math.PI / 6;
-                                  case "Implement with Oversight":
-                                    return Math.PI / 6;
-                                  case "Request Clarification":
-                                    return Math.PI / 2;
-                                  case "Delay or Disengage":
-                                    return Math.PI;
-                                  default:
-                                    return 0;
-                                }
-                              })();
-                              const targetX = 100 * Math.cos(targetAngle);
-                              const targetY = 100 * Math.sin(targetAngle);
-
-                              return (
-                                <path
-                                  key={`path-${type}-${result.decision}`}
-                                  d={createCurvedPath(x, y, targetX, targetY)}
-                                  stroke={`url(#flow-gradient-${type})`}
-                                  strokeWidth={result.score * 10}
-                                  fill="none"
-                                  opacity={
-                                    isHovered ? 1 : hoveredType ? 0.2 : 0.5
-                                  }
-                                />
-                              );
-                            }
-                            return null;
-                          })}
-                        </g>
-                      );
-                    }
-                  )}
-
-                  {/* Draw decision nodes in the center */}
-                  {[
-                    { name: "Full Speed Ahead", color: "#22c55e" },
-                    { name: "Proceed Strategically", color: "#4ade80" },
-                    { name: "Implement with Oversight", color: "#a3e635" },
-                    { name: "Request Clarification", color: "#facc15" },
-                    { name: "Delay or Disengage", color: "#f87171" },
-                  ].map((decision, index) => {
-                    // Calculate position for each decision node
-                    const angle = (() => {
-                      switch (decision.name) {
-                        case "Full Speed Ahead":
-                          return -Math.PI / 2;
-                        case "Proceed Strategically":
-                          return -Math.PI / 6;
-                        case "Implement with Oversight":
-                          return Math.PI / 6;
-                        case "Request Clarification":
-                          return Math.PI / 2;
-                        case "Delay or Disengage":
-                          return Math.PI;
-                        default:
-                          return 0;
-                      }
-                    })();
-
-                    const x = 100 * Math.cos(angle);
-                    const y = 100 * Math.sin(angle);
-
-                    return (
-                      <g key={decision.name}>
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r={25}
-                          fill={decision.color}
-                          fillOpacity={0.7}
-                          stroke="#fff"
-                          strokeWidth={1}
-                        />
-                        <text
-                          x={x}
-                          y={y}
-                          textAnchor="middle"
-                          alignmentBaseline="middle"
-                          fill="white"
-                          fontSize={9}
-                          fontWeight="bold"
-                        >
-                          {decision.name.split(" ").map((word, i) => (
-                            <tspan key={i} x={x} dy={i ? "1.2em" : 0}>
-                              {word}
-                            </tspan>
-                          ))}
-                        </text>
-                      </g>
-                    );
-                  })}
-                </g>
-              </svg>
-            </ResponsiveContainer>
-
-            {/* Legend for personality types */}
-            <div className="mt-6 p-4 bg-white rounded-lg shadow-inner">
+        {inputs && isMounted ? (
+          <div className="relative bg-white p-4 rounded-lg shadow-inner">
+            <div className="p-4 bg-white rounded-lg border border-gray-200 mb-4">
               <h4 className="font-bold text-[#4455a6] mb-2">
-                Personality Types in Flow Diagram
+                Decision Flow Visualization
               </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
-                {Object.entries(mbtiDescriptions).map(([type, info]) => {
-                  const famousPerson = getRandomFamousPerson(type);
+              <p className="text-sm text-gray-600">
+                The flow diagram shows how information moves from input factors
+                (like data quality and time pressure) through different
+                personality types to reach final decisions. Hover over
+                personality types to see their decision paths.
+              </p>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Factor column */}
+              <div className="flex flex-col space-y-3">
+                <div className="bg-gray-100 p-3 rounded-lg text-center font-medium text-gray-700 mb-1">
+                  Input Factors
+                </div>
+                {Object.keys(inputs).map((factor) => {
+                  const formattedFactor = factor
+                    .split("_")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ");
+
+                  const isFactorHovered = hoveredType === formattedFactor;
+
                   return (
                     <div
-                      key={type}
-                      className="flex flex-col p-2 rounded-md"
-                      style={{ backgroundColor: `${info.color}15` }}
-                      onMouseEnter={() => handleMouseEnter(type)}
+                      key={factor}
+                      className="p-3 bg-slate-200 rounded-lg text-sm text-center shadow-sm"
+                      onMouseEnter={() => handleMouseEnter(formattedFactor)}
                       onMouseLeave={handleMouseLeave}
                     >
-                      <div className="flex items-center">
-                        <div
-                          className="w-3 h-3 rounded-full mr-2"
-                          style={{ backgroundColor: info.color }}
-                        ></div>
-                        <span
-                          className="text-sm font-medium"
-                          style={{ color: info.color }}
-                        >
-                          {info.name}
-                        </span>
+                      {formattedFactor}
+                      <div className="mt-1 font-mono text-xs">
+                        {(inputs[factor as FactorKey] * 100).toFixed(0)}%
                       </div>
-                      {famousPerson && (
-                        <span className="text-xs text-gray-600 mt-1 pl-5">
-                          Like {famousPerson}
-                        </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Personality column */}
+              <div className="flex flex-col space-y-3">
+                <div className="bg-gray-100 p-3 rounded-lg text-center font-medium text-gray-700 mb-1">
+                  Personality Types
+                </div>
+                {results.map((result) => {
+                  const isHighlighted = hoveredType === result.name;
+
+                  // Check if we're hovering over a factor and get the weight if so
+                  const hoveredFactorKey = Object.keys(inputs).find(
+                    (factor) =>
+                      hoveredType ===
+                      factor
+                        .split("_")
+                        .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(" ")
+                  ) as FactorKey | undefined;
+
+                  // Find the archetype that matches this result to get the weights
+                  const archetype = archetypes.find(
+                    (arch) => arch.name === result.name
+                  );
+                  const factorWeight =
+                    hoveredFactorKey && archetype
+                      ? archetype.weights[hoveredFactorKey]
+                      : null;
+
+                  return (
+                    <div
+                      key={result.name}
+                      className={`p-3 rounded-lg text-white text-center shadow-sm transition-all ${
+                        hoveredType && !isHighlighted && !hoveredFactorKey
+                          ? "opacity-50"
+                          : "opacity-100"
+                      }`}
+                      style={{
+                        backgroundColor:
+                          mbtiDescriptions[result.name]?.color || "#4455a6",
+                      }}
+                      onMouseEnter={() => handleMouseEnter(result.name)}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {result.name}
+                      <div className="mt-1 font-mono text-xs text-white/80">
+                        {(result.score * 100).toFixed(0)}% confident
+                      </div>
+
+                      {/* Show factor weight when hovering over a factor */}
+                      {hoveredFactorKey && factorWeight !== null && (
+                        <div
+                          className={`mt-2 p-1 rounded text-xs ${
+                            factorWeight > 0
+                              ? "bg-blue-500/30"
+                              : factorWeight < 0
+                              ? "bg-red-500/30"
+                              : "bg-gray-500/30"
+                          }`}
+                        >
+                          {factorWeight > 0 ? "+" : ""}
+                          {(factorWeight * 100).toFixed(0)}% influence
+                        </div>
                       )}
                     </div>
                   );
                 })}
               </div>
-              <p className="text-sm text-gray-600 mt-3">
-                The thickness of each path represents the confidence level of
-                the personality type in their decision. Hover over a personality
-                type to highlight their decision path.
-              </p>
+
+              {/* Decision column */}
+              <div className="flex flex-col space-y-3">
+                <div className="bg-gray-100 p-3 rounded-lg text-center font-medium text-gray-700 mb-1">
+                  Final Decisions
+                </div>
+                {[
+                  "Proceed Strategically",
+                  "Request Clarification",
+                  "Delay or Disengage",
+                ].map((decision) => {
+                  const decisionResults = results.filter(
+                    (r) => r.decision === decision
+                  );
+                  const decisionColor =
+                    decision === "Proceed Strategically"
+                      ? "#4ade80"
+                      : decision === "Request Clarification"
+                      ? "#facc15"
+                      : "#f87171";
+
+                  return (
+                    <div
+                      key={decision}
+                      className={`p-3 rounded-lg text-white text-center shadow-sm ${
+                        decisionResults.length === 0
+                          ? "opacity-30"
+                          : "opacity-100"
+                      }`}
+                      style={{ backgroundColor: decisionColor }}
+                    >
+                      {decision}
+                      <div className="mt-1 font-mono text-xs">
+                        {decisionResults.length} personality type
+                        {decisionResults.length !== 1 ? "s" : ""}
+                      </div>
+
+                      {hoveredType &&
+                        decisionResults.some((r) => r.name === hoveredType) && (
+                          <div className="mt-2 p-1 bg-white/20 rounded text-xs">
+                            {hoveredType} chose this
+                          </div>
+                        )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <h4 className="font-bold text-[#4455a6] mb-2">
+                Personality Influence
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {results.map((result) => (
+                  <div
+                    key={result.name}
+                    className="flex flex-col p-3 rounded-lg shadow-sm"
+                    style={{
+                      backgroundColor: `${
+                        mbtiDescriptions[result.name]?.color
+                      }15`,
+                    }}
+                    onMouseEnter={() => handleMouseEnter(result.name)}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <div className="flex items-center">
+                      <div
+                        className="w-3 h-3 rounded-full mr-2"
+                        style={{
+                          backgroundColor:
+                            mbtiDescriptions[result.name]?.color || "#4455a6",
+                        }}
+                      ></div>
+                      <span
+                        className="text-sm font-medium"
+                        style={{
+                          color:
+                            mbtiDescriptions[result.name]?.color || "#4455a6",
+                        }}
+                      >
+                        {result.name}
+                      </span>
+                    </div>
+                    <div className="mt-1 pl-5 text-xs text-gray-600">
+                      Decides:{" "}
+                      <span className="font-medium">{result.decision}</span>
+                    </div>
+                    <div className="mt-1 pl-5 text-xs text-gray-500">
+                      {getRandomFamousPerson(result.name)}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ) : (
           <div className="w-full h-[300px] flex items-center justify-center text-[#4455a6]">
-            Run a simulation to see the decision flow
+            {inputs
+              ? "Loading visualization..."
+              : "Run a simulation to see the decision flow"}
           </div>
         )}
       </TabsContent>

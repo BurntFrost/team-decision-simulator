@@ -291,6 +291,13 @@ const SliderInput: React.FC<SliderInputProps> = ({
 // Dynamically import Recharts components with no SSR
 const Charts = dynamic(() => import("@/components/UserDecisionCharts"), {
   ssr: false,
+  loading: () => (
+    <div className="w-full h-[400px] flex items-center justify-center">
+      <div className="text-[#4455a6] animate-pulse">
+        Loading visualization...
+      </div>
+    </div>
+  ),
 });
 
 // Enhanced Tabs Component

@@ -16,12 +16,9 @@ export const metadata: Metadata = {
   title: "MBTI Brain",
   description: "MBTI Brain",
   icons: {
-    icon: [
-      { url: "/brain-icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
-    ],
-    shortcut: "/brain-icon.svg",
-    apple: "/brain-icon.svg",
+    icon: [{ url: "/favicon.ico", sizes: "any" }],
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
   appleWebApp: {
     title: "MBTI Brain",

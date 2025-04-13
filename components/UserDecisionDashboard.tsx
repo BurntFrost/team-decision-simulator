@@ -64,10 +64,10 @@ const IOSStatusBar = () => {
       <div className="text-xs font-bold">{time}</div>
       <div className="flex items-center space-x-1">
         <div className="w-3 h-3">
-          <img src="/icons/clock.svg" alt="" className="w-full h-full" />
+          <BsClockFill className="w-full h-full" />
         </div>
         <div className="w-4 h-4">
-          <img src="/icons/location.svg" alt="" className="w-full h-full" />
+          <BsGeoAlt className="w-full h-full" />
         </div>
         <div className="w-6 h-5">
           <div className="h-full relative">
@@ -485,7 +485,7 @@ export default function UserDecisionDashboard() {
 
       {/* iOS-style Hero Section with App Description */}
       <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 pt-6 sm:p-6 sm:pt-8 rounded-b-[2rem] shadow-sm relative overflow-hidden z-10">
-        <div className="absolute inset-0 bg-grid opacity-20"></div>
+        <div className="absolute inset-0 bg-grid opacity-10"></div>
         <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15] bg-gradient-to-br from-white/20 to-white/10 rounded-full blur-lg"></div>
         <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15] bg-gradient-to-tr from-white/20 to-white/10 rounded-full blur-lg"></div>
         <div className="relative flex flex-col gap-2 mb-2">
@@ -506,7 +506,7 @@ export default function UserDecisionDashboard() {
       {/* Main Content with Tabs */}
       <div className="px-3 py-4 sm:p-6 -mt-6 relative z-20">
         <Card className="border-none shadow-xl bg-white rounded-[1.5rem] overflow-hidden relative">
-          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+          <div className="absolute inset-0 bg-grid opacity-10"></div>
           <CardContent className="p-0 relative">
             <Tabs
               value={activeTab}

@@ -1091,6 +1091,14 @@ const UserDecisionCharts: React.FC<Props> = ({
       </TabsContent>
 
       <TabsContent value="radar" className="mt-2">
+        <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
+          This radar chart displays how different personality types weigh each
+          decision factor. Positive values (extending outward) indicate factors
+          that increase confidence, while negative values (toward center)
+          decrease confidence. Larger shapes represent more decisive personality
+          types. Click any personality in the legend to highlight it, or compare
+          the public opinion (dotted line) to see key differences.
+        </div>
         <ResponsiveContainer
           width="100%"
           height={window.innerWidth < 768 ? 250 : 350}
@@ -1368,12 +1376,14 @@ const UserDecisionCharts: React.FC<Props> = ({
                   return (
                     <div
                       key={factor}
-                      className="p-3 bg-slate-200 rounded-lg text-sm text-center shadow-sm"
+                      className="p-3 bg-blue-100 rounded-lg text-sm text-center shadow-sm"
                       onMouseEnter={() => handleMouseEnter(formattedFactor)}
                       onMouseLeave={handleMouseLeave}
                     >
-                      {formattedFactor}
-                      <div className="mt-1 font-mono text-xs">
+                      <span className="font-medium text-blue-800">
+                        {formattedFactor}
+                      </span>
+                      <div className="mt-1 font-mono text-xs text-blue-700">
                         {(inputs[factor as FactorKey] * 100).toFixed(0)}%
                       </div>
                     </div>
@@ -1465,22 +1475,37 @@ const UserDecisionCharts: React.FC<Props> = ({
                   );
                   const decisionColor =
                     decision === "Proceed Strategically"
-                      ? "#4ade80"
+                      ? "#15803d" // Darker green
                       : decision === "Request Clarification"
-                      ? "#facc15"
-                      : "#f87171";
+                      ? "#b45309" // Darker amber
+                      : "#b91c1c"; // Darker red
+
+                  const bgColor =
+                    decision === "Proceed Strategically"
+                      ? "bg-green-200"
+                      : decision === "Request Clarification"
+                      ? "bg-amber-200"
+                      : "bg-red-200";
+
+                  const textColor =
+                    decision === "Proceed Strategically"
+                      ? "text-green-800"
+                      : decision === "Request Clarification"
+                      ? "text-amber-800"
+                      : "text-red-800";
 
                   return (
                     <div
                       key={decision}
-                      className={`p-3 rounded-lg text-white text-center shadow-sm ${
+                      className={`p-3 rounded-lg text-center shadow-sm ${bgColor} ${
                         decisionResults.length === 0
-                          ? "opacity-30"
+                          ? "opacity-40"
                           : "opacity-100"
                       }`}
-                      style={{ backgroundColor: decisionColor }}
                     >
-                      {decision}
+                      <span className={`font-medium ${textColor}`}>
+                        {decision}
+                      </span>
                       <div className="mt-1 font-mono text-xs">
                         {decisionResults.length} personality type
                         {decisionResults.length !== 1 ? "s" : ""}
@@ -1488,7 +1513,15 @@ const UserDecisionCharts: React.FC<Props> = ({
 
                       {hoveredType &&
                         decisionResults.some((r) => r.name === hoveredType) && (
-                          <div className="mt-2 p-1 bg-white/20 rounded text-xs">
+                          <div
+                            className={`mt-2 p-1 ${
+                              decision === "Proceed Strategically"
+                                ? "bg-green-300"
+                                : decision === "Request Clarification"
+                                ? "bg-amber-300"
+                                : "bg-red-300"
+                            } rounded text-xs font-medium`}
+                          >
                             {hoveredType} chose this
                           </div>
                         )}
@@ -1673,7 +1706,39 @@ const UserDecisionCharts: React.FC<Props> = ({
         <TabsContent value="public" className="mt-2">
           <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
             This visualization shows how the general public would likely
-            approach this decision, with probabilities for each outcome.
+            approach this decision, with probabilities for each outcome. The
+            comparison below shows how public opinion weighs different factors
+            compared to specific MBTI personality types.
+          </div>
+
+          <div className="p-4 mb-4 bg-white rounded-xl shadow-sm">
+            <h4 className="font-bold text-[#4455a6] mb-2">
+              What Is Public Opinion?
+            </h4>
+            <p className="text-sm text-gray-700">
+              The public opinion model represents how the "average person" would
+              evaluate this decision based on general population decision-making
+              patterns. This differs from individual MBTI personality types,
+              which have distinct decision-making characteristics.
+            </p>
+            <p className="text-sm text-gray-700 mt-2">
+              For example, while an INTJ may heavily weigh data quality, the
+              general public typically prioritizes visible ROI and responds
+              strongly to time pressure, with less concern for data
+              completeness.
+            </p>
+            <p className="text-sm text-gray-700 mt-2">
+              The "Most Similar Personality Type" shows which MBTI type most
+              closely resembles the public's decision-making pattern for this
+              scenario - currently{" "}
+              <span
+                style={{ color: similarMBTIType.color }}
+                className="font-medium"
+              >
+                {similarMBTIType.description}
+              </span>
+              .
+            </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1815,6 +1880,28 @@ const UserDecisionCharts: React.FC<Props> = ({
                 Public vs. Personality Weights
               </h4>
 
+              <div className="mb-4 text-sm bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <p className="font-medium text-[#4455a6] mb-1">
+                  Understanding This Comparison:
+                </p>
+                <p>
+                  This chart compares how the general public weighs decision
+                  factors versus how MBTI personality types consider them. The
+                  blue/red bars show public opinion weights, while the colored
+                  marker shows the weight for the most similar personality type
+                  ({similarMBTIType.description}).
+                </p>
+                <p className="mt-1">
+                  Positive values (blue) increase confidence in proceeding with
+                  the decision, while negative values (red) decrease it.
+                </p>
+                <p className="mt-1">
+                  The percentages indicate how strongly each factor influences
+                  the final decision, with higher values having more impact
+                  (positive or negative).
+                </p>
+              </div>
+
               <div className="space-y-3">
                 {publicWeights &&
                   Object.keys(publicWeights).map((factorKey) => {
@@ -1929,17 +2016,21 @@ const UserDecisionCharts: React.FC<Props> = ({
                 <ul className="mt-2 space-y-1 list-disc pl-5 text-gray-700">
                   <li>
                     Public opinion gives more weight to{" "}
-                    <span className="font-medium">ROI Visibility</span> and{" "}
-                    <span className="font-medium">Time Pressure</span>
+                    <span className="font-medium">ROI Visibility (+35%)</span>{" "}
+                    and{" "}
+                    <span className="font-medium">Time Pressure (+30%)</span>
                   </li>
                   <li>
                     Public opinion is more negatively affected by{" "}
-                    <span className="font-medium">Social Complexity</span>
+                    <span className="font-medium">
+                      Social Complexity (-25%)
+                    </span>{" "}
+                    than personality types (-5%)
                   </li>
                   <li>
                     Personality types typically value{" "}
-                    <span className="font-medium">Data Quality</span> more than
-                    the general public
+                    <span className="font-medium">Data Quality (+30%)</span>{" "}
+                    more than the general public (+15%)
                   </li>
                   {similarMBTIType.type && (
                     <li>
@@ -1949,7 +2040,9 @@ const UserDecisionCharts: React.FC<Props> = ({
                         style={{ color: similarMBTIType.color }}
                       >
                         {similarMBTIType.description}
-                      </span>
+                      </span>{" "}
+                      - this MBTI type has the most similar decision pattern to
+                      public opinion
                     </li>
                   )}
                 </ul>

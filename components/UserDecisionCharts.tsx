@@ -637,7 +637,7 @@ const UserDecisionCharts: React.FC<Props> = ({
   publicWeights,
 }) => {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("radar");
+  const [activeTab, setActiveTab] = useState("bar");
   const [dimensions, setDimensions] = useState({ width: 800, height: 800 });
   const [isMounted, setIsMounted] = useState(false);
 
@@ -723,7 +723,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
   return (
     <Tabs
-      defaultValue="radar"
+      defaultValue="bar"
       className="w-full"
       onValueChange={(value) => setActiveTab(value)}
     >

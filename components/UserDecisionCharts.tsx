@@ -724,80 +724,15 @@ const UserDecisionCharts: React.FC<Props> = ({
   return (
     <Tabs
       defaultValue="bar"
-      className="w-full"
+      className="w-full max-w-full"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <TabsList className="w-full mb-4 bg-[#4455a6]/10 p-1 rounded-xl">
-        <TabsTrigger
-          value="bar"
-          className={cn(
-            "flex-1 rounded-lg font-semibold",
-            "data-[state=active]:bg-[#4455a6]",
-            "data-[state=active]:text-white",
-            "data-[state=active]:shadow-lg",
-            "data-[state=inactive]:py-1",
-            "transition-all duration-200"
-          )}
-        >
-          Confidence Scores
-        </TabsTrigger>
-        <TabsTrigger
-          value="radar"
-          className={cn(
-            "flex-1 rounded-lg font-semibold",
-            "data-[state=active]:bg-[#4455a6]",
-            "data-[state=active]:text-white",
-            "data-[state=active]:shadow-lg",
-            "data-[state=inactive]:py-1",
-            "transition-all duration-200"
-          )}
-        >
-          Personality Weights
-        </TabsTrigger>
-        <TabsTrigger
-          value="quadrant"
-          className={cn(
-            "flex-1 rounded-lg font-semibold",
-            "data-[state=active]:bg-[#4455a6]",
-            "data-[state=active]:text-white",
-            "data-[state=active]:shadow-lg",
-            "data-[state=inactive]:py-1",
-            "transition-all duration-200"
-          )}
-        >
-          Decision Landscape
-        </TabsTrigger>
-        <TabsTrigger
-          value="flow"
-          className={cn(
-            "flex-1 rounded-lg font-semibold",
-            "data-[state=active]:bg-[#4455a6]",
-            "data-[state=active]:text-white",
-            "data-[state=active]:shadow-lg",
-            "data-[state=inactive]:py-1",
-            "transition-all duration-200"
-          )}
-        >
-          Decision Flow
-        </TabsTrigger>
-        <TabsTrigger
-          value="heatmap"
-          className={cn(
-            "flex-1 rounded-lg font-semibold",
-            "data-[state=active]:bg-[#4455a6]",
-            "data-[state=active]:text-white",
-            "data-[state=active]:shadow-lg",
-            "data-[state=inactive]:py-1",
-            "transition-all duration-200"
-          )}
-        >
-          Factor Influence
-        </TabsTrigger>
-        {publicResult && (
+      <div className="w-full max-w-full overflow-hidden">
+        <TabsList className="w-full mb-4 bg-[#4455a6]/10 p-1 rounded-xl overflow-hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
           <TabsTrigger
-            value="public"
+            value="bar"
             className={cn(
-              "flex-1 rounded-lg font-semibold",
+              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
               "data-[state=active]:bg-[#4455a6]",
               "data-[state=active]:text-white",
               "data-[state=active]:shadow-lg",
@@ -805,10 +740,77 @@ const UserDecisionCharts: React.FC<Props> = ({
               "transition-all duration-200"
             )}
           >
-            Public Opinion
+            Confidence
           </TabsTrigger>
-        )}
-      </TabsList>
+          <TabsTrigger
+            value="radar"
+            className={cn(
+              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
+              "data-[state=active]:bg-[#4455a6]",
+              "data-[state=active]:text-white",
+              "data-[state=active]:shadow-lg",
+              "data-[state=inactive]:py-1",
+              "transition-all duration-200"
+            )}
+          >
+            Personality
+          </TabsTrigger>
+          <TabsTrigger
+            value="quadrant"
+            className={cn(
+              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
+              "data-[state=active]:bg-[#4455a6]",
+              "data-[state=active]:text-white",
+              "data-[state=active]:shadow-lg",
+              "data-[state=inactive]:py-1",
+              "transition-all duration-200"
+            )}
+          >
+            Landscape
+          </TabsTrigger>
+          <TabsTrigger
+            value="flow"
+            className={cn(
+              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
+              "data-[state=active]:bg-[#4455a6]",
+              "data-[state=active]:text-white",
+              "data-[state=active]:shadow-lg",
+              "data-[state=inactive]:py-1",
+              "transition-all duration-200"
+            )}
+          >
+            Flow
+          </TabsTrigger>
+          <TabsTrigger
+            value="heatmap"
+            className={cn(
+              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
+              "data-[state=active]:bg-[#4455a6]",
+              "data-[state=active]:text-white",
+              "data-[state=active]:shadow-lg",
+              "data-[state=inactive]:py-1",
+              "transition-all duration-200"
+            )}
+          >
+            Factors
+          </TabsTrigger>
+          {publicResult && (
+            <TabsTrigger
+              value="public"
+              className={cn(
+                "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
+                "data-[state=active]:bg-[#4455a6]",
+                "data-[state=active]:text-white",
+                "data-[state=active]:shadow-lg",
+                "data-[state=inactive]:py-1",
+                "transition-all duration-200"
+              )}
+            >
+              Public
+            </TabsTrigger>
+          )}
+        </TabsList>
+      </div>
 
       <TabsContent value="bar" className="mt-2">
         <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">

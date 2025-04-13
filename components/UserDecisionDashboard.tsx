@@ -19,6 +19,56 @@ import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 
+// iOS Status Bar Component
+const IOSStatusBar = () => {
+  const [time, setTime] = useState<string>("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTime(
+        now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      );
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="sticky top-0 z-50 bg-[#007aff] text-white px-4 py-2 flex justify-between items-center">
+      <div className="text-xs font-bold">{time}</div>
+      <div className="flex items-center space-x-1">
+        <div className="w-3 h-3">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.33 4.3c.28 0 .5.22.5.5v1.94c3.83.65 6.76 3.96 6.76 7.97 0 .3-.16.55-.4.7-.14.1-.34.2-.54.2-.44 0-.87-.36-.87-.9 0-3.03-2.46-5.5-5.45-5.5-3 0-5.45 2.47-5.45 5.5 0 .54-.43.9-.87.9-.2 0-.4-.1-.54-.2-.24-.15-.4-.4-.4-.7 0-4 2.93-7.32 6.76-7.98V4.8c0-.28.22-.5.5-.5zM12 13.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5zm-5.37-3.12c.6-.6 1.54-.6 2.12 0 .6.58.6 1.54 0 2.12-.6.6-1.54.6-2.12 0-.6-.58-.6-1.53 0-2.12zm10.74 0c.6.58.6 1.54 0 2.12-.6.6-1.54.6-2.12 0-.6-.58-.6-1.54 0-2.12.6-.6 1.54-.6 2.12 0z" />
+          </svg>
+        </div>
+        <div className="w-4 h-4">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" />
+          </svg>
+        </div>
+        <div className="w-6 h-5">
+          <div className="h-full relative">
+            <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center px-0.5">
+              <div className="h-2 rounded-sm w-1 bg-white mx-0.5"></div>
+              <div className="h-3 rounded-sm w-1 bg-white mx-0.5"></div>
+              <div className="h-4 rounded-sm w-1 bg-white mx-0.5"></div>
+              <div className="h-2.5 rounded-sm w-1 bg-white mx-0.5"></div>
+            </div>
+          </div>
+        </div>
+        <div className="w-6 h-3 border border-white rounded-sm relative">
+          <div className="absolute right-0 top-0 bottom-0 bg-white w-3 mr-px my-px rounded-sm"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Custom Stepper Component
 const StepperContainer = ({
   children,
@@ -246,24 +296,28 @@ const SliderInput: React.FC<SliderInputProps> = ({
   onChange,
   info,
 }) => (
-  <div className="flex flex-col mb-4">
-    <div className="flex justify-between items-center mb-1">
-      <label htmlFor={id} className="font-medium text-md">
+  <div className="flex flex-col mb-5">
+    <div className="flex justify-between items-center mb-2">
+      <label htmlFor={id} className="font-medium text-md text-[#1d1d1f]">
         {info.label}
       </label>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="text-sm text-gray-500 cursor-help">ⓘ</span>
+            <span className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full">
+              ⓘ
+            </span>
           </TooltipTrigger>
-          <TooltipContent className="max-w-xs">
-            <p className="font-medium">{info.description}</p>
-            <div className="mt-2 text-sm grid grid-cols-2 gap-2">
-              <div>
-                <span className="font-bold">Low:</span> {info.lowDesc}
+          <TooltipContent className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3">
+            <p className="font-medium text-[#1d1d1f]">{info.description}</p>
+            <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
+                <span className="font-bold text-[#1d1d1f]">Low:</span>{" "}
+                {info.lowDesc}
               </div>
-              <div>
-                <span className="font-bold">High:</span> {info.highDesc}
+              <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
+                <span className="font-bold text-[#1d1d1f]">High:</span>{" "}
+                {info.highDesc}
               </div>
             </div>
           </TooltipContent>
@@ -279,9 +333,17 @@ const SliderInput: React.FC<SliderInputProps> = ({
         step="0.05"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="flex-grow"
+        className="flex-grow appearance-none h-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff]/20"
+        style={{
+          WebkitAppearance: "none",
+          background: `linear-gradient(to right, #007aff ${
+            value * 100
+          }%, #e5e5ea ${value * 100}%)`,
+          height: "0.75rem",
+          borderRadius: "999px",
+        }}
       />
-      <span className="w-12 text-right font-mono">
+      <span className="w-12 text-right font-mono text-[#007aff] font-semibold">
         {(value * 100).toFixed(0)}%
       </span>
     </div>
@@ -304,7 +366,7 @@ const Charts = dynamic(() => import("@/components/UserDecisionCharts"), {
 export const StyledTabs: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
-  <div className="w-full">
+  <div className="w-full overflow-hidden">
     <style jsx>{`
       :global([data-state="active"]) {
         background-color: hsl(var(--primary) / 0.1) !important;
@@ -395,15 +457,15 @@ export default function UserDecisionDashboard() {
   } = majorityDecisionData;
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-[#e6f0ff] via-[#d9e6ff] to-[#ccdcff] min-h-screen">
-      {/* Hero Section with App Description */}
-      <div className="bg-gradient-to-r from-[#4455a6] via-[#3a4a8f] to-[#2f3f7a] text-white p-8 rounded-xl shadow-xl relative overflow-hidden">
+    <div className="bg-[#f5f5f7] min-h-screen safe-area-inset-bottom">
+      {/* iOS-style Hero Section with App Description */}
+      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 pt-6 sm:p-6 sm:pt-8 rounded-b-[2rem] shadow-sm relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
-        <div className="relative flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
+        <div className="relative flex flex-col gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-white/90"
+              className="h-6 w-6 text-white/90"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -413,467 +475,490 @@ export default function UserDecisionDashboard() {
                 clipRule="evenodd"
               />
             </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-white/90"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 text-white/90"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <h2 className="text-xl sm:text-2xl font-bold text-white/95">
+              MBTI Brain
+            </h2>
           </div>
-          <h2 className="text-3xl font-bold text-white/90">
-            MBTI Decision Simulator
-          </h2>
+          <p className="text-sm sm:text-base text-white/80 max-w-3xl relative">
+            Explore how different personality types approach your decisions.
+            Select a scenario, adjust factors, and discover diverse
+            perspectives.
+          </p>
         </div>
-        <p className="mt-2 text-white/80 max-w-3xl relative">
-          Get insights into your decision-making process by exploring how
-          different MBTI personality types would approach your situation. Select
-          a scenario, adjust the factors, and discover diverse perspectives to
-          help you make more informed choices.
-        </p>
       </div>
 
       {/* Main Content with Tabs */}
-      <Card className="border-none shadow-xl bg-white/95 backdrop-blur-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
-        <CardContent className="p-6 relative">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-4 mb-6 bg-gradient-to-r from-[#f0f4ff] to-[#e8edff] p-1 rounded-lg shadow-sm">
-              <TabsTrigger
-                value="scenarios"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-[#4455a6] data-[state=active]:font-semibold rounded-md transition-all duration-200 hover:bg-white/50"
-              >
-                <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Scenarios
-                </div>
-              </TabsTrigger>
-              <TabsTrigger
-                value="factors"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#4455a6] data-[state=active]:font-semibold rounded-md transition-all duration-200"
-              >
-                <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                    <path
-                      fillRule="evenodd"
-                      d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Factors
-                </div>
-              </TabsTrigger>
-              <TabsTrigger
-                value="results"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#4455a6] data-[state=active]:font-semibold rounded-md transition-all duration-200"
-              >
-                <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                  </svg>
-                  Results
-                </div>
-              </TabsTrigger>
-              <TabsTrigger
-                value="personalities"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#4455a6] data-[state=active]:font-semibold rounded-md transition-all duration-200"
-              >
-                <div className="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Personalities
-                </div>
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Scenarios Tab */}
-            <TabsContent
-              value="scenarios"
-              className="space-y-6 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95"
+      <div className="px-3 py-4 sm:p-6 -mt-6">
+        <Card className="border-none shadow-xl bg-white rounded-[1.5rem] overflow-hidden relative">
+          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+          <CardContent className="p-0 relative">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {Object.keys(DecisionService.presetScenarios).map(
-                  (scenario) => {
-                    const isActive = scenario === activePreset;
-                    return (
-                      <Card
-                        key={scenario}
-                        className={cn(
-                          "cursor-pointer transition-all duration-200 hover:shadow-md border-2",
-                          isActive
-                            ? "border-[#4455a6] bg-[#4455a6]/5"
-                            : "border-transparent"
-                        )}
-                        onClick={() =>
-                          applyPreset(
-                            scenario as keyof typeof DecisionService.presetScenarios
-                          )
-                        }
-                      >
-                        <CardContent className="p-5">
-                          <h4 className="font-semibold text-[#4455a6]">
-                            {scenario}
-                          </h4>
-                          <p className="text-sm text-gray-600 mt-2">
-                            {
-                              DecisionService.presetDescriptions[
-                                scenario as keyof typeof DecisionService.presetDescriptions
-                              ]
-                            }
-                          </p>
-
-                          {isActive && (
-                            <div className="mt-3 text-xs bg-[#4455a6] text-white px-3 py-1 rounded-full inline-block">
-                              Selected
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  }
-                )}
-              </div>
-            </TabsContent>
-
-            {/* Factors Tab */}
-            <TabsContent value="factors" className="space-y-6">
-              {activePreset && (
-                <div className="mb-6 p-3 bg-[#4455a6]/5 rounded-lg flex items-center">
-                  <div className="mr-3 text-[#4455a6]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-sm font-medium">
-                      Using preset: {activePreset}
-                    </span>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Values are pre-set for this scenario. Adjust any slider to
-                      customize.
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-sm border-[#4455a6] text-[#4455a6]"
-                    onClick={handleReset}
+              <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 pt-4">
+                <TabsList className="grid w-full grid-cols-4 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                  <TabsTrigger
+                    value="scenarios"
+                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                   >
-                    Reset
-                  </Button>
-                </div>
-              )}
-
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm">
-                <div className="grid grid-cols-1 gap-4">
-                  {Object.keys(inputs).map((key) => (
-                    <SliderInput
-                      key={key}
-                      id={key}
-                      label={key}
-                      value={inputs[key as DecisionService.FactorKey]}
-                      onChange={(value) =>
-                        handleInputChange(
-                          key as DecisionService.FactorKey,
-                          value
-                        )
-                      }
-                      info={
-                        DecisionService.factorInfo[
-                          key as DecisionService.FactorKey
-                        ]
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-end">
-                <Button
-                  onClick={handleSimulate}
-                  className="bg-[#4455a6] hover:bg-[#3a4a8f]"
-                >
-                  Run Simulation
-                </Button>
-              </div>
-            </TabsContent>
-
-            {/* Results Tab */}
-            <TabsContent value="results" className="space-y-6">
-              {results.length > 0 ? (
-                <>
-                  <div className="bg-[#4455a6] text-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold mb-6">
-                      Decision Analysis
-                    </h3>
-                    <div className="space-y-6">
-                      {/* Top 3 Decisions */}
-                      <div className="grid grid-cols-3 gap-4 mb-8">
-                        {Object.entries(
-                          results.reduce((acc, curr) => {
-                            acc[curr.decision] = (acc[curr.decision] || 0) + 1;
-                            return acc;
-                          }, {} as Record<string, number>)
-                        )
-                          .sort(([, a], [, b]) => b - a)
-                          .slice(0, 3)
-                          .map(([decision, count], index) => {
-                            const percentage = (count / results.length) * 100;
-                            const color =
-                              results.find((r) => r.decision === decision)
-                                ?.color || "#94a3b8";
-                            return (
-                              <div
-                                key={decision}
-                                className="bg-white/20 p-6 rounded-xl relative overflow-hidden border-2 border-white/30"
-                              >
-                                <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
-                                  #{index + 1}
-                                </div>
-                                <div className="relative z-10">
-                                  <span className="text-lg font-bold text-white mb-3 block">
-                                    {decision}
-                                  </span>
-                                  <div className="flex items-end gap-2">
-                                    <div className="text-3xl font-bold">
-                                      {count}
-                                    </div>
-                                    <div className="text-sm text-white/70 mb-1">
-                                      ({percentage.toFixed(1)}%)
-                                    </div>
-                                  </div>
-                                  <div className="text-xs text-white/60 mt-1">
-                                    MBTI types
-                                  </div>
-                                </div>
-                                <div
-                                  className="absolute bottom-0 left-0 h-1.5 transition-all duration-500"
-                                  style={{
-                                    width: `${percentage}%`,
-                                    backgroundColor: color,
-                                  }}
-                                ></div>
-                              </div>
-                            );
-                          })}
-                      </div>
-
-                      {/* All Decisions Grid */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {[
-                          {
-                            decision: "Full Speed Ahead",
-                            color: "#22c55e",
-                            count: results.filter(
-                              (r) => r.decision === "Full Speed Ahead"
-                            ).length,
-                          },
-                          {
-                            decision: "Proceed Strategically",
-                            color: "#4ade80",
-                            count: results.filter(
-                              (r) => r.decision === "Proceed Strategically"
-                            ).length,
-                          },
-                          {
-                            decision: "Implement with Oversight",
-                            color: "#a3e635",
-                            count: results.filter(
-                              (r) => r.decision === "Implement with Oversight"
-                            ).length,
-                          },
-                          {
-                            decision: "Request Clarification",
-                            color: "#facc15",
-                            count: results.filter(
-                              (r) => r.decision === "Request Clarification"
-                            ).length,
-                          },
-                          {
-                            decision: "Delay or Disengage",
-                            color: "#f87171",
-                            count: results.filter(
-                              (r) => r.decision === "Delay or Disengage"
-                            ).length,
-                          },
-                          {
-                            decision: "Public Opinion",
-                            color: publicResult?.color || "#94a3b8",
-                            count: publicResult ? 1 : 0,
-                            isPublic: true,
-                          },
-                        ].map(({ decision, color, count, isPublic }) => {
-                          const percentage = isPublic
-                            ? 100
-                            : (count / results.length) * 100;
-                          return (
-                            <div
-                              key={decision}
-                              className="bg-white/10 p-4 rounded-xl relative overflow-hidden"
-                            >
-                              <div className="relative z-10">
-                                <span className="text-sm font-medium text-white/90 mb-2 block">
-                                  {decision}
-                                </span>
-                                <div className="flex items-end gap-2">
-                                  {isPublic ? (
-                                    <div className="text-xl font-bold">
-                                      {publicResult?.mostLikely || "N/A"}
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <div className="text-xl font-bold">
-                                        {count}
-                                      </div>
-                                      <div className="text-xs text-white/70 mb-1">
-                                        ({percentage.toFixed(1)}%)
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                                <div className="text-xs text-white/60 mt-1">
-                                  {isPublic ? "Consensus View" : "MBTI types"}
-                                </div>
-                              </div>
-                              <div
-                                className="absolute bottom-0 left-0 h-1 transition-all duration-500"
-                                style={{
-                                  width: `${percentage}%`,
-                                  backgroundColor: color,
-                                }}
-                              ></div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <div className="mb-4">
-                      <h4 className="text-xl font-semibold text-gray-800 mb-2">
-                        Detailed Analysis
-                      </h4>
-                      <p className="text-gray-600 text-sm">
-                        The charts below show how different MBTI personalities
-                        analyze and approach this decision.
-                      </p>
-                    </div>
-                    <Charts
-                      results={results}
-                      radarData={radarData}
-                      archetypes={DecisionService.archetypes}
-                      mbtiDescriptions={DecisionService.mbtiDescriptions}
-                      inputs={inputs}
-                      publicResult={publicResult}
-                      publicWeights={DecisionService.publicOpinionWeights}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">
-                    Run a simulation to see results
-                  </p>
-                </div>
-              )}
-            </TabsContent>
-
-            {/* Personalities Tab */}
-            <TabsContent value="personalities" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(DecisionService.mbtiDescriptions).map(
-                  ([type, info]) => {
-                    const famousPerson = getRandomFamousPerson(type);
-                    return (
-                      <div
-                        key={type}
-                        className="p-4 rounded-xl shadow-md bg-white"
-                        style={{ borderLeft: `4px solid ${info.color}` }}
+                    <div className="flex flex-col items-center gap-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
                       >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4
-                              className="font-bold mb-2"
-                              style={{ color: info.color }}
-                            >
-                              {info.name}
-                            </h4>
-                            <p className="text-sm text-gray-600">
-                              {info.description}
-                            </p>
-                          </div>
-                        </div>
-                        <p className="text-xs mt-2 italic text-gray-500">
-                          {famousPerson && `Famous example: ${famousPerson}`}
+                        <path
+                          fillRule="evenodd"
+                          d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs">Scenarios</span>
+                    </div>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="factors"
+                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                        <path
+                          fillRule="evenodd"
+                          d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs">Factors</span>
+                    </div>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="results"
+                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                      </svg>
+                      <span className="text-xs">Results</span>
+                    </div>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="personalities"
+                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs">Types</span>
+                    </div>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <div className="p-4 sm:p-6 overflow-auto">
+                {/* Scenarios Tab */}
+                <TabsContent
+                  value="scenarios"
+                  className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {Object.keys(DecisionService.presetScenarios).map(
+                      (scenario) => {
+                        const isActive = scenario === activePreset;
+                        return (
+                          <Card
+                            key={scenario}
+                            className={cn(
+                              "cursor-pointer transition-all duration-200 hover:shadow-md border",
+                              isActive
+                                ? "border-[#007aff] bg-[#007aff]/5"
+                                : "border-gray-100"
+                            )}
+                            onClick={() =>
+                              applyPreset(
+                                scenario as keyof typeof DecisionService.presetScenarios
+                              )
+                            }
+                          >
+                            <CardContent className="p-4">
+                              <h4 className="font-semibold text-[#1d1d1f]">
+                                {scenario}
+                              </h4>
+                              <p className="text-sm text-gray-600 mt-2">
+                                {
+                                  DecisionService.presetDescriptions[
+                                    scenario as keyof typeof DecisionService.presetDescriptions
+                                  ]
+                                }
+                              </p>
+
+                              {isActive && (
+                                <div className="mt-3 text-xs bg-[#007aff] text-white px-3 py-1 rounded-full inline-block">
+                                  Selected
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        );
+                      }
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* Factors Tab */}
+                <TabsContent value="factors" className="space-y-6">
+                  {activePreset && (
+                    <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                      <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-sm font-medium text-[#1d1d1f]">
+                          Using preset: {activePreset}
+                        </span>
+                        <p className="text-xs text-gray-600 mt-1">
+                          Values are pre-set for this scenario. Adjust any
+                          slider to customize.
                         </p>
                       </div>
-                    );
-                  }
-                )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-sm border-[#007aff] text-[#007aff] rounded-full px-4 py-2"
+                        onClick={handleReset}
+                      >
+                        Reset
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="grid grid-cols-1 gap-4">
+                      {Object.keys(inputs).map((key) => (
+                        <SliderInput
+                          key={key}
+                          id={key}
+                          label={key}
+                          value={inputs[key as DecisionService.FactorKey]}
+                          onChange={(value) =>
+                            handleInputChange(
+                              key as DecisionService.FactorKey,
+                              value
+                            )
+                          }
+                          info={
+                            DecisionService.factorInfo[
+                              key as DecisionService.FactorKey
+                            ]
+                          }
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center sm:justify-end mt-6">
+                    <Button
+                      onClick={handleSimulate}
+                      className="bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-8 py-3 shadow-sm w-full sm:w-auto transition-all active:scale-95"
+                    >
+                      Run Simulation
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                {/* Results Tab */}
+                <TabsContent value="results" className="space-y-6">
+                  {results.length > 0 ? (
+                    <>
+                      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
+                        <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+                          Decision Analysis
+                        </h3>
+                        <div className="space-y-6">
+                          {/* Top 3 Decisions */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+                            {Object.entries(
+                              results.reduce((acc, curr) => {
+                                acc[curr.decision] =
+                                  (acc[curr.decision] || 0) + 1;
+                                return acc;
+                              }, {} as Record<string, number>)
+                            )
+                              .sort(([, a], [, b]) => b - a)
+                              .slice(0, 3)
+                              .map(([decision, count], index) => {
+                                const percentage =
+                                  (count / results.length) * 100;
+                                const color =
+                                  results.find((r) => r.decision === decision)
+                                    ?.color || "#94a3b8";
+                                return (
+                                  <div
+                                    key={decision}
+                                    className="bg-white/20 p-4 sm:p-6 rounded-xl relative overflow-hidden border border-white/30"
+                                  >
+                                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
+                                      #{index + 1}
+                                    </div>
+                                    <div className="relative z-10">
+                                      <span className="text-base sm:text-lg font-bold text-white mb-2 sm:mb-3 block">
+                                        {decision}
+                                      </span>
+                                      <div className="flex items-end gap-2">
+                                        <div className="text-2xl sm:text-3xl font-bold">
+                                          {count}
+                                        </div>
+                                        <div className="text-sm text-white/70 mb-1">
+                                          ({percentage.toFixed(1)}%)
+                                        </div>
+                                      </div>
+                                      <div className="text-xs text-white/60 mt-1">
+                                        MBTI types
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="absolute bottom-0 left-0 h-1.5 transition-all duration-500"
+                                      style={{
+                                        width: `${percentage}%`,
+                                        backgroundColor: color,
+                                      }}
+                                    ></div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+
+                          {/* All Decisions Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {[
+                              {
+                                decision: "Full Speed Ahead",
+                                color: "#34c759",
+                                count: results.filter(
+                                  (r) => r.decision === "Full Speed Ahead"
+                                ).length,
+                              },
+                              {
+                                decision: "Proceed Strategically",
+                                color: "#30d158",
+                                count: results.filter(
+                                  (r) => r.decision === "Proceed Strategically"
+                                ).length,
+                              },
+                              {
+                                decision: "Implement with Oversight",
+                                color: "#ffcc00",
+                                count: results.filter(
+                                  (r) =>
+                                    r.decision === "Implement with Oversight"
+                                ).length,
+                              },
+                              {
+                                decision: "Request Clarification",
+                                color: "#ff9500",
+                                count: results.filter(
+                                  (r) => r.decision === "Request Clarification"
+                                ).length,
+                              },
+                              {
+                                decision: "Delay or Disengage",
+                                color: "#ff3b30",
+                                count: results.filter(
+                                  (r) => r.decision === "Delay or Disengage"
+                                ).length,
+                              },
+                              {
+                                decision: "Public Opinion",
+                                color: publicResult?.color || "#8e8e93",
+                                count: publicResult ? 1 : 0,
+                                isPublic: true,
+                              },
+                            ]
+                              // Filter out options with 0 count, except for Public Opinion which should always show
+                              .filter(
+                                ({ count, isPublic }) => count > 0 || isPublic
+                              )
+                              .map(({ decision, color, count, isPublic }) => {
+                                const percentage = isPublic
+                                  ? 100
+                                  : (count / results.length) * 100;
+                                return (
+                                  <div
+                                    key={decision}
+                                    className="bg-white/10 p-3 rounded-xl relative overflow-hidden"
+                                  >
+                                    <div className="relative z-10">
+                                      <span className="text-sm font-medium text-white/90 mb-2 block">
+                                        {decision}
+                                      </span>
+                                      <div className="flex items-end gap-2">
+                                        {isPublic ? (
+                                          <div className="text-lg font-bold">
+                                            {publicResult?.mostLikely || "N/A"}
+                                          </div>
+                                        ) : (
+                                          <>
+                                            <div className="text-lg font-bold">
+                                              {count}
+                                            </div>
+                                            <div className="text-xs text-white/70 mb-1">
+                                              ({percentage.toFixed(1)}%)
+                                            </div>
+                                          </>
+                                        )}
+                                      </div>
+                                      <div className="text-xs text-white/60 mt-1">
+                                        {isPublic
+                                          ? "Consensus View"
+                                          : "MBTI types"}
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="absolute bottom-0 left-0 h-1 transition-all duration-500"
+                                      style={{
+                                        width: `${percentage}%`,
+                                        backgroundColor: color,
+                                      }}
+                                    ></div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                        <div className="mb-4">
+                          <h4 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                            Detailed Analysis
+                          </h4>
+                          <p className="text-gray-600 text-sm">
+                            The charts below show how different MBTI
+                            personalities analyze and approach this decision.
+                          </p>
+                        </div>
+                        <div className="w-full max-w-full overflow-hidden">
+                          <Charts
+                            results={results}
+                            radarData={radarData}
+                            archetypes={DecisionService.archetypes}
+                            mbtiDescriptions={DecisionService.mbtiDescriptions}
+                            inputs={inputs}
+                            publicResult={publicResult}
+                            publicWeights={DecisionService.publicOpinionWeights}
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
+                      <div className="text-[#8e8e93] mb-4">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-12 w-12 mx-auto"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1}
+                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-[#1d1d1f] font-medium">
+                        No simulation results yet
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Run a simulation to see results
+                      </p>
+                      <Button
+                        onClick={() => setActiveTab("factors")}
+                        className="mt-4 bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-6 py-2 shadow-sm transition-all active:scale-95"
+                      >
+                        Go to Factors
+                      </Button>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Personalities Tab */}
+                <TabsContent value="personalities" className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.entries(DecisionService.mbtiDescriptions).map(
+                      ([type, info]) => {
+                        const famousPerson = getRandomFamousPerson(type);
+                        return (
+                          <div
+                            key={type}
+                            className="p-4 rounded-xl shadow-sm border border-gray-100 bg-white"
+                            style={{ borderLeft: `4px solid ${info.color}` }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4
+                                  className="font-bold mb-2"
+                                  style={{ color: info.color }}
+                                >
+                                  {info.name}
+                                </h4>
+                                <p className="text-sm text-gray-600">
+                                  {info.description}
+                                </p>
+                              </div>
+                            </div>
+                            <p className="text-xs mt-2 italic text-gray-500">
+                              {famousPerson &&
+                                `Famous example: ${famousPerson}`}
+                            </p>
+                          </div>
+                        );
+                      }
+                    )}
+                  </div>
+                </TabsContent>
               </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

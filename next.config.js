@@ -7,9 +7,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /* config options here */
+  output: 'export',
   assetPrefix: "",
   // Add output tracing for optimized static exports
-  output: "export",
   trailingSlash: true, // Better for GitHub Pages path handling
   // Enable compression for smaller bundle sizes
   compress: true,

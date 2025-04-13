@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 
@@ -457,10 +458,77 @@ export default function UserDecisionDashboard() {
   } = majorityDecisionData;
 
   return (
-    <div className="bg-[#f5f5f7] min-h-screen safe-area-inset-bottom">
+    <div className="bg-[#f5f5f7] min-h-screen safe-area-inset-bottom relative">
+      {/* Background decorative elements */}
+      <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
+        <div className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] opacity-[0.08] text-blue-900 dark:text-blue-300">
+          <Image
+            src="/brain-waves.svg"
+            alt=""
+            width={400}
+            height={400}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute top-[5%] right-[-10%] w-[300px] h-[300px] opacity-[0.1] text-blue-900 dark:text-blue-300">
+          <Image
+            src="/data-nodes.svg"
+            alt=""
+            width={300}
+            height={300}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-[5%] left-[10%] w-[250px] h-[250px] opacity-[0.09] text-blue-900 dark:text-blue-300">
+          <Image
+            src="/charts-pattern.svg"
+            alt=""
+            width={250}
+            height={250}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-[10%] right-[5%] w-[200px] h-[200px] opacity-[0.08] text-blue-900 dark:text-blue-300">
+          <Image
+            src="/data-nodes.svg"
+            alt=""
+            width={200}
+            height={200}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-[40%] right-[20%] w-[500px] h-[500px] opacity-[0.07] text-blue-900 dark:text-blue-300">
+          <Image
+            src="/data-circles.svg"
+            alt=""
+            width={500}
+            height={500}
+            className="w-full h-full"
+          />
+        </div>
+      </div>
+
       {/* iOS-style Hero Section with App Description */}
-      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 pt-6 sm:p-6 sm:pt-8 rounded-b-[2rem] shadow-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 pt-6 sm:p-6 sm:pt-8 rounded-b-[2rem] shadow-sm relative overflow-hidden z-10">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
+        <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15]">
+          <Image
+            src="/charts-pattern.svg"
+            alt=""
+            width={200}
+            height={200}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15]">
+          <Image
+            src="/brain-waves.svg"
+            alt=""
+            width={300}
+            height={150}
+            className="w-full h-full"
+          />
+        </div>
         <div className="relative flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-2 mb-2">
             <svg
@@ -488,9 +556,9 @@ export default function UserDecisionDashboard() {
       </div>
 
       {/* Main Content with Tabs */}
-      <div className="px-3 py-4 sm:p-6 -mt-6">
+      <div className="px-3 py-4 sm:p-6 -mt-6 relative z-20">
         <Card className="border-none shadow-xl bg-white rounded-[1.5rem] overflow-hidden relative">
-          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
           <CardContent className="p-0 relative">
             <Tabs
               value={activeTab}
@@ -583,8 +651,19 @@ export default function UserDecisionDashboard() {
                 {/* Scenarios Tab */}
                 <TabsContent
                   value="scenarios"
-                  className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95"
+                  className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95 relative"
                 >
+                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                    <div className="absolute top-10 right-10 w-[150px] h-[150px]">
+                      <Image
+                        src="/charts-pattern.svg"
+                        alt=""
+                        width={150}
+                        height={150}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {Object.keys(DecisionService.presetScenarios).map(
                       (scenario) => {
@@ -630,7 +709,18 @@ export default function UserDecisionDashboard() {
                 </TabsContent>
 
                 {/* Factors Tab */}
-                <TabsContent value="factors" className="space-y-6">
+                <TabsContent value="factors" className="space-y-6 relative">
+                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                    <div className="absolute bottom-10 left-10 w-[200px] h-[200px]">
+                      <Image
+                        src="/data-nodes.svg"
+                        alt=""
+                        width={200}
+                        height={200}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  </div>
                   {activePreset && (
                     <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
                       <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
@@ -702,7 +792,18 @@ export default function UserDecisionDashboard() {
                 </TabsContent>
 
                 {/* Results Tab */}
-                <TabsContent value="results" className="space-y-6">
+                <TabsContent value="results" className="space-y-6 relative">
+                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                    <div className="absolute top-10 right-10 w-[180px] h-[180px]">
+                      <Image
+                        src="/brain-waves.svg"
+                        alt=""
+                        width={180}
+                        height={180}
+                        className="w-full h-full rotate-180"
+                      />
+                    </div>
+                  </div>
                   {results.length > 0 ? (
                     <>
                       <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
@@ -920,7 +1021,21 @@ export default function UserDecisionDashboard() {
                 </TabsContent>
 
                 {/* Personalities Tab */}
-                <TabsContent value="personalities" className="space-y-4">
+                <TabsContent
+                  value="personalities"
+                  className="space-y-4 relative"
+                >
+                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                    <div className="absolute bottom-10 right-10 w-[120px] h-[120px]">
+                      <Image
+                        src="/charts-pattern.svg"
+                        alt=""
+                        width={120}
+                        height={120}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {Object.entries(DecisionService.mbtiDescriptions).map(
                       ([type, info]) => {

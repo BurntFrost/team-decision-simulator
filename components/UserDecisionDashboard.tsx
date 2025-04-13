@@ -835,7 +835,7 @@ export default function UserDecisionDashboard() {
                     return (
                       <div
                         key={type}
-                        className="group p-4 rounded-xl shadow-md bg-white hover:shadow-lg transition-all duration-200"
+                        className="p-4 rounded-xl shadow-md bg-white"
                         style={{ borderLeft: `4px solid ${info.color}` }}
                       >
                         <div className="flex items-center justify-between">
@@ -846,26 +846,12 @@ export default function UserDecisionDashboard() {
                             >
                               {info.name}
                             </h4>
-                            <p className="text-sm text-gray-600 max-h-0 group-hover:max-h-32 transition-all duration-200 overflow-hidden">
+                            <p className="text-sm text-gray-600">
                               {info.description}
                             </p>
                           </div>
-                          <div className="ml-4">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5 text-gray-500 transform transition-transform group-hover:rotate-180"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
                         </div>
-                        <p className="text-xs mt-2 italic text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <p className="text-xs mt-2 italic text-gray-500">
                           {famousPerson && `Famous example: ${famousPerson}`}
                         </p>
                       </div>

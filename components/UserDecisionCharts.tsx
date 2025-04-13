@@ -24,7 +24,7 @@ import {
   Layer,
   Curve,
   Line,
-  Circle,
+  Dot,
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
@@ -634,7 +634,7 @@ const UserDecisionCharts: React.FC<Props> = ({
   publicWeights,
 }) => {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("bar");
+  const [activeTab, setActiveTab] = useState("radar");
 
   const handleMouseEnter = (type: string) => {
     setHoveredType(type);
@@ -703,7 +703,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
   return (
     <Tabs
-      defaultValue="bar"
+      defaultValue="radar"
       className="w-full"
       onValueChange={(value) => setActiveTab(value)}
     >
@@ -715,6 +715,7 @@ const UserDecisionCharts: React.FC<Props> = ({
             "data-[state=active]:bg-[#4455a6]",
             "data-[state=active]:text-white",
             "data-[state=active]:shadow-lg",
+            "data-[state=inactive]:py-1",
             "transition-all duration-200"
           )}
         >
@@ -727,6 +728,7 @@ const UserDecisionCharts: React.FC<Props> = ({
             "data-[state=active]:bg-[#4455a6]",
             "data-[state=active]:text-white",
             "data-[state=active]:shadow-lg",
+            "data-[state=inactive]:py-1",
             "transition-all duration-200"
           )}
         >
@@ -739,6 +741,7 @@ const UserDecisionCharts: React.FC<Props> = ({
             "data-[state=active]:bg-[#4455a6]",
             "data-[state=active]:text-white",
             "data-[state=active]:shadow-lg",
+            "data-[state=inactive]:py-1",
             "transition-all duration-200"
           )}
         >
@@ -751,6 +754,7 @@ const UserDecisionCharts: React.FC<Props> = ({
             "data-[state=active]:bg-[#4455a6]",
             "data-[state=active]:text-white",
             "data-[state=active]:shadow-lg",
+            "data-[state=inactive]:py-1",
             "transition-all duration-200"
           )}
         >
@@ -763,6 +767,7 @@ const UserDecisionCharts: React.FC<Props> = ({
             "data-[state=active]:bg-[#4455a6]",
             "data-[state=active]:text-white",
             "data-[state=active]:shadow-lg",
+            "data-[state=inactive]:py-1",
             "transition-all duration-200"
           )}
         >
@@ -776,6 +781,7 @@ const UserDecisionCharts: React.FC<Props> = ({
               "data-[state=active]:bg-[#4455a6]",
               "data-[state=active]:text-white",
               "data-[state=active]:shadow-lg",
+              "data-[state=inactive]:py-1",
               "transition-all duration-200"
             )}
           >

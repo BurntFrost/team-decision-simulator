@@ -388,14 +388,15 @@ export default function UserDecisionDashboard() {
   } = majorityDecisionData;
 
   return (
-    <div className="p-6 space-y-6 bg-[#f5f7fa]">
+    <div className="p-6 space-y-6 bg-gradient-to-br from-[#e6f0ff] via-[#d9e6ff] to-[#ccdcff] min-h-screen">
       {/* Hero Section with App Description */}
-      <div className="bg-[#4455a6] text-white p-8 rounded-xl shadow-lg">
-        <div className="flex items-center gap-4 mb-4">
+      <div className="bg-gradient-to-r from-[#4455a6] via-[#3a4a8f] to-[#2f3f7a] text-white p-8 rounded-xl shadow-xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
+        <div className="relative flex items-center gap-4 mb-4">
           <div className="flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
+              className="h-8 w-8 text-white/90"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -407,7 +408,7 @@ export default function UserDecisionDashboard() {
             </svg>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
+              className="h-8 w-8 text-white/90"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -415,7 +416,7 @@ export default function UserDecisionDashboard() {
             </svg>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
+              className="h-8 w-8 text-white/90"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -426,9 +427,11 @@ export default function UserDecisionDashboard() {
               />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold">MBTI Decision Simulator</h2>
+          <h2 className="text-3xl font-bold text-white/90">
+            MBTI Decision Simulator
+          </h2>
         </div>
-        <p className="mt-2 text-white/80 max-w-3xl">
+        <p className="mt-2 text-white/80 max-w-3xl relative">
           Get insights into your decision-making process by exploring how
           different MBTI personality types would approach your situation. Select
           a scenario, adjust the factors, and discover diverse perspectives to
@@ -437,17 +440,18 @@ export default function UserDecisionDashboard() {
       </div>
 
       {/* Main Content with Tabs */}
-      <Card className="border-none shadow-lg">
-        <CardContent className="p-6">
+      <Card className="border-none shadow-xl bg-white/95 backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
+        <CardContent className="p-6 relative">
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-4 mb-6 bg-[#f5f7fa] p-1 rounded-lg">
+            <TabsList className="grid w-full grid-cols-4 mb-6 bg-gradient-to-r from-[#f0f4ff] to-[#e8edff] p-1 rounded-lg shadow-sm">
               <TabsTrigger
                 value="scenarios"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#4455a6] data-[state=active]:font-semibold rounded-md transition-all duration-200"
+                className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-[#4455a6] data-[state=active]:font-semibold rounded-md transition-all duration-200 hover:bg-white/50"
               >
                 <div className="flex items-center gap-2">
                   <svg
@@ -611,8 +615,8 @@ export default function UserDecisionDashboard() {
                 </div>
               )}
 
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm">
+                <div className="grid grid-cols-1 gap-4">
                   {Object.keys(inputs).map((key) => (
                     <SliderInput
                       key={key}
@@ -706,7 +710,7 @@ export default function UserDecisionDashboard() {
                       </div>
 
                       {/* All Decisions Grid */}
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {[
                           {
                             decision: "Full Speed Ahead",

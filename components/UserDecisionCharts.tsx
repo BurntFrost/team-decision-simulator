@@ -796,11 +796,19 @@ const UserDecisionCharts: React.FC<Props> = ({
           recommendation. Higher scores lead to more proactive decisions.
         </div>
         <div className="relative">
-          <ResponsiveContainer width="100%" height={350}>
+          <ResponsiveContainer
+            width="100%"
+            height={window.innerWidth < 768 ? 250 : 350}
+          >
             <BarChart
               data={results}
-              margin={{ top: 20, right: 180, left: 20, bottom: 70 }}
-              barCategoryGap={30}
+              margin={{
+                top: 20,
+                right: window.innerWidth < 768 ? 20 : 180,
+                left: 20,
+                bottom: 70,
+              }}
+              barCategoryGap={window.innerWidth < 768 ? 15 : 30}
             >
               <defs>
                 <linearGradient
@@ -890,13 +898,13 @@ const UserDecisionCharts: React.FC<Props> = ({
                 tick={{ fill: "#4455a6", fontWeight: 500 }}
                 onMouseEnter={(e) => handleMouseEnter(e.value)}
                 onMouseLeave={handleMouseLeave}
-                height={70}
+                height={window.innerWidth < 768 ? 50 : 70}
                 tickLine={false}
                 axisLine={{ stroke: "#94a3b8", strokeOpacity: 0.3 }}
                 interval={0}
-                angle={-45}
+                angle={window.innerWidth < 768 ? -90 : -45}
                 textAnchor="end"
-                fontSize={12}
+                fontSize={window.innerWidth < 768 ? 10 : 12}
               />
               <YAxis
                 domain={[0, 1]}
@@ -1009,7 +1017,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
           {/* Add decision threshold legend */}
           <div className="w-full mt-2 flex justify-center">
-            <div className="grid grid-cols-5 gap-2 text-xs max-w-5xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-xs max-w-5xl">
               <div className="p-2 rounded bg-green-100 border border-green-200 flex items-center space-x-2">
                 <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
                 <div>
@@ -1063,7 +1071,10 @@ const UserDecisionCharts: React.FC<Props> = ({
       </TabsContent>
 
       <TabsContent value="radar" className="mt-2">
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer
+          width="100%"
+          height={window.innerWidth < 768 ? 250 : 350}
+        >
           <RadarChart data={enhancedRadarData}>
             <PolarGrid stroke="#4455a6" strokeOpacity={0.2} />
             <PolarAngleAxis
@@ -1140,7 +1151,10 @@ const UserDecisionCharts: React.FC<Props> = ({
             </span>
           )}
         </div>
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer
+          width="100%"
+          height={window.innerWidth < 768 ? 250 : 350}
+        >
           <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
             <XAxis
@@ -1316,7 +1330,10 @@ const UserDecisionCharts: React.FC<Props> = ({
         </div>
         {inputs ? (
           <div className="relative">
-            <ResponsiveContainer width="100%" height={600}>
+            <ResponsiveContainer
+              width="100%"
+              height={window.innerWidth < 768 ? 250 : 600}
+            >
               <svg width="100%" height="100%" viewBox="0 0 800 800">
                 {/* Define gradients for paths */}
                 <defs>
@@ -1666,7 +1683,10 @@ const UserDecisionCharts: React.FC<Props> = ({
                 Public Decision Probability
               </h4>
 
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={window.innerWidth < 768 ? 250 : 250}
+              >
                 <BarChart
                   data={Object.entries(publicResult.probabilities).map(
                     ([key, value]) => ({

@@ -9,7 +9,12 @@
     "lint": "next lint",
     "list": "node scripts/dev.js list",
     "generate": "node scripts/dev.js generate",
-    "parse-prd": "node scripts/dev.js parse-prd"
+    "parse-prd": "node scripts/dev.js parse-prd",
+    "build:analyze": "ANALYZE=true next build",
+    "build:prod": "NODE_ENV=production next build",
+    "postbuild": "next-sitemap --config next-sitemap.config.js",
+    "clean": "rm -rf .next out",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
@@ -49,10 +54,12 @@
     "tw-animate-css": "^1.2.5"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.3.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
+    "next-sitemap": "^4.2.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

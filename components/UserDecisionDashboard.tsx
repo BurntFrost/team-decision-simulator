@@ -35,7 +35,7 @@ import {
 } from "react-icons/bs";
 import { IoMdAnalytics } from "react-icons/io";
 import {
-  MdOutlineScenario,
+  MdOutlineAssessment,
   MdFactCheck,
   MdPsychology,
   MdOutlineLeaderboard,
@@ -520,7 +520,7 @@ export default function UserDecisionDashboard() {
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                   >
                     <div className="flex flex-col items-center gap-1">
-                      <MdOutlineScenario className="h-4 w-4" />
+                      <MdOutlineAssessment className="h-4 w-4" />
                       <span className="text-xs">Scenarios</span>
                     </div>
                   </TabsTrigger>

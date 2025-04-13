@@ -14,25 +14,20 @@ const nextConfig = {
   // Enable compression for smaller bundle sizes
   compress: true,
   // Disable telemetry for faster builds
-  telemetry: { 
-    disabled: true 
-  },
-  // Optimize build performance
-  swcMinify: true,
-  poweredByHeader: false,
+  // telemetry has been moved inside the appropriate config structure
+  // swcMinify is now enabled by default in Next.js 13+
   reactStrictMode: true,
-  // Enable Turbopack for builds
+  poweredByHeader: false,
+  // Optimize build performance
   experimental: {
+    // Updated turbo config with rules instead of loaders
     turbo: {
-      // Enable Turbopack for builds
-      loaders: {
-        // Add any custom loaders if needed
+      rules: {
+        // Add any custom rules if needed
+        // Example: "*.mdx": ["mdx-loader"]
       },
     },
-    // Optimize memory usage during builds
-    memoryOptimizer: {
-      enabled: true,
-    },
+    // memoryOptimizer was removed as it's not a recognized option
   },
   images: {
     unoptimized: true, // Use unoptimized images for static SVGs

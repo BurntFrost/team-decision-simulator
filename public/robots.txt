@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://yourdomain.com # Replace with your actual domain
+
+# Sitemaps
+Sitemap: https://yourdomain.com # Replace with your actual domain/sitemap.xml

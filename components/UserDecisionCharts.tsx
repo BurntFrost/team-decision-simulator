@@ -1576,7 +1576,14 @@ const UserDecisionCharts: React.FC<Props> = ({
                           >
                             <span
                               style={{
-                                color: hogwartsHousesData[entry.name].color,
+                                color:
+                                  entry.name &&
+                                  Object.prototype.hasOwnProperty.call(
+                                    hogwartsHousesData,
+                                    entry.name
+                                  )
+                                    ? hogwartsHousesData[entry.name].color
+                                    : "#666666",
                                 fontWeight: 500,
                               }}
                             >
@@ -1594,8 +1601,12 @@ const UserDecisionCharts: React.FC<Props> = ({
                 }}
               />
               <Legend
-                onClick={(e) => handleHouseMouseEnter(e.dataKey)}
-                onMouseEnter={(e) => handleHouseMouseEnter(e.dataKey)}
+                onClick={(e) =>
+                  e.dataKey && handleHouseMouseEnter(String(e.dataKey))
+                }
+                onMouseEnter={(e) =>
+                  e.dataKey && handleHouseMouseEnter(String(e.dataKey))
+                }
                 onMouseLeave={handleHouseMouseLeave}
               />
               <Bar

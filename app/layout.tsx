@@ -12,13 +12,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Dynamically determine the base path
+const basePath =
+  process.env.NODE_ENV === "production" ? "/team-decision-simulator" : "";
+
 export const metadata: Metadata = {
   title: "MBTI Brain",
   description: "MBTI Brain",
   icons: {
-    icon: [{ url: "/favicon.ico", sizes: "any" }],
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: [{ url: `${basePath}/favicon.ico`, sizes: "any" }],
+    shortcut: `${basePath}/favicon.ico`,
+    apple: `${basePath}/favicon.ico`,
   },
   appleWebApp: {
     title: "MBTI Brain",

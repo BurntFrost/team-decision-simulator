@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Repository name for GitHub Pages
+    var repo = 'team-decision-simulator';
+    
+    // Single Page App redirect script for GitHub Pages
+    (function() {
+      // Get the current path excluding the repo name
+      var path = window.location.pathname;
+      var pathWithoutRepo = path;
+      
+      // If on GitHub Pages and path includes repo name, extract the path after repo
+      if (window.location.hostname.includes('github.io') && path.indexOf('/' + repo) === 0) {
+        pathWithoutRepo = path.substr(repo.length + 1);
+      }
+      
+      // Redirect to the app with the correct path
+      var redirectUrl = window.location.origin + '/' + repo + '/#' + pathWithoutRepo;
+      window.location.replace(redirectUrl);
+    })();
+  </script>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected automatically, <a href="/">click here</a>.</p>
+</body>
+</html> 

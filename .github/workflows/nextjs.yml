@@ -74,10 +74,13 @@ jobs:
       - name: Build with Next.js
         env:
           CI: true
+          NODE_ENV: production
           NEXT_TELEMETRY_DISABLED: 1
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Create .nojekyll file
         run: touch ./out/.nojekyll
+      - name: Copy 404 page
+        run: cp ./out/404.html ./out/404.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

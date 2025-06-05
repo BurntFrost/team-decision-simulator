@@ -420,10 +420,30 @@ export const StyledTabs: React.FC<{ children: React.ReactNode }> = ({
 );
 
 // Add type for MBTI keys
-type MBTIType = "INTJ" | "ISTJ" | "ENTJ" | "INTP";
+type MBTIType =
+  | "INTJ"
+  | "INTP"
+  | "ENTJ"
+  | "ENTP"
+  | "INFJ"
+  | "INFP"
+  | "ENFJ"
+  | "ENFP"
+  | "ISTJ"
+  | "ISFJ"
+  | "ESTJ"
+  | "ESFJ"
+  | "ISTP"
+  | "ISFP"
+  | "ESTP"
+  | "ESFP";
 
 export default function UserDecisionDashboard() {
   const [mounted, setMounted] = useState(false);
+  const mbtiTypes: MBTIType[] = DecisionService.archetypes.map(
+    (a) => a.name as MBTIType
+  );
+  const [userMBTI, setUserMBTI] = useState<MBTIType>(mbtiTypes[0]);
   const [inputs, setInputs] = useState<DecisionService.Inputs>(
     DecisionService.defaultInputs
   );
@@ -503,6 +523,8 @@ export default function UserDecisionDashboard() {
       ? DecisionService.calculateMajorityDecision(results)
       : { decision: "", color: "", counts: {} };
 
+  const userResult = results.find((r) => r.name === userMBTI);
+
   const {
     decision: majorityDecision,
     color: majorityColor,
@@ -537,6 +559,23 @@ export default function UserDecisionDashboard() {
             Select a scenario, adjust factors, and discover diverse
             perspectives.
           </p>
+          <div className="mt-2 text-sm">
+            <label htmlFor="user-mbti" className="mr-2">
+              Your MBTI type:
+            </label>
+            <select
+              id="user-mbti"
+              value={userMBTI}
+              onChange={(e) => setUserMBTI(e.target.value as MBTIType)}
+              className="text-gray-800 rounded-md px-2 py-1 text-sm"
+            >
+              {mbtiTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -746,6 +785,17 @@ export default function UserDecisionDashboard() {
                         <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                           Decision Analysis
                         </h3>
+                        {userResult && (
+                          <div className="mb-4 text-sm">
+                            <span>Your ({userMBTI}) decision:</span>
+                            <span
+                              className="ml-2 px-2 py-1 rounded-full text-white"
+                              style={{ backgroundColor: userResult.color }}
+                            >
+                              {userResult.decision}
+                            </span>
+                          </div>
+                        )}
                         <div className="space-y-6">
                           {/* Top 3 Decisions */}
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
@@ -959,7 +1009,12 @@ export default function UserDecisionDashboard() {
                         return (
                           <div
                             key={type}
-                            className="p-4 rounded-xl shadow-sm border border-gray-100 bg-white"
+                            className={cn(
+                              "p-4 rounded-xl shadow-sm bg-white",
+                              type === userMBTI
+                                ? "border-2 border-[#007aff]"
+                                : "border border-gray-100"
+                            )}
                             style={{ borderLeft: `4px solid ${info.color}` }}
                           >
                             <div className="flex items-start gap-3">
@@ -980,6 +1035,11 @@ export default function UserDecisionDashboard() {
                                 </p>
                               </div>
                             </div>
+                            {type === userMBTI && (
+                              <p className="text-xs font-semibold text-[#007aff] mt-1">
+                                Your Type
+                              </p>
+                            )}
                             <p className="text-xs mt-2 italic text-gray-500">
                               {famousPerson &&
                                 `Famous example: ${famousPerson}`}

@@ -907,7 +907,23 @@ export default function UserDecisionDashboard() {
                                     <div className="text-lg font-bold">{count}</div>
                                     <div className="text-xs text-white/70 mb-1">({percentage.toFixed(1)}%)</div>
                                   </div>
-                                  <div className="text-xs text-white/60 mt-1">MBTI types</div>
+                                  <div className="text-xs text-white/60 mt-1">
+                                    MBTI types
+                                  </div>
+                                  {index < 2 && (
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                      {results
+                                        .filter((r) => r.decision === decision)
+                                        .map((r) => (
+                                          <span
+                                            key={r.name}
+                                            className="px-2 py-0.5 text-[10px] bg-white/20 rounded-full"
+                                          >
+                                            {r.name}
+                                          </span>
+                                        ))}
+                                    </div>
+                                  )}
                                 </div>
                                 <div
                                   className="absolute bottom-0 left-0 h-1 transition-all duration-500"

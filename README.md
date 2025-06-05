@@ -1,4 +1,4 @@
-# MBTI Team Decision Simulator
+# MBTI Brain
 
 A sophisticated decision-making simulation tool that helps teams understand how different personality types approach decisions. This application models the decision-making processes of all 16 MBTI personality types and provides insights into team dynamics and consensus building.
 

@@ -1044,7 +1044,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
       <TabsContent value="bar" className="mt-2">
         <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
-          Each personality type's confidence score determines their decision
+          Each personality type’s confidence score determines their decision
           recommendation. Higher scores lead to more proactive decisions.
         </div>
         <div className="relative">
@@ -1827,7 +1827,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
       <TabsContent value="quadrant" className="mt-2">
         <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
-          This quadrant chart maps each personality type's position on
+          This quadrant chart maps each personality type’s position on
           decisiveness (willingness to act) vs. confidence (certainty in
           outcome).
           {publicResult && (
@@ -2248,7 +2248,7 @@ const UserDecisionCharts: React.FC<Props> = ({
       <TabsContent value="heatmap" className="mt-2">
         <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
           This heat map shows how each factor contributes to each personality
-          type's decision - positive values (blue) increase confidence while
+          type’s decision - positive values (blue) increase confidence while
           negative values (red) decrease it.
         </div>
         {inputs ? (
@@ -2374,7 +2374,7 @@ const UserDecisionCharts: React.FC<Props> = ({
               What Is Public Opinion?
             </h4>
             <p className="text-sm text-gray-700">
-              The public opinion model represents how the "average person" would
+              The public opinion model represents how the “average person” would
               evaluate this decision based on general population decision-making
               patterns. This differs from individual MBTI personality types,
               which have distinct decision-making characteristics.
@@ -2386,8 +2386,8 @@ const UserDecisionCharts: React.FC<Props> = ({
               completeness.
             </p>
             <p className="text-sm text-gray-700 mt-2">
-              The "Most Similar Personality Type" shows which MBTI type most
-              closely resembles the public's decision-making pattern for this
+              The “Most Similar Personality Type” shows which MBTI type most
+              closely resembles the public’s decision-making pattern for this
               scenario - currently{" "}
               <span
                 style={{ color: similarMBTIType.color }}

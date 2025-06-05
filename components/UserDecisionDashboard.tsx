@@ -483,31 +483,13 @@ export default function UserDecisionDashboard() {
 
   // Easter egg opacity and mouse tracking
   const [eggOpacity, setEggOpacity] = useState(0);
-  const lastMouse = useRef<{ x: number; y: number; time: number } | null>(null);
 
   const handleBrainMouseEnter = () => {
-    setEggOpacity(0);
-    lastMouse.current = null;
+    setEggOpacity(1);
   };
 
   const handleBrainMouseLeave = () => {
     setEggOpacity(0);
-    lastMouse.current = null;
-  };
-
-  const handleBrainMouseMove = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    const now = performance.now();
-    if (lastMouse.current) {
-      const dx = e.clientX - lastMouse.current.x;
-      const dy = e.clientY - lastMouse.current.y;
-      const dt = now - lastMouse.current.time || 1;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const speed = dist / dt; // pixels per ms
-      setEggOpacity((o) => Math.min(o + speed * 0.1, 1));
-    }
-    lastMouse.current = { x: e.clientX, y: e.clientY, time: now };
   };
 
   // Load stored session data on mount
@@ -663,7 +645,6 @@ export default function UserDecisionDashboard() {
           <div
             className="flex items-center gap-2 mb-2 relative"
             onMouseEnter={handleBrainMouseEnter}
-            onMouseMove={handleBrainMouseMove}
             onMouseLeave={handleBrainMouseLeave}
           >
             <FaBrain className="h-6 w-6 text-white/90" />

@@ -746,18 +746,6 @@ export default function UserDecisionDashboard() {
                         <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                           Decision Analysis
                         </h3>
-                        {majorityDecision && (
-                          <p className="text-center text-sm mb-4">
-                            Most personalities chose
-                            <span
-                              className="mx-1 px-2 py-1 rounded-full text-white"
-                              style={{ backgroundColor: majorityColor }}
-                            >
-                              {majorityDecision}
-                            </span>
-                            ({decisionCounts[majorityDecision]} of {results.length})
-                          </p>
-                        )}
                         <div className="space-y-6">
                           {/* Top 3 Decisions */}
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">

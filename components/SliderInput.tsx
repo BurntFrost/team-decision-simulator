@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Slider } from "@/components/ui/slider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import * as DecisionService from "@/lib/decisionMatrixService";
 
@@ -44,28 +45,16 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
       </Popover>
     </div>
     <div className="flex items-center space-x-4">
-      <input
+      <Slider
         id={id}
-        type="range"
-        role="slider"
-        aria-valuemin={0}
-        aria-valuemax={1}
-        aria-valuenow={value}
+        min={0}
+        max={1}
+        step={0.05}
+        value={[value]}
+        onValueChange={(v) => onChange(v[0].toString())}
         aria-label={info.label}
         aria-describedby={`${id}-info`}
-        min="0"
-        max="1"
-        step="0.05"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onInput={(e) => onChange((e.target as HTMLInputElement).value)}
-        className="flex-grow appearance-none h-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff]/20"
-        style={{
-          WebkitAppearance: "none",
-          background: `linear-gradient(to right, #007aff ${value * 100}%, #e5e5ea ${value * 100}%)`,
-          height: "0.75rem",
-          borderRadius: "999px",
-        }}
+        className="flex-grow"
       />
       <span className="w-12 text-right font-mono text-[#007aff] font-semibold">
         {(value * 100).toFixed(0)}%

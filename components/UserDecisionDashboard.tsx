@@ -459,6 +459,50 @@ export default function UserDecisionDashboard() {
     color: "#6b7280",
   });
 
+  // Load stored session data on mount
+  useEffect(() => {
+    const storedMBTI = sessionStorage.getItem("userMBTI");
+    const storedInputs = sessionStorage.getItem("inputs");
+    const storedPreset = sessionStorage.getItem("activePreset");
+    const storedTab = sessionStorage.getItem("activeTab");
+
+    if (storedMBTI && mbtiTypes.includes(storedMBTI as MBTIType)) {
+      setUserMBTI(storedMBTI as MBTIType);
+    }
+    if (storedInputs) {
+      try {
+        setInputs(JSON.parse(storedInputs));
+      } catch {}
+    }
+    if (storedPreset) {
+      setActivePreset(storedPreset);
+    }
+    if (storedTab) {
+      setActiveTab(storedTab);
+    }
+  }, [mbtiTypes]);
+
+  // Persist session data when values change
+  useEffect(() => {
+    sessionStorage.setItem("userMBTI", userMBTI);
+  }, [userMBTI]);
+
+  useEffect(() => {
+    sessionStorage.setItem("inputs", JSON.stringify(inputs));
+  }, [inputs]);
+
+  useEffect(() => {
+    if (activePreset) {
+      sessionStorage.setItem("activePreset", activePreset);
+    } else {
+      sessionStorage.removeItem("activePreset");
+    }
+  }, [activePreset]);
+
+  useEffect(() => {
+    sessionStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -547,6 +591,23 @@ export default function UserDecisionDashboard() {
         <div className="absolute inset-0 bg-grid opacity-10"></div>
         <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15] bg-gradient-to-br from-white/20 to-white/10 rounded-full blur-lg"></div>
         <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15] bg-gradient-to-tr from-white/20 to-white/10 rounded-full blur-lg"></div>
+        <div className="absolute top-2 right-4 flex items-center gap-2 text-sm sm:text-base">
+          <label htmlFor="user-mbti" className="mr-2">
+            Your MBTI type:
+          </label>
+          <select
+            id="user-mbti"
+            value={userMBTI}
+            onChange={(e) => setUserMBTI(e.target.value as MBTIType)}
+            className="text-gray-800 rounded-md px-3 py-1.5 text-base"
+          >
+            {mbtiTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="relative flex flex-col gap-2 mb-2">
           <div className="flex items-center gap-2 mb-2">
             <FaBrain className="h-6 w-6 text-white/90" />
@@ -559,23 +620,6 @@ export default function UserDecisionDashboard() {
             Select a scenario, adjust factors, and discover diverse
             perspectives.
           </p>
-          <div className="mt-2 text-sm">
-            <label htmlFor="user-mbti" className="mr-2">
-              Your MBTI type:
-            </label>
-            <select
-              id="user-mbti"
-              value={userMBTI}
-              onChange={(e) => setUserMBTI(e.target.value as MBTIType)}
-              className="text-gray-800 rounded-md px-2 py-1 text-sm"
-            >
-              {mbtiTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
       </div>
 

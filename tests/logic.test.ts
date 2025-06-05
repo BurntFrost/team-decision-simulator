@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { calculateScore, getDecision } from '../models/decision/logic';
+import {
+  calculateScore,
+  getDecision,
+  calculateMajorityDecision,
+} from '../models/decision/logic';
 import { Weights, Inputs } from '../models/decision/types';
 
 describe('calculateScore', () => {
@@ -29,5 +33,34 @@ describe('getDecision', () => {
     expect(getDecision(0.56).text).toBe('Implement with Oversight');
     expect(getDecision(0.4).text).toBe('Request Clarification');
     expect(getDecision(0.2).text).toBe('Delay or Disengage');
+  });
+});
+
+describe('calculateMajorityDecision', () => {
+  it('identifies the most common decision', () => {
+    const results = [
+      {
+        name: 'A',
+        score: 0.8,
+        decision: 'Proceed Strategically',
+        color: '#4ade80',
+      },
+      {
+        name: 'B',
+        score: 0.82,
+        decision: 'Proceed Strategically',
+        color: '#4ade80',
+      },
+      {
+        name: 'C',
+        score: 0.45,
+        decision: 'Request Clarification',
+        color: '#facc15',
+      },
+    ];
+
+    const { decision, counts } = calculateMajorityDecision(results);
+    expect(decision).toBe('Proceed Strategically');
+    expect(counts['Proceed Strategically']).toBe(2);
   });
 });

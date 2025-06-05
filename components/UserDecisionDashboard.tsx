@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -486,6 +486,15 @@ export default function UserDecisionDashboard() {
 
   // Easter egg opacity and mouse tracking
   const [eggOpacity, setEggOpacity] = useState(0);
+
+  // Random famous person for each MBTI type, generated once per mount
+  const famousPeopleMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    mbtiTypes.forEach((t) => {
+      map[t] = getRandomFamousPerson(t);
+    });
+    return map;
+  }, [mbtiTypes]);
 
   const handleBrainMouseEnter = () => {
     setEggOpacity(1);
@@ -1050,7 +1059,7 @@ export default function UserDecisionDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {Object.entries(DecisionService.mbtiDescriptions).map(
                       ([type, info]) => {
-                        const famousPerson = getRandomFamousPerson(type);
+                        const famousPerson = famousPeopleMap[type];
                         const img = getMBTIImage(type);
                         return (
                           <div

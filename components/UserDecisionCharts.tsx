@@ -2072,7 +2072,9 @@ const UserDecisionCharts: React.FC<Props> = ({
                   return (
                     <div
                       key={factor}
-                      ref={(el) => (factorRefs.current[formattedFactor] = el)}
+                      ref={(el) => {
+                        factorRefs.current[formattedFactor] = el;
+                      }}
                       className="p-3 bg-blue-100 rounded-lg text-sm text-center shadow-sm"
                       onMouseEnter={() => handleMouseEnter(formattedFactor)}
                       onMouseLeave={handleMouseLeave}

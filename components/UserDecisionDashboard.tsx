@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
@@ -1004,9 +1005,11 @@ export default function UserDecisionDashboard() {
                             style={{ borderLeft: `4px solid ${info.color}` }}
                           >
                             <div className="flex items-start gap-3">
-                              <img
+                              <Image
                                 src={img}
                                 alt={`${type} icon`}
+                                width={48}
+                                height={48}
                                 className="w-12 h-12 rounded-full object-cover"
                               />
                               <div>

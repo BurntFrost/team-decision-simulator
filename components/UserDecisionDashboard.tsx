@@ -434,10 +434,22 @@ export default function UserDecisionDashboard() {
     useState<DecisionService.PublicOpinionResult | null>(null);
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("scenarios");
+  const [preview, setPreview] = useState<{ decision: string; color: string }>({
+    decision: "",
+    color: "#6b7280",
+  });
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Update preview decision whenever inputs change
+  useEffect(() => {
+    const previewResults = DecisionService.calculateResults(inputs);
+    const { decision, color } =
+      DecisionService.calculateMajorityDecision(previewResults);
+    setPreview({ decision, color });
+  }, [inputs]);
 
   // Format radar data
   const radarData = DecisionService.formatRadarData();
@@ -588,46 +600,61 @@ export default function UserDecisionDashboard() {
                   <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
                     <div className="absolute top-10 right-10 w-[150px] h-[150px] bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full blur-xl"></div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    {Object.keys(DecisionService.presetScenarios).map(
-                      (scenario) => {
-                        const isActive = scenario === activePreset;
-                        return (
-                          <Card
-                            key={scenario}
-                            className={cn(
-                              "cursor-pointer transition-all duration-200 hover:shadow-md border",
-                              isActive
-                                ? "border-[#007aff] bg-[#007aff]/5"
-                                : "border-gray-100"
-                            )}
-                            onClick={() =>
-                              applyPreset(
-                                scenario as keyof typeof DecisionService.presetScenarios
-                              )
+                  <div className="space-y-6">
+                    {Object.entries(DecisionService.presetCategories).map(
+                      ([category, scenarios]) => (
+                        <div key={category}>
+                          <h4 className="font-semibold text-[#1d1d1f] mb-1">
+                            {category}
+                          </h4>
+                          <p className="text-xs text-gray-600 mb-3">
+                            {
+                              DecisionService.presetCategoryDescriptions[
+                                category as keyof typeof DecisionService.presetCategoryDescriptions
+                              ]
                             }
-                          >
-                            <CardContent className="p-4">
-                              <h4 className="font-semibold text-[#1d1d1f]">
-                                {scenario}
-                              </h4>
-                              <p className="text-sm text-gray-600 mt-2">
-                                {
-                                  DecisionService.presetDescriptions[
-                                    scenario as keyof typeof DecisionService.presetDescriptions
-                                  ]
-                                }
-                              </p>
-
-                              {isActive && (
-                                <div className="mt-3 text-xs bg-[#007aff] text-white px-3 py-1 rounded-full inline-block">
-                                  Selected
-                                </div>
-                              )}
-                            </CardContent>
-                          </Card>
-                        );
-                      }
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                            {scenarios.map((scenario) => {
+                              const isActive = scenario === activePreset;
+                              return (
+                                <Card
+                                  key={scenario}
+                                  className={cn(
+                                    "cursor-pointer transition-all duration-200 hover:shadow-md border",
+                                    isActive
+                                      ? "border-[#007aff] bg-[#007aff]/5"
+                                      : "border-gray-100"
+                                  )}
+                                  onClick={() =>
+                                    applyPreset(
+                                      scenario as keyof typeof DecisionService.presetScenarios
+                                    )
+                                  }
+                                >
+                                  <CardContent className="p-4">
+                                    <h5 className="font-semibold text-[#1d1d1f]">
+                                      {scenario}
+                                    </h5>
+                                    <p className="text-sm text-gray-600 mt-2">
+                                      {
+                                        DecisionService.presetDescriptions[
+                                          scenario as keyof typeof DecisionService.presetDescriptions
+                                        ]
+                                      }
+                                    </p>
+                                    {isActive && (
+                                      <div className="mt-3 text-xs bg-[#007aff] text-white px-3 py-1 rounded-full inline-block">
+                                        Selected
+                                      </div>
+                                    )}
+                                  </CardContent>
+                                </Card>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )
                     )}
                   </div>
                 </TabsContent>
@@ -659,6 +686,18 @@ export default function UserDecisionDashboard() {
                       >
                         Reset
                       </Button>
+                    </div>
+                  )}
+
+                  {preview.decision && (
+                    <div className="flex justify-center mb-4">
+                      <span className="text-sm">Likely decision:</span>
+                      <span
+                        className="ml-2 text-sm font-medium px-2 py-1 rounded-full text-white"
+                        style={{ backgroundColor: preview.color }}
+                      >
+                        {preview.decision}
+                      </span>
                     </div>
                   )}
 

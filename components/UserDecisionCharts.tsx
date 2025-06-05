@@ -26,9 +26,6 @@ import {
   Line,
   Dot,
 } from "recharts";
-import { Tree as TreeChart } from "@visx/hierarchy";
-import { hierarchy } from "d3-hierarchy";
-import { LinkHorizontal } from "@visx/shape";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import StyledTabs from "./StyledTabs";

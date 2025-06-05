@@ -22,6 +22,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
@@ -579,23 +586,6 @@ export default function UserDecisionDashboard() {
         <div className="absolute inset-0 bg-grid opacity-10"></div>
         <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15] bg-gradient-to-br from-white/20 to-white/10 rounded-full blur-lg"></div>
         <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15] bg-gradient-to-tr from-white/20 to-white/10 rounded-full blur-lg"></div>
-        <div className="absolute top-2 right-4 flex items-center gap-2 text-sm sm:text-base">
-          <label htmlFor="user-mbti" className="mr-2">
-            Your MBTI type:
-          </label>
-          <select
-            id="user-mbti"
-            value={userMBTI}
-            onChange={(e) => setUserMBTI(e.target.value as MBTIType)}
-            className="text-gray-800 rounded-md px-3 py-1.5 text-base"
-          >
-            {mbtiTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
         <div className="relative flex flex-col gap-2 mb-2">
           <div
             className="flex items-center gap-2 mb-2 relative"
@@ -626,6 +616,25 @@ export default function UserDecisionDashboard() {
         <Card className="border-none shadow-xl bg-white rounded-[1.5rem] overflow-hidden relative">
           <div className="absolute inset-0 bg-grid opacity-10"></div>
           <CardContent className="p-0 relative">
+            <div className="px-4 pt-4 flex justify-end">
+              <div className="w-32">
+                <Select
+                  value={userMBTI}
+                  onValueChange={(v) => setUserMBTI(v as MBTIType)}
+                >
+                  <SelectTrigger id="user-mbti">
+                    <SelectValue aria-label={userMBTI}>{userMBTI}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mbtiTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}

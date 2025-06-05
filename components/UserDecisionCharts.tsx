@@ -343,6 +343,26 @@ const famousPeopleByMBTI: Record<string, string[]> = {
   ],
 };
 
+// Mapping of MBTI types to characters from The Office
+const officeCharactersByMBTI: Record<string, string[]> = {
+  INTJ: ["Oscar Martinez"],
+  ENTJ: ["Jan Levinson"],
+  INTP: ["Gabe Lewis"],
+  ENTP: ["Jim Halpert"],
+  INFJ: ["Toby Flenderson"],
+  ENFJ: ["Andy Bernard"],
+  INFP: ["Erin Hannon"],
+  ENFP: ["Michael Scott"],
+  ISTJ: ["Dwight Schrute"],
+  ESTJ: ["Angela Martin"],
+  ISFJ: ["Pam Beesly"],
+  ESFJ: ["Phyllis Vance"],
+  ISTP: ["Stanley Hudson"],
+  ESTP: ["Todd Packer"],
+  ISFP: ["Holly Flax"],
+  ESFP: ["Kelly Kapoor"],
+};
+
 // Harry Potter Houses mapping for MBTI types
 const harryPotterHousesByMBTI: Record<
   string,
@@ -965,7 +985,7 @@ const UserDecisionCharts: React.FC<Props> = ({
       onValueChange={(value) => setActiveTab(value)}
     >
       <div className="w-full max-w-full overflow-hidden">
-        <TabsList className="w-full mb-4 bg-[#4455a6]/10 p-1 rounded-xl overflow-hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-1">
+        <TabsList className="w-full mb-4 bg-[#4455a6]/10 p-1 rounded-xl overflow-hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-8 gap-1">
           <TabsTrigger
             value="bar"
             className={cn(
@@ -991,6 +1011,19 @@ const UserDecisionCharts: React.FC<Props> = ({
             )}
           >
             Houses
+          </TabsTrigger>
+          <TabsTrigger
+            value="office"
+            className={cn(
+              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
+              "data-[state=active]:bg-[#4455a6]",
+              "data-[state=active]:text-white",
+              "data-[state=active]:shadow-lg",
+              "data-[state=inactive]:py-1",
+              "transition-all duration-200"
+            )}
+          >
+            Office
           </TabsTrigger>
           <TabsTrigger
             value="radar"
@@ -1765,6 +1798,27 @@ const UserDecisionCharts: React.FC<Props> = ({
               </p>
             </div>
           </div>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="office" className="mt-2">
+        <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
+          Which characters from The Office correspond to each MBTI type.
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {Object.entries(officeCharactersByMBTI).map(([type, characters]) => (
+            <div
+              key={type}
+              className="p-4 rounded-xl shadow-sm bg-white border border-gray-100"
+              style={{ borderLeft: `4px solid ${getMBTIColor(type)}` }}
+            >
+              <h4 className="font-bold mb-2" style={{ color: getMBTIColor(type) }}>
+                {type}
+              </h4>
+              <p className="text-sm text-gray-600">{characters.join(', ')}</p>
+            </div>
+          ))}
         </div>
       </TabsContent>
 

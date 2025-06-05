@@ -63,13 +63,13 @@ const IOSStatusBar = () => {
     <div className="sticky top-0 z-50 bg-[#007aff] text-white px-4 py-2 flex justify-between items-center">
       <div className="text-xs font-bold">{time}</div>
       <div className="flex items-center space-x-1">
-        <div className="w-3 h-3">
+        <div className="w-3 h-3" aria-hidden="true">
           <BsClockFill className="w-full h-full" />
         </div>
-        <div className="w-4 h-4">
+        <div className="w-4 h-4" aria-hidden="true">
           <BsGeoAlt className="w-full h-full" />
         </div>
-        <div className="w-6 h-5">
+        <div className="w-6 h-5" aria-hidden="true">
           <div className="h-full relative">
             <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center px-0.5">
               <div className="h-2 rounded-sm w-1 bg-white mx-0.5"></div>
@@ -79,7 +79,7 @@ const IOSStatusBar = () => {
             </div>
           </div>
         </div>
-        <div className="w-6 h-3 border border-white rounded-sm relative">
+        <div className="w-6 h-3 border border-white rounded-sm relative" aria-hidden="true">
           <div className="absolute right-0 top-0 bottom-0 bg-white w-3 mr-px my-px rounded-sm"></div>
         </div>
       </div>
@@ -94,7 +94,11 @@ const StepperContainer = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <div className={cn("flex w-full", className)}>{children}</div>;
+}) => (
+  <div role="list" aria-label="Progress" className={cn("flex w-full", className)}>
+    {children}
+  </div>
+);
 
 const StepperStep = ({
   isActive,
@@ -109,7 +113,12 @@ const StepperStep = ({
   title: string;
   description: string;
 }) => (
-  <div className="flex-1 relative">
+  <div
+    role="listitem"
+    aria-current={isActive ? "step" : undefined}
+    aria-label={`Step ${stepNumber}: ${title}`}
+    className="flex-1 relative"
+  >
     <div className="flex items-center">
       <div
         className={cn(
@@ -123,6 +132,7 @@ const StepperStep = ({
       >
         {isCompleted ? (
           <svg
+            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
             viewBox="0 0 20 20"
@@ -346,11 +356,17 @@ const SliderInput: React.FC<SliderInputProps> = ({
       </label>
       <Popover>
         <PopoverTrigger asChild>
-          <button className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full">
+          <button
+            aria-label={`More information about ${info.label}`}
+            className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full"
+          >
             ⓘ
           </button>
         </PopoverTrigger>
-        <PopoverContent className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3">
+        <PopoverContent
+          id={`${id}-info`}
+          className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3"
+        >
           <p className="font-medium text-[#1d1d1f]">{info.description}</p>
           <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
@@ -369,6 +385,12 @@ const SliderInput: React.FC<SliderInputProps> = ({
       <input
         id={id}
         type="range"
+        role="slider"
+        aria-valuemin={0}
+        aria-valuemax={1}
+        aria-valuenow={value}
+        aria-label={info.label}
+        aria-describedby={`${id}-info`}
         min="0"
         max="1"
         step="0.05"

@@ -20,11 +20,17 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
       </label>
       <Popover>
         <PopoverTrigger asChild>
-          <button className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full">
+          <button
+            aria-label={`More information about ${info.label}`}
+            className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full"
+          >
             ⓘ
           </button>
         </PopoverTrigger>
-        <PopoverContent className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3">
+        <PopoverContent
+          id={`${id}-info`}
+          className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3"
+        >
           <p className="font-medium text-[#1d1d1f]">{info.description}</p>
           <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
@@ -41,6 +47,12 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
       <input
         id={id}
         type="range"
+        role="slider"
+        aria-valuemin={0}
+        aria-valuemax={1}
+        aria-valuenow={value}
+        aria-label={info.label}
+        aria-describedby={`${id}-info`}
         min="0"
         max="1"
         step="0.05"

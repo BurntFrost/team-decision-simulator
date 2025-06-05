@@ -156,6 +156,7 @@ input[type="range"] {
   border-radius: 999px;
   outline: none;
   margin: 10px 0;
+  touch-action: manipulation;
 }
 
 input[type="range"]::-webkit-slider-thumb {

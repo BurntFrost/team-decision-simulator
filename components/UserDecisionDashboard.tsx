@@ -515,7 +515,6 @@ export default function UserDecisionDashboard() {
     const storedMBTI = sessionStorage.getItem("userMBTI");
     const storedInputs = sessionStorage.getItem("inputs");
     const storedPreset = sessionStorage.getItem("activePreset");
-    const storedTab = sessionStorage.getItem("activeTab");
 
     if (storedMBTI && mbtiTypes.includes(storedMBTI as MBTIType)) {
       setUserMBTI(storedMBTI as MBTIType);
@@ -527,9 +526,6 @@ export default function UserDecisionDashboard() {
     }
     if (storedPreset) {
       setActivePreset(storedPreset);
-    }
-    if (storedTab) {
-      setActiveTab(storedTab);
     }
   }, [mbtiTypes]);
 
@@ -550,9 +546,6 @@ export default function UserDecisionDashboard() {
     }
   }, [activePreset]);
 
-  useEffect(() => {
-    sessionStorage.setItem("activeTab", activeTab);
-  }, [activeTab]);
 
   useEffect(() => {
     setMounted(true);

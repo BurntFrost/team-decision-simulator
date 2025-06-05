@@ -3,10 +3,14 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-export const StepperContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({
-  children,
-  className,
-}) => <div className={cn("flex w-full", className)}>{children}</div>;
+export const StepperContainer: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className }) => (
+  <div role="list" aria-label="Progress" className={cn("flex w-full", className)}>
+    {children}
+  </div>
+);
 
 export const StepperStep: React.FC<{
   isActive: boolean;
@@ -15,7 +19,12 @@ export const StepperStep: React.FC<{
   title: string;
   description: string;
 }> = ({ isActive, isCompleted, stepNumber, title, description }) => (
-  <div className="flex-1 relative">
+  <div
+    role="listitem"
+    aria-current={isActive ? "step" : undefined}
+    aria-label={`Step ${stepNumber}: ${title}`}
+    className="flex-1 relative"
+  >
     <div className="flex items-center">
       <div
         className={cn(
@@ -29,6 +38,7 @@ export const StepperStep: React.FC<{
       >
         {isCompleted ? (
           <svg
+            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
             viewBox="0 0 20 20"

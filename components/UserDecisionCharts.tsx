@@ -845,6 +845,7 @@ const UserDecisionCharts: React.FC<Props> = ({
   const [dimensions, setDimensions] = useState({ width: 800, height: 800 });
   const [isMounted, setIsMounted] = useState(false);
   const [hoveredHouse, setHoveredHouse] = useState<string | null>(null);
+  const isClient = typeof window !== "undefined";
 
   useEffect(() => {
     setIsMounted(true);
@@ -1758,7 +1759,7 @@ const UserDecisionCharts: React.FC<Props> = ({
         </div>
         <ResponsiveContainer
           width="100%"
-          height={window.innerWidth < 768 ? 250 : 350}
+          height={isClient && window.innerWidth < 768 ? 250 : 350}
         >
           <RadarChart data={enhancedRadarData}>
             <PolarGrid stroke="#4455a6" strokeOpacity={0.2} />
@@ -1838,7 +1839,7 @@ const UserDecisionCharts: React.FC<Props> = ({
         </div>
         <ResponsiveContainer
           width="100%"
-          height={window.innerWidth < 768 ? 250 : 350}
+          height={isClient && window.innerWidth < 768 ? 250 : 350}
         >
           <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />

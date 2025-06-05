@@ -1,8 +1,8 @@
-import { Command } from 'commander';
-import fs from 'fs';
-import path from 'path';
+const { Command } = require('commander');
+const fs = require('fs');
+const path = require('path');
 
-export function runCLI(argv) {
+function runCLI(argv) {
   const program = new Command();
   program
     .name('task-master')
@@ -30,3 +30,5 @@ export function runCLI(argv) {
 
   program.parse(argv);
 }
+
+module.exports = { runCLI };

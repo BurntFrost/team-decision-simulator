@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -29,6 +29,13 @@ import {
   Dot,
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import StyledTabs from "./StyledTabs";
 import * as DecisionService from "@/lib/decisionMatrixService";
@@ -847,6 +854,10 @@ const UserDecisionCharts: React.FC<Props> = ({
   const [hoveredHouse, setHoveredHouse] = useState<string | null>(null);
   const isClient = typeof window !== "undefined";
 
+  const [selectedFactor, setSelectedFactor] = useState<string>("");
+  const factorRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const personalityRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     setIsMounted(true);
     const updateDimensions = () => {
@@ -877,6 +888,15 @@ const UserDecisionCharts: React.FC<Props> = ({
   const handleHouseMouseLeave = () => {
     setHoveredHouse(null);
   };
+
+  useEffect(() => {
+    if (selectedFactor) {
+      setHoveredType(selectedFactor);
+      const ref = factorRefs.current[selectedFactor];
+      ref?.scrollIntoView({ behavior: "smooth", block: "center" });
+      personalityRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [selectedFactor]);
 
   // Generate data for visualizations
   const quadrantData = generateQuadrantData(results);
@@ -2017,6 +2037,24 @@ const UserDecisionCharts: React.FC<Props> = ({
               </p>
             </div>
 
+            <div className="max-w-xs mb-4">
+              <Select
+                value={selectedFactor}
+                onValueChange={setSelectedFactor}
+              >
+                <SelectTrigger id="factor-select">
+                  <SelectValue placeholder="Select factor" />
+                </SelectTrigger>
+                <SelectContent>
+                  {factorNames.map((name) => (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Factor column */}
               <div className="flex flex-col space-y-3">
@@ -2034,6 +2072,7 @@ const UserDecisionCharts: React.FC<Props> = ({
                   return (
                     <div
                       key={factor}
+                      ref={(el) => (factorRefs.current[formattedFactor] = el)}
                       className="p-3 bg-blue-100 rounded-lg text-sm text-center shadow-sm"
                       onMouseEnter={() => handleMouseEnter(formattedFactor)}
                       onMouseLeave={handleMouseLeave}
@@ -2189,7 +2228,7 @@ const UserDecisionCharts: React.FC<Props> = ({
               </div>
             </div>
 
-            <div className="mt-8">
+            <div className="mt-8" ref={personalityRef}>
               <h4 className="font-bold text-[#4455a6] mb-2">
                 Personality Influence
               </h4>

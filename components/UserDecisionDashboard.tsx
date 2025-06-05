@@ -630,7 +630,13 @@ export default function UserDecisionDashboard() {
           <div className="absolute inset-0 bg-grid opacity-10"></div>
           <CardContent className="p-0 relative">
             <div className="px-4 pt-4 flex justify-end">
-              <div className="w-32">
+              <div className="w-32 flex flex-col items-start">
+                <label
+                  htmlFor="user-mbti"
+                  className="text-xs font-medium text-gray-600 mb-1"
+                >
+                  MBTI Type
+                </label>
                 <Select
                   value={userMBTI}
                   onValueChange={(v) => setUserMBTI(v as MBTIType)}

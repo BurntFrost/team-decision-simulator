@@ -287,6 +287,31 @@ const getRandomFamousPerson = (mbtiType: string): string => {
   return people[Math.floor(Math.random() * people.length)];
 };
 
+// Mapping of MBTI types to placeholder image seeds
+const mbtiImageSeeds: Record<string, string> = {
+  INTJ: "architect",
+  ENTJ: "leader",
+  INTP: "scientist",
+  ENTP: "inventor",
+  INFJ: "visionary",
+  ENFJ: "coach",
+  INFP: "poet",
+  ENFP: "creative",
+  ISTJ: "organizer",
+  ESTJ: "executive",
+  ISFJ: "caregiver",
+  ESFJ: "supporter",
+  ISTP: "craftsman",
+  ESTP: "entrepreneur",
+  ISFP: "artist",
+  ESFP: "performer",
+};
+
+const getMBTIImage = (mbtiType: string): string => {
+  const seed = mbtiImageSeeds[mbtiType] || mbtiType.toLowerCase();
+  return `https://picsum.photos/seed/${seed}/100/100`;
+};
+
 // Types for the charts component
 type ChartProps = {
   results: DecisionService.SimulationResult[];
@@ -682,6 +707,18 @@ export default function UserDecisionDashboard() {
                         <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
                           Decision Analysis
                         </h3>
+                        {majorityDecision && (
+                          <p className="text-center text-sm mb-4">
+                            Most personalities chose
+                            <span
+                              className="mx-1 px-2 py-1 rounded-full text-white"
+                              style={{ backgroundColor: majorityColor }}
+                            >
+                              {majorityDecision}
+                            </span>
+                            ({decisionCounts[majorityDecision]} of {results.length})
+                          </p>
+                        )}
                         <div className="space-y-6">
                           {/* Top 3 Decisions */}
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
@@ -891,13 +928,19 @@ export default function UserDecisionDashboard() {
                     {Object.entries(DecisionService.mbtiDescriptions).map(
                       ([type, info]) => {
                         const famousPerson = getRandomFamousPerson(type);
+                        const img = getMBTIImage(type);
                         return (
                           <div
                             key={type}
                             className="p-4 rounded-xl shadow-sm border border-gray-100 bg-white"
                             style={{ borderLeft: `4px solid ${info.color}` }}
                           >
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-start gap-3">
+                              <img
+                                src={img}
+                                alt={`${type} icon`}
+                                className="w-12 h-12 rounded-full object-cover"
+                              />
                               <div>
                                 <h4
                                   className="font-bold mb-2"

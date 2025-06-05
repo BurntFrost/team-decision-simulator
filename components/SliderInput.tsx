@@ -50,8 +50,10 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
         min={0}
         max={1}
         step={0.05}
-        value={[value]}
-        onValueChange={(v) => onChange(v[0].toString())}
+        value={value}
+        onChange={(_, v) =>
+          onChange((Array.isArray(v) ? v[0] : v).toString())
+        }
         aria-label={info.label}
         aria-describedby={`${id}-info`}
         className="flex-grow"

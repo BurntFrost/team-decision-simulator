@@ -495,43 +495,6 @@ export default function UserDecisionDashboard() {
     setEggOpacity(0);
   };
 
-  // Load stored session data on mount
-  useEffect(() => {
-    const storedMBTI = sessionStorage.getItem("userMBTI");
-    const storedInputs = sessionStorage.getItem("inputs");
-    const storedPreset = sessionStorage.getItem("activePreset");
-
-    if (storedMBTI && mbtiTypes.includes(storedMBTI as MBTIType)) {
-      setUserMBTI(storedMBTI as MBTIType);
-    }
-    if (storedInputs) {
-      try {
-        setInputs(JSON.parse(storedInputs));
-      } catch {}
-    }
-    if (storedPreset) {
-      setActivePreset(storedPreset);
-    }
-  }, [mbtiTypes]);
-
-  // Persist session data when values change
-  useEffect(() => {
-    sessionStorage.setItem("userMBTI", userMBTI);
-  }, [userMBTI]);
-
-  useEffect(() => {
-    sessionStorage.setItem("inputs", JSON.stringify(inputs));
-  }, [inputs]);
-
-  useEffect(() => {
-    if (activePreset) {
-      sessionStorage.setItem("activePreset", activePreset);
-    } else {
-      sessionStorage.removeItem("activePreset");
-    }
-  }, [activePreset]);
-
-
   useEffect(() => {
     setMounted(true);
   }, []);

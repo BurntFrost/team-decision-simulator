@@ -33,7 +33,7 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
           className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3"
         >
           <p className="font-medium text-[#1d1d1f]">{info.description}</p>
-          <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="mt-2 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
             <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
               <span className="font-bold text-[#1d1d1f]">Low:</span> {info.lowDesc}
             </div>

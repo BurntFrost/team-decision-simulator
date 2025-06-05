@@ -379,7 +379,7 @@ const SliderInput: React.FC<SliderInputProps> = ({
           className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3"
         >
           <p className="font-medium text-[#1d1d1f]">{info.description}</p>
-          <div className="mt-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="mt-2 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
             <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
               <span className="font-bold text-[#1d1d1f]">Low:</span>{" "}
               {info.lowDesc}
@@ -616,7 +616,7 @@ export default function UserDecisionDashboard() {
               🎉
             </div>
           </div>
-          <p className="text-sm sm:text-base text-white/80 max-w-3xl relative">
+          <p className="text-sm iphone16:text-base sm:text-base text-white/80 max-w-3xl relative">
             Explore how different personality types approach your decisions.
             Select a scenario, adjust factors, and discover diverse
             perspectives.
@@ -723,7 +723,7 @@ export default function UserDecisionDashboard() {
                               ]
                             }
                           </p>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3">
                             {scenarios.map((scenario) => {
                               const isActive = scenario === activePreset;
                               return (
@@ -896,7 +896,7 @@ export default function UserDecisionDashboard() {
                             )}
                           </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
                             {decisionBreakdown.map(({ decision, count, percentage, color }, index) => (
                               <div
                                 key={decision}

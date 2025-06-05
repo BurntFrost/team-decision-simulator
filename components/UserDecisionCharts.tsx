@@ -31,7 +31,7 @@ import { hierarchy } from "d3-hierarchy";
 import { LinkHorizontal } from "@visx/shape";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { StyledTabs } from "./UserDecisionDashboard";
+import StyledTabs from "./StyledTabs";
 import * as DecisionService from "@/lib/decisionMatrixService";
 
 // Import specific types

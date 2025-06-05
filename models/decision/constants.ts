@@ -55,6 +55,29 @@ export const presetDescriptions = {
     "Navigating important relationship choices or commitments",
 };
 
+// Group scenarios into categories for easier browsing
+export const presetCategories: Record<string, (keyof typeof presetScenarios)[]> = {
+  "Career Choices": [
+    "Moving to a New City",
+    "Career Development",
+    "Starting a Side Hustle",
+  ],
+  "Financial Decisions": [
+    "Buying a Car",
+    "Major Purchase",
+    "Home Renovation",
+  ],
+  "Personal Growth": ["Health & Fitness"],
+  Relationships: ["Relationship Decision"],
+};
+
+export const presetCategoryDescriptions: Record<string, string> = {
+  "Career Choices": "Explore options related to jobs and professional moves.",
+  "Financial Decisions": "Evaluate significant purchases and investments.",
+  "Personal Growth": "Focus on health, wellness, and self-improvement.",
+  Relationships: "Considerations for important relationships.",
+};
+
 // Default weights for each scenario
 export const presetScenarios = {
   "Buying a Car": {

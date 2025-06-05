@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -481,6 +481,35 @@ export default function UserDecisionDashboard() {
     color: "#6b7280",
   });
 
+  // Easter egg opacity and mouse tracking
+  const [eggOpacity, setEggOpacity] = useState(0);
+  const lastMouse = useRef<{ x: number; y: number; time: number } | null>(null);
+
+  const handleBrainMouseEnter = () => {
+    setEggOpacity(0);
+    lastMouse.current = null;
+  };
+
+  const handleBrainMouseLeave = () => {
+    setEggOpacity(0);
+    lastMouse.current = null;
+  };
+
+  const handleBrainMouseMove = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const now = performance.now();
+    if (lastMouse.current) {
+      const dx = e.clientX - lastMouse.current.x;
+      const dy = e.clientY - lastMouse.current.y;
+      const dt = now - lastMouse.current.time || 1;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const speed = dist / dt; // pixels per ms
+      setEggOpacity((o) => Math.min(o + speed * 0.1, 1));
+    }
+    lastMouse.current = { x: e.clientX, y: e.clientY, time: now };
+  };
+
   // Load stored session data on mount
   useEffect(() => {
     const storedMBTI = sessionStorage.getItem("userMBTI");
@@ -631,11 +660,22 @@ export default function UserDecisionDashboard() {
           </select>
         </div>
         <div className="relative flex flex-col gap-2 mb-2">
-          <div className="flex items-center gap-2 mb-2">
+          <div
+            className="flex items-center gap-2 mb-2 relative"
+            onMouseEnter={handleBrainMouseEnter}
+            onMouseMove={handleBrainMouseMove}
+            onMouseLeave={handleBrainMouseLeave}
+          >
             <FaBrain className="h-6 w-6 text-white/90" />
             <h2 className="text-xl sm:text-2xl font-bold text-white/95">
               MBTI Brain
             </h2>
+            <div
+              className="absolute left-full ml-2 text-white text-sm pointer-events-none transition-opacity"
+              style={{ opacity: eggOpacity }}
+            >
+              🎉
+            </div>
           </div>
           <p className="text-sm sm:text-base text-white/80 max-w-3xl relative">
             Explore how different personality types approach your decisions.

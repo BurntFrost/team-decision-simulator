@@ -435,6 +435,26 @@ const harryPotterHousesByMBTI: Record<
   },
 };
 
+// Example characters and quotes for each Hogwarts house
+const hogwartsHouseInfo: Record<string, { characters: string[]; quote: string }> = {
+  Gryffindor: {
+    characters: ["Harry Potter", "Hermione Granger", "Ron Weasley"],
+    quote: "Daring, nerve, and chivalry set Gryffindors apart.",
+  },
+  Hufflepuff: {
+    characters: ["Cedric Diggory", "Nymphadora Tonks", "Pomona Sprout"],
+    quote: "Those patient Hufflepuffs are true and unafraid of toil.",
+  },
+  Ravenclaw: {
+    characters: ["Luna Lovegood", "Cho Chang", "Garrick Ollivander"],
+    quote: "Wit beyond measure is man's greatest treasure.",
+  },
+  Slytherin: {
+    characters: ["Severus Snape", "Draco Malfoy", "Tom Riddle"],
+    quote: "Those cunning folk use any means to achieve their ends.",
+  },
+};
+
 // Helper function to get Harry Potter house for a MBTI type
 const getHarryPotterHouse = (mbtiType: string): string => {
   return harryPotterHousesByMBTI[mbtiType]?.house || "Unknown";
@@ -1442,6 +1462,9 @@ const UserDecisionCharts: React.FC<Props> = ({
                     {house.name === "Slytherin" &&
                       "Strategic and ambitious, Slytherins evaluate both risks and opportunities carefully."}
                   </p>
+                  <p className="text-[10px] italic text-gray-500 mt-1">
+                    {hogwartsHouseInfo[house.name]?.quote}
+                  </p>
                 </div>
               </div>
             );
@@ -1660,6 +1683,9 @@ const UserDecisionCharts: React.FC<Props> = ({
               <p className="text-xs text-gray-600">
                 Brave, daring, chivalrous, determined, and bold
               </p>
+              <p className="text-[10px] text-gray-500 mt-1">
+                Characters: {hogwartsHouseInfo.Gryffindor.characters.join(", ")}
+              </p>
             </div>
             <div
               className="p-3 rounded-lg"
@@ -1675,6 +1701,9 @@ const UserDecisionCharts: React.FC<Props> = ({
               </p>
               <p className="text-xs text-gray-600">
                 Loyal, patient, fair, hard-working, and inclusive
+              </p>
+              <p className="text-[10px] text-gray-500 mt-1">
+                Characters: {hogwartsHouseInfo.Hufflepuff.characters.join(", ")}
               </p>
             </div>
             <div
@@ -1692,6 +1721,9 @@ const UserDecisionCharts: React.FC<Props> = ({
               <p className="text-xs text-gray-600">
                 Intelligent, wise, creative, analytical, and thoughtful
               </p>
+              <p className="text-[10px] text-gray-500 mt-1">
+                Characters: {hogwartsHouseInfo.Ravenclaw.characters.join(", ")}
+              </p>
             </div>
             <div
               className="p-3 rounded-lg"
@@ -1707,6 +1739,9 @@ const UserDecisionCharts: React.FC<Props> = ({
               </p>
               <p className="text-xs text-gray-600">
                 Ambitious, cunning, resourceful, strategic, and determined
+              </p>
+              <p className="text-[10px] text-gray-500 mt-1">
+                Characters: {hogwartsHouseInfo.Slytherin.characters.join(", ")}
               </p>
             </div>
           </div>

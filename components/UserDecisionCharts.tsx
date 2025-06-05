@@ -1289,7 +1289,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
           {/* Add decision threshold legend */}
           <div className="w-full mt-2 flex justify-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-xs max-w-5xl">
+            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 text-xs max-w-5xl">
               <div className="p-2 rounded bg-green-100 border border-green-200 flex items-center space-x-2">
                 <div className="w-3 h-3 rounded-full bg-[#22c55e]"></div>
                 <div>

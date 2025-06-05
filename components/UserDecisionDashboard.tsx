@@ -563,6 +563,18 @@ export default function UserDecisionDashboard() {
     counts: decisionCounts,
   } = majorityDecisionData;
 
+  const decisionBreakdown = useMemo(() => {
+    return Object.entries(decisionCounts)
+      .map(([decision, count]) => ({
+        decision,
+        count,
+        percentage: (count / results.length) * 100,
+        color:
+          results.find((r) => r.decision === decision)?.color || "#94a3b8",
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [decisionCounts, results]);
+
   return (
     <div className="bg-[#f5f5f7] min-h-screen safe-area-inset-bottom relative">
       {/* Background decorative elements */}
@@ -838,159 +850,82 @@ export default function UserDecisionDashboard() {
                             </span>
                           </div>
                         )}
+
                         <div className="space-y-6">
-                          {/* Top 3 Decisions */}
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-                            {Object.entries(
-                              results.reduce((acc, curr) => {
-                                acc[curr.decision] =
-                                  (acc[curr.decision] || 0) + 1;
-                                return acc;
-                              }, {} as Record<string, number>)
-                            )
-                              .sort(([, a], [, b]) => b - a)
-                              .slice(0, 3)
-                              .map(([decision, count], index) => {
-                                const percentage =
-                                  (count / results.length) * 100;
-                                const color =
-                                  results.find((r) => r.decision === decision)
-                                    ?.color || "#94a3b8";
-                                return (
-                                  <div
-                                    key={decision}
-                                    className="bg-white/20 p-4 sm:p-6 rounded-xl relative overflow-hidden border border-white/30"
-                                  >
-                                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
-                                      #{index + 1}
-                                    </div>
-                                    <div className="relative z-10">
-                                      <span className="text-base sm:text-lg font-bold text-white mb-2 sm:mb-3 block">
-                                        {decision}
-                                      </span>
-                                      <div className="flex items-end gap-2">
-                                        <div className="text-2xl sm:text-3xl font-bold">
-                                          {count}
-                                        </div>
-                                        <div className="text-sm text-white/70 mb-1">
-                                          ({percentage.toFixed(1)}%)
-                                        </div>
-                                      </div>
-                                      <div className="text-xs text-white/60 mt-1">
-                                        MBTI types
-                                      </div>
-                                    </div>
-                                    <div
-                                      className="absolute bottom-0 left-0 h-1.5 transition-all duration-500"
-                                      style={{
-                                        width: `${percentage}%`,
-                                        backgroundColor: color,
-                                      }}
-                                    ></div>
-                                  </div>
-                                );
-                              })}
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              Most common decision:
+                              <span
+                                className="ml-1 px-2 py-1 rounded-full text-white"
+                                style={{ backgroundColor: majorityColor }}
+                              >
+                                {majorityDecision || "N/A"}
+                              </span>
+                              {majorityDecision && (
+                                <span className="ml-1">
+                                  ({((decisionCounts[majorityDecision] / results.length) * 100).toFixed(1)}%)
+                                </span>
+                              )}
+                            </div>
+                            {publicResult && (
+                              <div>
+                                Public opinion favors:
+                                <span
+                                  className="ml-1 px-2 py-1 rounded-full text-white"
+                                  style={{ backgroundColor: publicResult.color }}
+                                >
+                                  {publicResult.mostLikely}
+                                </span>
+                              </div>
+                            )}
                           </div>
 
-                          {/* All Decisions Grid */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {[
-                              {
-                                decision: "Full Speed Ahead",
-                                color: "#34c759",
-                                count: results.filter(
-                                  (r) => r.decision === "Full Speed Ahead"
-                                ).length,
-                              },
-                              {
-                                decision: "Proceed Strategically",
-                                color: "#30d158",
-                                count: results.filter(
-                                  (r) => r.decision === "Proceed Strategically"
-                                ).length,
-                              },
-                              {
-                                decision: "Implement with Oversight",
-                                color: "#ffcc00",
-                                count: results.filter(
-                                  (r) =>
-                                    r.decision === "Implement with Oversight"
-                                ).length,
-                              },
-                              {
-                                decision: "Request Clarification",
-                                color: "#ff9500",
-                                count: results.filter(
-                                  (r) => r.decision === "Request Clarification"
-                                ).length,
-                              },
-                              {
-                                decision: "Delay or Disengage",
-                                color: "#ff3b30",
-                                count: results.filter(
-                                  (r) => r.decision === "Delay or Disengage"
-                                ).length,
-                              },
-                              {
-                                decision: "Public Opinion",
-                                color: publicResult?.color || "#8e8e93",
-                                count: publicResult ? 1 : 0,
-                                isPublic: true,
-                              },
-                            ]
-                              // Filter out options with 0 count, except for Public Opinion which should always show
-                              .filter(
-                                ({ count, isPublic }) => count > 0 || isPublic
-                              )
-                              .map(({ decision, color, count, isPublic }) => {
-                                const percentage = isPublic
-                                  ? 100
-                                  : (count / results.length) * 100;
-                                return (
-                                  <div
-                                    key={decision}
-                                    className="bg-white/10 p-3 rounded-xl relative overflow-hidden"
-                                  >
-                                    <div className="relative z-10">
-                                      <span className="text-sm font-medium text-white/90 mb-2 block">
-                                        {decision}
-                                      </span>
-                                      <div className="flex items-end gap-2">
-                                        {isPublic ? (
-                                          <div className="text-lg font-bold">
-                                            {publicResult?.mostLikely || "N/A"}
-                                          </div>
-                                        ) : (
-                                          <>
-                                            <div className="text-lg font-bold">
-                                              {count}
-                                            </div>
-                                            <div className="text-xs text-white/70 mb-1">
-                                              ({percentage.toFixed(1)}%)
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                      <div className="text-xs text-white/60 mt-1">
-                                        {isPublic
-                                          ? "Consensus View"
-                                          : "MBTI types"}
-                                      </div>
-                                    </div>
-                                    <div
-                                      className="absolute bottom-0 left-0 h-1 transition-all duration-500"
-                                      style={{
-                                        width: `${percentage}%`,
-                                        backgroundColor: color,
-                                      }}
-                                    ></div>
+                            {decisionBreakdown.map(({ decision, count, percentage, color }, index) => (
+                              <div
+                                key={decision}
+                                className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
+                              >
+                                {index < 3 && (
+                                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
+                                    #{index + 1}
                                   </div>
-                                );
-                              })}
+                                )}
+                                <div className="relative z-10">
+                                  <span className="text-sm font-medium text-white/90 mb-2 block">{decision}</span>
+                                  <div className="flex items-end gap-2">
+                                    <div className="text-lg font-bold">{count}</div>
+                                    <div className="text-xs text-white/70 mb-1">({percentage.toFixed(1)}%)</div>
+                                  </div>
+                                  <div className="text-xs text-white/60 mt-1">MBTI types</div>
+                                </div>
+                                <div
+                                  className="absolute bottom-0 left-0 h-1 transition-all duration-500"
+                                  style={{ width: `${percentage}%`, backgroundColor: color }}
+                                ></div>
+                              </div>
+                            ))}
+                            {publicResult && (
+                              <div
+                                key="public"
+                                className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
+                              >
+                                <div className="relative z-10">
+                                  <span className="text-sm font-medium text-white/90 mb-2 block">Public Opinion</span>
+                                  <div className="flex items-end gap-2">
+                                    <div className="text-lg font-bold">{publicResult.mostLikely}</div>
+                                  </div>
+                                  <div className="text-xs text-white/60 mt-1">Consensus View</div>
+                                </div>
+                                <div
+                                  className="absolute bottom-0 left-0 h-1 transition-all duration-500"
+                                  style={{ width: `100%`, backgroundColor: publicResult.color }}
+                                ></div>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </div>
-
+                          </div>
                       <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
                         <div className="mb-4">
                           <h4 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">

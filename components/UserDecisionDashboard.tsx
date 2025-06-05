@@ -398,6 +398,7 @@ const SliderInput: React.FC<SliderInputProps> = ({
         step="0.05"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onInput={(e) => onChange((e.target as HTMLInputElement).value)}
         className="flex-grow appearance-none h-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff]/20"
         style={{
           WebkitAppearance: "none",

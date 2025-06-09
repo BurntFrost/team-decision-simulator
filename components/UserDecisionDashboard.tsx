@@ -409,26 +409,6 @@ const characterExamplesByMBTI: Record<string, Array<{name: string, franchise: st
   ],
 };
 
-// Mapping of MBTI types to characters from Harry Potter
-const harryPotterCharactersByMBTI: Record<string, string[]> = {
-  INTJ: ["Severus Snape", "Tom Riddle"],
-  ENTJ: ["Hermione Granger", "McGonagall"],
-  INTP: ["Luna Lovegood", "Newt Scamander"],
-  ENTP: ["Fred Weasley", "George Weasley"],
-  INFJ: ["Dumbledore", "Remus Lupin"],
-  ENFJ: ["Harry Potter", "Molly Weasley"],
-  INFP: ["Dobby", "Neville Longbottom"],
-  ENFP: ["Ron Weasley", "Tonks"],
-  ISTJ: ["Percy Weasley", "Barty Crouch Sr."],
-  ESTJ: ["Dolores Umbridge", "Vernon Dursley"],
-  ISFJ: ["Hagrid", "Mrs. Weasley"],
-  ESFJ: ["Cedric Diggory", "Fleur Delacour"],
-  ISTP: ["Sirius Black", "Mad-Eye Moody"],
-  ESTP: ["Draco Malfoy", "Gilderoy Lockhart"],
-  ISFP: ["Cho Chang", "Lavender Brown"],
-  ESFP: ["Peeves", "Rita Skeeter"],
-};
-
 // Office Departments mapping for MBTI types
 const officeDepartmentsByMBTI: Record<
   string,
@@ -1336,7 +1316,7 @@ const OfficeContent: React.FC<{
     <div className="space-y-6">
       <div className="mb-4 text-sm text-[#007aff] font-medium bg-[#007aff]/5 p-3 rounded-lg">
         Welcome to Dunder Mifflin Scranton! See how different office departments approach decisions
-        based on their workplace roles and team dynamics. That's what she said... about decision analysis!
+        based on their workplace roles and team dynamics. That&apos;s what she said... about decision analysis!
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -1469,7 +1449,7 @@ const OfficeContent: React.FC<{
                   {officeDepartmentInfo[department.name]?.description}
                 </p>
                 <p className="text-[10px] italic text-gray-500 mt-1">
-                  "{officeDepartmentInfo[department.name]?.motto}"
+                  &quot;{officeDepartmentInfo[department.name]?.motto}&quot;
                 </p>
               </div>
             </div>
@@ -1550,7 +1530,7 @@ const OfficeContent: React.FC<{
                 {info.characteristics.join(", ")}
               </p>
               <p className="text-[10px] text-gray-500 italic">
-                "{info.motto}"
+                &quot;{info.motto}&quot;
               </p>
             </div>
           );

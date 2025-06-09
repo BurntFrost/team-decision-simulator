@@ -1,21 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
   Popover,
   PopoverContent,
@@ -35,22 +25,13 @@ import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
 // Import react-icons
-import { FaBrain, FaCheck, FaInfoCircle } from "react-icons/fa";
-import {
-  BsFileText,
-  BsGrid1X2,
-  BsPeople,
-  BsGear,
-  BsClockFill,
-  BsGeoAlt,
-} from "react-icons/bs";
+import { FaBrain, FaCheck } from "react-icons/fa";
+import { BsFileText } from "react-icons/bs";
 import { IoMdAnalytics } from "react-icons/io";
 import {
   MdOutlineAssessment,
   MdFactCheck,
   MdPsychology,
-  MdOutlineLeaderboard,
-  MdHome,
 } from "react-icons/md";
 
 // iOS Status Bar Component
@@ -1744,7 +1725,7 @@ export default function UserDecisionDashboard() {
               className="w-full"
             >
               <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 pt-4">
-                <TabsList className="grid w-full grid-cols-5 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                <TabsList className="grid w-full grid-cols-4 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
                   <TabsTrigger
                     value="scenarios"
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
@@ -1779,15 +1760,6 @@ export default function UserDecisionDashboard() {
                     <div className="flex flex-col items-center gap-1">
                       <MdPsychology className="h-4 w-4" />
                       <span className="text-xs">Types</span>
-                    </div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="houses"
-                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <MdHome className="h-4 w-4" />
-                      <span className="text-xs">Houses</span>
                     </div>
                   </TabsTrigger>
 
@@ -1945,9 +1917,10 @@ export default function UserDecisionDashboard() {
                   </div>
                   {results.length > 0 ? (
                     <Tabs value={resultsSubTab} onValueChange={setResultsSubTab} className="w-full space-y-4">
-                      <TabsList className="grid w-full grid-cols-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                      <TabsList className="grid w-full grid-cols-3 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
                         <TabsTrigger value="analysis" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Analysis</TabsTrigger>
                         <TabsTrigger value="office" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Office</TabsTrigger>
+                        <TabsTrigger value="houses" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Houses</TabsTrigger>
                       </TabsList>
                       <TabsContent value="analysis" className="space-y-6">
                         <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
@@ -2086,6 +2059,12 @@ export default function UserDecisionDashboard() {
                           mbtiDescriptions={DecisionService.mbtiDescriptions}
                         />
                       </TabsContent>
+                      <TabsContent value="houses" className="space-y-4">
+                        <HousesContent
+                          results={results}
+                          mbtiDescriptions={DecisionService.mbtiDescriptions}
+                        />
+                      </TabsContent>
                     </Tabs>
                   ) : (
                     <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
@@ -2170,36 +2149,7 @@ export default function UserDecisionDashboard() {
                   </div>
                 </TabsContent>
 
-                {/* Houses Tab */}
-                <TabsContent value="houses" className="space-y-4 relative">
-                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute top-10 left-10 w-[150px] h-[150px] bg-gradient-to-br from-red-600 to-yellow-500 rounded-full blur-xl"></div>
-                  </div>
-                  {results.length > 0 ? (
-                    <HousesContent
-                      results={results}
-                      mbtiDescriptions={DecisionService.mbtiDescriptions}
-                    />
-                  ) : (
-                    <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
-                      <div className="text-[#8e8e93] mb-4">
-                        <MdHome className="h-12 w-12 mx-auto" />
-                      </div>
-                      <p className="text-[#1d1d1f] font-medium">
-                        No simulation results yet
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Run a simulation to see how Hogwarts houses approach decisions
-                      </p>
-                      <Button
-                        onClick={() => setActiveTab("factors")}
-                        className="mt-4 bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-6 py-2 shadow-sm transition-all active:scale-95"
-                      >
-                        Go to Factors
-                      </Button>
-                    </div>
-                  )}
-                </TabsContent>
+
 
 
               </div>

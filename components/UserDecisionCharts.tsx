@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -851,6 +851,15 @@ const UserDecisionCharts: React.FC<Props> = ({
   const factorRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const personalityRef = useRef<HTMLDivElement | null>(null);
 
+  // Create a stable map of famous people for each MBTI type to prevent constant changes on hover
+  const famousPeopleMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    Object.keys(mbtiDescriptions).forEach((mbtiType) => {
+      map[mbtiType] = getRandomFamousPerson(mbtiType);
+    });
+    return map;
+  }, [mbtiDescriptions]);
+
   useEffect(() => {
     setIsMounted(true);
     const updateDimensions = () => {
@@ -1210,7 +1219,7 @@ const UserDecisionCharts: React.FC<Props> = ({
                     const data = payload[0].payload;
                     const mbtiInfo = mbtiDescriptions[data.name];
                     const decision = data.decision;
-                    const famousPerson = getRandomFamousPerson(data.name);
+                    const famousPerson = famousPeopleMap[data.name];
 
                     return (
                       <div className="p-3 bg-white border border-[#4455a6]/20 rounded-lg shadow-lg max-w-[300px]">
@@ -1820,7 +1829,7 @@ const UserDecisionCharts: React.FC<Props> = ({
                       <span className="font-medium">{result.decision}</span>
                     </div>
                     <div className="mt-1 pl-5 text-xs text-gray-500">
-                      {getRandomFamousPerson(result.name)}
+                      {famousPeopleMap[result.name]}
                     </div>
                   </div>
                 ))}

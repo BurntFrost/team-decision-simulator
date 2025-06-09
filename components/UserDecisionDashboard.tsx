@@ -321,6 +321,286 @@ const officeCharactersByMBTI: Record<string, string[]> = {
   ESFP: ["Kelly Kapoor"],
 };
 
+// Office Departments mapping for MBTI types
+const officeDepartmentsByMBTI: Record<
+  string,
+  {
+    department: string;
+    color: string;
+    role: string;
+    traits: string[];
+  }
+> = {
+  // Management - Leadership and strategic oversight
+  ENFP: {
+    department: "Management",
+    color: "#1e40af", // Blue
+    role: "Regional Manager",
+    traits: ["charismatic", "enthusiastic", "people-focused", "creative"],
+  },
+  ENTJ: {
+    department: "Management",
+    color: "#1e40af",
+    role: "Corporate Executive",
+    traits: ["strategic", "decisive", "results-oriented", "authoritative"],
+  },
+  ENFJ: {
+    department: "Management",
+    color: "#1e40af",
+    role: "Regional Director",
+    traits: ["inspiring", "collaborative", "goal-oriented", "diplomatic"],
+  },
+  // Sales - Revenue generation and client relations
+  ENTP: {
+    department: "Sales",
+    color: "#059669", // Green
+    role: "Sales Representative",
+    traits: ["persuasive", "adaptable", "relationship-building", "innovative"],
+  },
+  ESTP: {
+    department: "Sales",
+    color: "#059669",
+    role: "Traveling Salesman",
+    traits: ["aggressive", "competitive", "action-oriented", "opportunistic"],
+  },
+  ISTJ: {
+    department: "Sales",
+    color: "#059669",
+    role: "Top Salesman",
+    traits: ["persistent", "methodical", "reliable", "detail-focused"],
+  },
+  // Accounting - Financial oversight and compliance
+  INTJ: {
+    department: "Accounting",
+    color: "#7c2d12", // Brown
+    role: "Senior Accountant",
+    traits: ["analytical", "precise", "logical", "independent"],
+  },
+  ESTJ: {
+    department: "Accounting",
+    color: "#7c2d12",
+    role: "Head of Accounting",
+    traits: ["organized", "efficient", "rule-following", "authoritative"],
+  },
+  ISTP: {
+    department: "Accounting",
+    color: "#7c2d12",
+    role: "Financial Analyst",
+    traits: ["practical", "logical", "independent", "problem-solving"],
+  },
+  // Reception/Admin - Support and coordination
+  ISFJ: {
+    department: "Reception",
+    color: "#be185d", // Pink
+    role: "Receptionist",
+    traits: ["supportive", "organized", "helpful", "detail-oriented"],
+  },
+  INFP: {
+    department: "Reception",
+    color: "#be185d",
+    role: "Reception Assistant",
+    traits: ["caring", "adaptable", "creative", "people-focused"],
+  },
+  ESFJ: {
+    department: "Reception",
+    color: "#be185d",
+    role: "Office Coordinator",
+    traits: ["social", "organized", "supportive", "team-oriented"],
+  },
+  // HR - People management and compliance
+  INFJ: {
+    department: "HR",
+    color: "#7c3aed", // Purple
+    role: "HR Representative",
+    traits: ["empathetic", "principled", "conflict-resolution", "systematic"],
+  },
+  ISFP: {
+    department: "HR",
+    color: "#7c3aed",
+    role: "HR Liaison",
+    traits: ["compassionate", "flexible", "people-focused", "harmonious"],
+  },
+  // Customer Service - Client support and relations
+  ESFP: {
+    department: "Customer Service",
+    color: "#ea580c", // Orange
+    role: "Customer Service Rep",
+    traits: ["energetic", "people-oriented", "spontaneous", "enthusiastic"],
+  },
+  // Corporate/Special Projects - Strategic initiatives
+  INTP: {
+    department: "Corporate",
+    color: "#6b7280", // Gray
+    role: "Corporate Liaison",
+    traits: ["analytical", "strategic", "independent", "innovative"],
+  },
+};
+
+// Department information and characteristics
+const officeDepartmentInfo: Record<string, {
+  description: string;
+  motto: string;
+  characteristics: string[];
+}> = {
+  Management: {
+    description: "Visionary leaders who drive company culture and strategic direction through inspiration and decisive action.",
+    motto: "That's what she said... about leadership excellence!",
+    characteristics: ["Strategic thinking", "Team motivation", "Decision authority", "Cultural influence"]
+  },
+  Sales: {
+    description: "Results-driven professionals who build relationships and close deals through persistence and adaptability.",
+    motto: "Bears. Beets. Battlestar Galactica. Sales.",
+    characteristics: ["Revenue focus", "Client relationships", "Competitive drive", "Adaptability"]
+  },
+  Accounting: {
+    description: "Detail-oriented analysts who ensure financial accuracy and compliance through systematic processes.",
+    motto: "Actually, the numbers don't lie.",
+    characteristics: ["Precision", "Compliance", "Analytical thinking", "Process adherence"]
+  },
+  Reception: {
+    description: "Supportive coordinators who maintain office operations and provide excellent internal customer service.",
+    motto: "Dunder Mifflin, this is Pam... I mean, how can we help?",
+    characteristics: ["Organization", "Communication", "Support", "Coordination"]
+  },
+  HR: {
+    description: "People-focused professionals who balance employee needs with company policies and conflict resolution.",
+    motto: "I'm not superstitious, but I am a little stitious about HR policies.",
+    characteristics: ["Employee relations", "Policy enforcement", "Conflict resolution", "Compliance"]
+  },
+  "Customer Service": {
+    description: "Energetic representatives who maintain client satisfaction through enthusiasm and problem-solving.",
+    motto: "OMG, like, customer satisfaction is totally our thing!",
+    characteristics: ["Client satisfaction", "Problem solving", "Energy", "Responsiveness"]
+  },
+  Corporate: {
+    description: "Strategic thinkers who analyze company operations and implement corporate initiatives.",
+    motto: "Synergy and optimization through strategic corporate alignment.",
+    characteristics: ["Strategic analysis", "Process improvement", "Corporate alignment", "Innovation"]
+  },
+};
+
+// Helper function to get Office department for a MBTI type
+const getOfficeDepartment = (mbtiType: string): string => {
+  return officeDepartmentsByMBTI[mbtiType]?.department || "Unknown";
+};
+
+// Group MBTI results by Office departments
+const groupResultsByOfficeDepartments = (results: DecisionService.SimulationResult[]) => {
+  const departmentGroups: Record<
+    string,
+    {
+      name: string;
+      color: string;
+      count: number;
+      types: string[];
+      characters: string[];
+      decisions: Record<string, number>;
+      averageScore: number;
+    }
+  > = {
+    Management: {
+      name: "Management",
+      color: "#1e40af",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Sales: {
+      name: "Sales",
+      color: "#059669",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Accounting: {
+      name: "Accounting",
+      color: "#7c2d12",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Reception: {
+      name: "Reception",
+      color: "#be185d",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    HR: {
+      name: "HR",
+      color: "#7c3aed",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    "Customer Service": {
+      name: "Customer Service",
+      color: "#ea580c",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Corporate: {
+      name: "Corporate",
+      color: "#6b7280",
+      count: 0,
+      types: [],
+      characters: [],
+      decisions: {},
+      averageScore: 0,
+    },
+  };
+
+  // Group results by department
+  let totalScores: Record<string, number> = {
+    Management: 0,
+    Sales: 0,
+    Accounting: 0,
+    Reception: 0,
+    HR: 0,
+    "Customer Service": 0,
+    Corporate: 0,
+  };
+
+  results.forEach((result) => {
+    const department = getOfficeDepartment(result.name);
+    if (departmentGroups[department]) {
+      departmentGroups[department].count++;
+      departmentGroups[department].types.push(result.name);
+
+      // Add characters for this MBTI type
+      const characters = officeCharactersByMBTI[result.name] || [];
+      departmentGroups[department].characters.push(...characters);
+
+      departmentGroups[department].decisions[result.decision] =
+        (departmentGroups[department].decisions[result.decision] || 0) + 1;
+      totalScores[department] += result.score;
+    }
+  });
+
+  // Calculate average scores
+  Object.keys(departmentGroups).forEach((department) => {
+    if (departmentGroups[department].count > 0) {
+      departmentGroups[department].averageScore =
+        totalScores[department] / departmentGroups[department].count;
+    }
+  });
+
+  return departmentGroups;
+};
+
 // Helper function to get a random famous person for a given MBTI type
 const getRandomFamousPerson = (mbtiType: string): string => {
   const people = famousPeopleByMBTI[mbtiType] || [];
@@ -926,6 +1206,252 @@ const HousesContent: React.FC<{
   );
 };
 
+// Office Content Component
+const OfficeContent: React.FC<{
+  results: DecisionService.SimulationResult[];
+  mbtiDescriptions: Record<string, DecisionService.MBTIDescription>;
+}> = ({ results, mbtiDescriptions }) => {
+  const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
+
+  const handleDepartmentMouseEnter = (department: string) => {
+    setHoveredDepartment(department);
+  };
+
+  const handleDepartmentMouseLeave = () => {
+    setHoveredDepartment(null);
+  };
+
+  // Generate data for department-based visualization
+  const officeDepartmentsData = groupResultsByOfficeDepartments(results);
+
+  return (
+    <div className="space-y-6">
+      <div className="mb-4 text-sm text-[#007aff] font-medium bg-[#007aff]/5 p-3 rounded-lg">
+        Welcome to Dunder Mifflin Scranton! See how different office departments approach decisions
+        based on their workplace roles and team dynamics. That's what she said... about decision analysis!
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {Object.values(officeDepartmentsData).filter(dept => dept.count > 0).map((department) => {
+          // Find majority decision for this department
+          const departmentDecisions = Object.entries(department.decisions);
+          const majorityDecision =
+            departmentDecisions.length > 0
+              ? departmentDecisions.reduce((a, b) => (a[1] > b[1] ? a : b))[0]
+              : "No decision";
+
+          const isHighlighted = hoveredDepartment === department.name;
+
+          return (
+            <div
+              key={department.name}
+              className={`p-4 rounded-xl shadow-sm transition-all duration-300 ${
+                hoveredDepartment && !isHighlighted ? "opacity-50" : "opacity-100"
+              }`}
+              style={{
+                backgroundColor: `${department.color}15`,
+                borderLeft: `4px solid ${department.color}`,
+              }}
+              onMouseEnter={() => handleDepartmentMouseEnter(department.name)}
+              onMouseLeave={handleDepartmentMouseLeave}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: department.color }}
+                ></div>
+                <h3
+                  className="font-bold text-lg"
+                  style={{ color: department.color }}
+                >
+                  {department.name}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Personalities:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {department.types.map((type) => (
+                      <span
+                        key={type}
+                        className="text-xs font-medium px-2 py-1 rounded-md"
+                        style={{
+                          backgroundColor: `${mbtiDescriptions[type].color}20`,
+                          color: mbtiDescriptions[type].color,
+                        }}
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Characters: {department.characters.join(", ")}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Decisions:</p>
+                  {Object.entries(department.decisions).map(
+                    ([decision, count]) => {
+                      const decisionColor =
+                        decision === "Proceed Strategically"
+                          ? "#4ade80"
+                          : decision === "Request Clarification"
+                          ? "#facc15"
+                          : "#f87171";
+
+                      return (
+                        <div
+                          key={decision}
+                          className="flex items-center justify-between text-xs mb-1"
+                        >
+                          <span
+                            style={{ color: decisionColor }}
+                            className="font-medium"
+                          >
+                            {decision}
+                          </span>
+                          <span className="bg-gray-100 px-2 py-0.5 rounded">
+                            {count}/{department.count}
+                          </span>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <p className="text-sm text-gray-600 mb-1">
+                  Average Confidence:
+                </p>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                  <div
+                    className="h-2.5 rounded-full"
+                    style={{
+                      width: `${department.averageScore * 100}%`,
+                      backgroundColor: department.color,
+                    }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>0%</span>
+                  <span
+                    className="font-medium"
+                    style={{ color: department.color }}
+                  >
+                    {(department.averageScore * 100).toFixed(1)}%
+                  </span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <div
+                className="mt-4 p-3 rounded-lg"
+                style={{ backgroundColor: `${department.color}10` }}
+              >
+                <p
+                  className="text-sm font-medium mb-1"
+                  style={{ color: department.color }}
+                >
+                  Department Verdict: {majorityDecision}
+                </p>
+                <p className="text-xs text-gray-600">
+                  {officeDepartmentInfo[department.name]?.description}
+                </p>
+                <p className="text-[10px] italic text-gray-500 mt-1">
+                  "{officeDepartmentInfo[department.name]?.motto}"
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Department Comparison Chart */}
+      <div className="bg-white p-4 rounded-xl shadow-sm">
+        <h3 className="font-bold text-[#007aff] mb-3">
+          Department Decision Comparison
+        </h3>
+
+        <div className="space-y-4">
+          {["Proceed Strategically", "Request Clarification", "Delay or Disengage"].map((decision) => {
+            const decisionColor =
+              decision === "Proceed Strategically"
+                ? "#4ade80"
+                : decision === "Request Clarification"
+                ? "#facc15"
+                : "#f87171";
+
+            return (
+              <div key={decision} className="space-y-2">
+                <h4 className="font-medium text-sm" style={{ color: decisionColor }}>
+                  {decision}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+                  {Object.values(officeDepartmentsData)
+                    .filter(dept => dept.count > 0)
+                    .map((department) => {
+                      const count = department.decisions[decision] || 0;
+                      const percentage = department.count > 0 ? (count / department.count) * 100 : 0;
+
+                      return (
+                        <div
+                          key={department.name}
+                          className="flex items-center justify-between p-2 rounded"
+                          style={{ backgroundColor: `${department.color}10` }}
+                        >
+                          <span className="text-xs font-medium" style={{ color: department.color }}>
+                            {department.name}
+                          </span>
+                          <span className="text-xs font-mono">
+                            {percentage.toFixed(0)}%
+                          </span>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Department Traits Section */}
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+        {Object.entries(officeDepartmentInfo).map(([deptName, info]) => {
+          const deptData = officeDepartmentsData[deptName];
+          if (!deptData || deptData.count === 0) return null;
+
+          return (
+            <div
+              key={deptName}
+              className="p-3 rounded-lg"
+              style={{
+                backgroundColor: `${deptData.color}15`,
+              }}
+            >
+              <p
+                className="font-medium mb-1"
+                style={{ color: deptData.color }}
+              >
+                {deptName} Characteristics
+              </p>
+              <p className="text-xs text-gray-600 mb-2">
+                {info.characteristics.join(", ")}
+              </p>
+              <p className="text-[10px] text-gray-500 italic">
+                "{info.motto}"
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export default function UserDecisionDashboard() {
   const [mounted, setMounted] = useState(false);
   const mbtiTypes: MBTIType[] = DecisionService.archetypes.map(
@@ -1467,39 +1993,10 @@ export default function UserDecisionDashboard() {
                       </div>
                       </TabsContent>
                       <TabsContent value="office" className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
-                            const characters = officeCharactersByMBTI[type] || [];
-                            if (characters.length === 0) return null;
-                            const img = getMBTIImage(type);
-                            return (
-                              <div
-                                key={type}
-                                className={cn(
-                                  "p-4 rounded-xl shadow-sm bg-white",
-                                  type === userMBTI ? "border-2 border-[#007aff]" : "border border-gray-100"
-                                )}
-                                style={{ borderLeft: `4px solid ${info.color}` }}
-                              >
-                                <div className="flex items-start gap-3">
-                                  <Image
-                                    src={img}
-                                    alt={`${type} icon`}
-                                    width={48}
-                                    height={48}
-                                    className="w-12 h-12 rounded-full object-cover"
-                                  />
-                                  <div>
-                                    <h4 className="font-bold mb-2" style={{ color: info.color }}>
-                                      {info.name}
-                                    </h4>
-                                    <p className="text-sm text-gray-600">{characters.join(', ')}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                        <OfficeContent
+                          results={results}
+                          mbtiDescriptions={DecisionService.mbtiDescriptions}
+                        />
                       </TabsContent>
                     </Tabs>
                   ) : (

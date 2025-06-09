@@ -26,7 +26,7 @@ import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
 // Import react-icons
 import { FaBrain, FaCheck } from "react-icons/fa";
-import { BsFileText } from "react-icons/bs";
+import { BsFileText, BsClockFill, BsGeoAlt } from "react-icons/bs";
 import { IoMdAnalytics } from "react-icons/io";
 import {
   MdOutlineAssessment,

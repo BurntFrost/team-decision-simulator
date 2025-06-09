@@ -495,6 +495,7 @@ export default function UserDecisionDashboard() {
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("scenarios");
   const [mbtiSubTab, setMbtiSubTab] = useState("descriptions");
+  const [resultsSubTab, setResultsSubTab] = useState("analysis");
   const [preview, setPreview] = useState<{ decision: string; color: string }>({
     decision: "",
     color: "#6b7280",
@@ -681,7 +682,7 @@ export default function UserDecisionDashboard() {
               className="w-full"
             >
               <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 pt-4">
-                <TabsList className="grid w-full grid-cols-5 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                <TabsList className="grid w-full grid-cols-4 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
                   <TabsTrigger
                     value="scenarios"
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
@@ -718,15 +719,7 @@ export default function UserDecisionDashboard() {
                       <span className="text-xs">Types</span>
                     </div>
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="office"
-                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <BsPeople className="h-4 w-4" />
-                      <span className="text-xs">Office</span>
-                    </div>
-                  </TabsTrigger>
+
                 </TabsList>
               </div>
 
@@ -880,22 +873,27 @@ export default function UserDecisionDashboard() {
                     <div className="absolute top-10 right-10 w-[180px] h-[180px] bg-gradient-to-bl from-blue-500 to-purple-600 rounded-full blur-xl"></div>
                   </div>
                   {results.length > 0 ? (
-                    <>
-                      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
-                        <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                          Decision Analysis
-                        </h3>
-                        {userResult && (
-                          <div className="mb-4 text-sm">
-                            <span>Your ({userMBTI}) decision:</span>
-                            <span
-                              className="ml-2 px-2 py-1 rounded-full text-white"
-                              style={{ backgroundColor: userResult.color }}
-                            >
-                              {userResult.decision}
-                            </span>
-                          </div>
-                        )}
+                    <Tabs value={resultsSubTab} onValueChange={setResultsSubTab} className="w-full space-y-4">
+                      <TabsList className="grid w-full grid-cols-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                        <TabsTrigger value="analysis" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Analysis</TabsTrigger>
+                        <TabsTrigger value="office" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Office</TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="analysis" className="space-y-6">
+                        <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
+                          <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+                            Decision Analysis
+                          </h3>
+                          {userResult && (
+                            <div className="mb-4 text-sm">
+                              <span>Your ({userMBTI}) decision:</span>
+                              <span
+                                className="ml-2 px-2 py-1 rounded-full text-white"
+                                style={{ backgroundColor: userResult.color }}
+                              >
+                                {userResult.decision}
+                              </span>
+                            </div>
+                          )}
 
                         <div className="space-y-6">
                           <div className="space-y-2 text-sm">
@@ -1010,7 +1008,43 @@ export default function UserDecisionDashboard() {
                           />
                         </div>
                       </div>
-                    </>
+                      </TabsContent>
+                      <TabsContent value="office" className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
+                            const characters = officeCharactersByMBTI[type] || [];
+                            if (characters.length === 0) return null;
+                            const img = getMBTIImage(type);
+                            return (
+                              <div
+                                key={type}
+                                className={cn(
+                                  "p-4 rounded-xl shadow-sm bg-white",
+                                  type === userMBTI ? "border-2 border-[#007aff]" : "border border-gray-100"
+                                )}
+                                style={{ borderLeft: `4px solid ${info.color}` }}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <Image
+                                    src={img}
+                                    alt={`${type} icon`}
+                                    width={48}
+                                    height={48}
+                                    className="w-12 h-12 rounded-full object-cover"
+                                  />
+                                  <div>
+                                    <h4 className="font-bold mb-2" style={{ color: info.color }}>
+                                      {info.name}
+                                    </h4>
+                                    <p className="text-sm text-gray-600">{characters.join(', ')}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   ) : (
                     <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
                       <div className="text-[#8e8e93] mb-4">
@@ -1038,13 +1072,8 @@ export default function UserDecisionDashboard() {
                   <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
                     <div className="absolute bottom-10 right-10 w-[120px] h-[120px] bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-full blur-xl"></div>
                   </div>
-                  <Tabs value={mbtiSubTab} onValueChange={setMbtiSubTab} className="w-full space-y-4">
-                    <TabsList className="grid w-full grid-cols-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
-                      <TabsTrigger value="descriptions" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Descriptions</TabsTrigger>
-                      <TabsTrigger value="office" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Office</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="descriptions" className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
                           const famousPerson = famousPeopleMap[type];
                           const img = getMBTIImage(type);
@@ -1075,79 +1104,11 @@ export default function UserDecisionDashboard() {
                             </div>
                           );
                         })}
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="office" className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
-                          const characters = officeCharactersByMBTI[type] || [];
-                          if (characters.length === 0) return null;
-                          const img = getMBTIImage(type);
-                          return (
-                            <div
-                              key={type}
-                              className={cn(
-                                "p-4 rounded-xl shadow-sm bg-white",
-                                type === userMBTI ? "border-2 border-[#007aff]" : "border border-gray-100"
-                              )}
-                              style={{ borderLeft: `4px solid ${info.color}` }}
-                            >
-                              <div className="flex items-start gap-3">
-                                <Image src={img} alt={`${type} icon`} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
-                                <div>
-                                  <h4 className="font-bold mb-2" style={{ color: info.color }}>
-                                    {info.name}
-                                  </h4>
-                                  <p className="text-sm text-gray-600">{characters.join(', ')}</p>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
+                    </div>
+                  </div>
                 </TabsContent>
 
-                {/* The Office Characters Tab */}
-                <TabsContent value="office" className="space-y-4 relative">
-                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute bottom-10 left-10 w-[120px] h-[120px] bg-gradient-to-br from-purple-600 to-blue-500 rounded-full blur-xl"></div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
-                      const characters = officeCharactersByMBTI[type] || [];
-                      if (characters.length === 0) return null;
-                      const img = getMBTIImage(type);
-                      return (
-                        <div
-                          key={type}
-                          className={cn(
-                            "p-4 rounded-xl shadow-sm bg-white",
-                            type === userMBTI ? "border-2 border-[#007aff]" : "border border-gray-100"
-                          )}
-                          style={{ borderLeft: `4px solid ${info.color}` }}
-                        >
-                          <div className="flex items-start gap-3">
-                            <Image
-                              src={img}
-                              alt={`${type} icon`}
-                              width={48}
-                              height={48}
-                              className="w-12 h-12 rounded-full object-cover"
-                            />
-                            <div>
-                              <h4 className="font-bold mb-2" style={{ color: info.color }}>
-                                {info.name}
-                              </h4>
-                              <p className="text-sm text-gray-600">{characters.join(', ')}</p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </TabsContent>
+
               </div>
             </Tabs>
           </CardContent>

@@ -19,14 +19,7 @@ import {
   Scatter,
   ZAxis,
   CartesianGrid,
-  Sankey,
-  Tooltip,
-  Rectangle,
   ReferenceLine,
-  Layer,
-  Curve,
-  Line,
-  Dot,
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -37,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import StyledTabs from "./StyledTabs";
+
 import * as DecisionService from "@/lib/decisionMatrixService";
 
 // Import specific types
@@ -851,7 +844,7 @@ const UserDecisionCharts: React.FC<Props> = ({
   const [activeTab, setActiveTab] = useState("bar");
   const [dimensions, setDimensions] = useState({ width: 800, height: 800 });
   const [isMounted, setIsMounted] = useState(false);
-  const [hoveredHouse, setHoveredHouse] = useState<string | null>(null);
+
   const isClient = typeof window !== "undefined";
 
   const [selectedFactor, setSelectedFactor] = useState<string>("");
@@ -881,13 +874,7 @@ const UserDecisionCharts: React.FC<Props> = ({
     setHoveredType(null);
   };
 
-  const handleHouseMouseEnter = (house: string) => {
-    setHoveredHouse(house);
-  };
 
-  const handleHouseMouseLeave = () => {
-    setHoveredHouse(null);
-  };
 
   useEffect(() => {
     if (selectedFactor) {
@@ -933,8 +920,7 @@ const UserDecisionCharts: React.FC<Props> = ({
     });
   }
 
-  // Generate data for house-based visualization
-  const hogwartsHousesData = groupResultsByHogwartsHouses(results);
+
 
   // Extract factor names for heat map
   const factorNames = inputs
@@ -965,7 +951,7 @@ const UserDecisionCharts: React.FC<Props> = ({
       onValueChange={(value) => setActiveTab(value)}
     >
       <div className="w-full max-w-full overflow-hidden">
-        <TabsList className="w-full mb-4 bg-[#4455a6]/10 p-1 rounded-xl overflow-hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-1">
+        <TabsList className="w-full mb-4 bg-[#4455a6]/10 p-1 rounded-xl overflow-hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
           <TabsTrigger
             value="bar"
             className={cn(
@@ -979,19 +965,7 @@ const UserDecisionCharts: React.FC<Props> = ({
           >
             Confidence
           </TabsTrigger>
-          <TabsTrigger
-            value="houses"
-            className={cn(
-              "rounded-lg font-semibold text-[10px] xxs:text-[11px] xs:text-xs md:text-sm px-1 py-1.5",
-              "data-[state=active]:bg-[#4455a6]",
-              "data-[state=active]:text-white",
-              "data-[state=active]:shadow-lg",
-              "data-[state=inactive]:py-1",
-              "transition-all duration-200"
-            )}
-          >
-            Houses
-          </TabsTrigger>
+
           <TabsTrigger
             value="radar"
             className={cn(
@@ -1342,431 +1316,7 @@ const UserDecisionCharts: React.FC<Props> = ({
         </div>
       </TabsContent>
 
-      <TabsContent value="houses" className="mt-2">
-        <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
-          The Hogwarts Sorting Hat has categorized MBTI personality types into
-          four houses. See how each house approaches decisions differently based
-          on their core traits.
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {Object.values(hogwartsHousesData).map((house) => {
-            // Find majority decision for this house
-            const houseDecisions = Object.entries(house.decisions);
-            const majorityDecision =
-              houseDecisions.length > 0
-                ? houseDecisions.reduce((a, b) => (a[1] > b[1] ? a : b))[0]
-                : "No decision";
-
-            const isHighlighted = hoveredHouse === house.name;
-
-            return (
-              <div
-                key={house.name}
-                className={`p-4 rounded-xl shadow-sm transition-all duration-300 ${
-                  hoveredHouse && !isHighlighted ? "opacity-50" : "opacity-100"
-                }`}
-                style={{
-                  backgroundColor: `${house.color}15`,
-                  borderLeft: `4px solid ${house.color}`,
-                }}
-                onMouseEnter={() => handleHouseMouseEnter(house.name)}
-                onMouseLeave={handleHouseMouseLeave}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: house.color }}
-                  ></div>
-                  <h3
-                    className="font-bold text-lg"
-                    style={{ color: house.color }}
-                  >
-                    {house.name}
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Personalities:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {house.types.map((type) => (
-                        <span
-                          key={type}
-                          className="text-xs font-medium px-2 py-1 rounded-md"
-                          style={{
-                            backgroundColor: `${mbtiDescriptions[type].color}20`,
-                            color: mbtiDescriptions[type].color,
-                          }}
-                        >
-                          {type}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Decisions:</p>
-                    {Object.entries(house.decisions).map(
-                      ([decision, count]) => {
-                        const decisionColor =
-                          decision === "Proceed Strategically"
-                            ? "#4ade80"
-                            : decision === "Request Clarification"
-                            ? "#facc15"
-                            : "#f87171";
-
-                        return (
-                          <div
-                            key={decision}
-                            className="flex items-center justify-between text-xs mb-1"
-                          >
-                            <span
-                              style={{ color: decisionColor }}
-                              className="font-medium"
-                            >
-                              {decision}
-                            </span>
-                            <span className="bg-gray-100 px-2 py-0.5 rounded">
-                              {count}/{house.count}
-                            </span>
-                          </div>
-                        );
-                      }
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <p className="text-sm text-gray-600 mb-1">
-                    Average Confidence:
-                  </p>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-                    <div
-                      className="h-2.5 rounded-full"
-                      style={{
-                        width: `${house.averageScore * 100}%`,
-                        backgroundColor: house.color,
-                      }}
-                    ></div>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span>0%</span>
-                    <span
-                      className="font-medium"
-                      style={{ color: house.color }}
-                    >
-                      {(house.averageScore * 100).toFixed(1)}%
-                    </span>
-                    <span>100%</span>
-                  </div>
-                </div>
-
-                <div
-                  className="mt-4 p-3 rounded-lg"
-                  style={{ backgroundColor: `${house.color}10` }}
-                >
-                  <p
-                    className="text-sm font-medium mb-1"
-                    style={{ color: house.color }}
-                  >
-                    House Verdict: {majorityDecision}
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    {house.name === "Gryffindor" &&
-                      "Bold and decisive, Gryffindors lean toward action over caution."}
-                    {house.name === "Hufflepuff" &&
-                      "Patient and methodical, Hufflepuffs seek balanced, fair solutions."}
-                    {house.name === "Ravenclaw" &&
-                      "Analytical and thoughtful, Ravenclaws base decisions on thorough evaluation."}
-                    {house.name === "Slytherin" &&
-                      "Strategic and ambitious, Slytherins evaluate both risks and opportunities carefully."}
-                  </p>
-                  <p className="text-[10px] italic text-gray-500 mt-1">
-                    {hogwartsHouseInfo[house.name]?.quote}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="bg-white p-4 rounded-xl shadow-sm">
-          <h3 className="font-bold text-[#4455a6] mb-3">
-            House Decision Comparison
-          </h3>
-
-          <ResponsiveContainer
-            width="100%"
-            height={window.innerWidth < 768 ? 250 : 300}
-          >
-            <BarChart
-              data={[
-                {
-                  name: "Proceed Strategically",
-                  Gryffindor:
-                    ((hogwartsHousesData.Gryffindor.decisions[
-                      "Proceed Strategically"
-                    ] || 0) /
-                      hogwartsHousesData.Gryffindor.count) *
-                      100 || 0,
-                  Hufflepuff:
-                    ((hogwartsHousesData.Hufflepuff.decisions[
-                      "Proceed Strategically"
-                    ] || 0) /
-                      hogwartsHousesData.Hufflepuff.count) *
-                      100 || 0,
-                  Ravenclaw:
-                    ((hogwartsHousesData.Ravenclaw.decisions[
-                      "Proceed Strategically"
-                    ] || 0) /
-                      hogwartsHousesData.Ravenclaw.count) *
-                      100 || 0,
-                  Slytherin:
-                    ((hogwartsHousesData.Slytherin.decisions[
-                      "Proceed Strategically"
-                    ] || 0) /
-                      hogwartsHousesData.Slytherin.count) *
-                      100 || 0,
-                  color: "#4ade80",
-                },
-                {
-                  name: "Request Clarification",
-                  Gryffindor:
-                    ((hogwartsHousesData.Gryffindor.decisions[
-                      "Request Clarification"
-                    ] || 0) /
-                      hogwartsHousesData.Gryffindor.count) *
-                      100 || 0,
-                  Hufflepuff:
-                    ((hogwartsHousesData.Hufflepuff.decisions[
-                      "Request Clarification"
-                    ] || 0) /
-                      hogwartsHousesData.Hufflepuff.count) *
-                      100 || 0,
-                  Ravenclaw:
-                    ((hogwartsHousesData.Ravenclaw.decisions[
-                      "Request Clarification"
-                    ] || 0) /
-                      hogwartsHousesData.Ravenclaw.count) *
-                      100 || 0,
-                  Slytherin:
-                    ((hogwartsHousesData.Slytherin.decisions[
-                      "Request Clarification"
-                    ] || 0) /
-                      hogwartsHousesData.Slytherin.count) *
-                      100 || 0,
-                  color: "#facc15",
-                },
-                {
-                  name: "Delay or Disengage",
-                  Gryffindor:
-                    ((hogwartsHousesData.Gryffindor.decisions[
-                      "Delay or Disengage"
-                    ] || 0) /
-                      hogwartsHousesData.Gryffindor.count) *
-                      100 || 0,
-                  Hufflepuff:
-                    ((hogwartsHousesData.Hufflepuff.decisions[
-                      "Delay or Disengage"
-                    ] || 0) /
-                      hogwartsHousesData.Hufflepuff.count) *
-                      100 || 0,
-                  Ravenclaw:
-                    ((hogwartsHousesData.Ravenclaw.decisions[
-                      "Delay or Disengage"
-                    ] || 0) /
-                      hogwartsHousesData.Ravenclaw.count) *
-                      100 || 0,
-                  Slytherin:
-                    ((hogwartsHousesData.Slytherin.decisions[
-                      "Delay or Disengage"
-                    ] || 0) /
-                      hogwartsHousesData.Slytherin.count) *
-                      100 || 0,
-                  color: "#f87171",
-                },
-              ]}
-              margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                opacity={0.2}
-              />
-              <XAxis dataKey="name" tick={{ fill: "#4455a6" }} />
-              <YAxis
-                tickFormatter={(value) => `${value}%`}
-                domain={[0, 100]}
-                tick={{ fill: "#4455a6" }}
-              />
-              <RechartsTooltip
-                formatter={(value: any) => [`${value.toFixed(1)}%`, ""]}
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    return (
-                      <div className="p-3 bg-white border border-gray-200 rounded-lg shadow-md">
-                        <p
-                          className="font-medium mb-1"
-                          style={{ color: payload[0].payload.color }}
-                        >
-                          {label}
-                        </p>
-                        {payload.map((entry, index) => (
-                          <div
-                            key={`item-${index}`}
-                            className="flex justify-between text-sm"
-                          >
-                            <span
-                              style={{
-                                color:
-                                  entry.name &&
-                                  Object.prototype.hasOwnProperty.call(
-                                    hogwartsHousesData,
-                                    entry.name
-                                  )
-                                    ? hogwartsHousesData[entry.name].color
-                                    : "#666666",
-                                fontWeight: 500,
-                              }}
-                            >
-                              {entry.name}:
-                            </span>
-                            <span className="ml-4 font-mono">
-                              {entry.value.toFixed(1)}%
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Legend
-                onClick={(e) =>
-                  e.dataKey && handleHouseMouseEnter(String(e.dataKey))
-                }
-                onMouseEnter={(e) =>
-                  e.dataKey && handleHouseMouseEnter(String(e.dataKey))
-                }
-                onMouseLeave={handleHouseMouseLeave}
-              />
-              <Bar
-                dataKey="Gryffindor"
-                name="Gryffindor"
-                fill={hogwartsHousesData.Gryffindor.color}
-                opacity={
-                  hoveredHouse && hoveredHouse !== "Gryffindor" ? 0.3 : 0.8
-                }
-              />
-              <Bar
-                dataKey="Hufflepuff"
-                name="Hufflepuff"
-                fill={hogwartsHousesData.Hufflepuff.color}
-                opacity={
-                  hoveredHouse && hoveredHouse !== "Hufflepuff" ? 0.3 : 0.8
-                }
-              />
-              <Bar
-                dataKey="Ravenclaw"
-                name="Ravenclaw"
-                fill={hogwartsHousesData.Ravenclaw.color}
-                opacity={
-                  hoveredHouse && hoveredHouse !== "Ravenclaw" ? 0.3 : 0.8
-                }
-              />
-              <Bar
-                dataKey="Slytherin"
-                name="Slytherin"
-                fill={hogwartsHousesData.Slytherin.color}
-                opacity={
-                  hoveredHouse && hoveredHouse !== "Slytherin" ? 0.3 : 0.8
-                }
-              />
-            </BarChart>
-          </ResponsiveContainer>
-
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-            <div
-              className="p-3 rounded-lg"
-              style={{
-                backgroundColor: `${hogwartsHousesData.Gryffindor.color}15`,
-              }}
-            >
-              <p
-                className="font-medium mb-1"
-                style={{ color: hogwartsHousesData.Gryffindor.color }}
-              >
-                Gryffindor Traits
-              </p>
-              <p className="text-xs text-gray-600">
-                Brave, daring, chivalrous, determined, and bold
-              </p>
-              <p className="text-[10px] text-gray-500 mt-1">
-                Characters: {hogwartsHouseInfo.Gryffindor.characters.join(", ")}
-              </p>
-            </div>
-            <div
-              className="p-3 rounded-lg"
-              style={{
-                backgroundColor: `${hogwartsHousesData.Hufflepuff.color}15`,
-              }}
-            >
-              <p
-                className="font-medium mb-1"
-                style={{ color: hogwartsHousesData.Hufflepuff.color }}
-              >
-                Hufflepuff Traits
-              </p>
-              <p className="text-xs text-gray-600">
-                Loyal, patient, fair, hard-working, and inclusive
-              </p>
-              <p className="text-[10px] text-gray-500 mt-1">
-                Characters: {hogwartsHouseInfo.Hufflepuff.characters.join(", ")}
-              </p>
-            </div>
-            <div
-              className="p-3 rounded-lg"
-              style={{
-                backgroundColor: `${hogwartsHousesData.Ravenclaw.color}15`,
-              }}
-            >
-              <p
-                className="font-medium mb-1"
-                style={{ color: hogwartsHousesData.Ravenclaw.color }}
-              >
-                Ravenclaw Traits
-              </p>
-              <p className="text-xs text-gray-600">
-                Intelligent, wise, creative, analytical, and thoughtful
-              </p>
-              <p className="text-[10px] text-gray-500 mt-1">
-                Characters: {hogwartsHouseInfo.Ravenclaw.characters.join(", ")}
-              </p>
-            </div>
-            <div
-              className="p-3 rounded-lg"
-              style={{
-                backgroundColor: `${hogwartsHousesData.Slytherin.color}15`,
-              }}
-            >
-              <p
-                className="font-medium mb-1"
-                style={{ color: hogwartsHousesData.Slytherin.color }}
-              >
-                Slytherin Traits
-              </p>
-              <p className="text-xs text-gray-600">
-                Ambitious, cunning, resourceful, strategic, and determined
-              </p>
-              <p className="text-[10px] text-gray-500 mt-1">
-                Characters: {hogwartsHouseInfo.Slytherin.characters.join(", ")}
-              </p>
-            </div>
-          </div>
-        </div>
-      </TabsContent>
 
       <TabsContent value="radar" className="mt-2">
         <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">

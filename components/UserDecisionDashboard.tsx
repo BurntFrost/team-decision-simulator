@@ -50,6 +50,7 @@ import {
   MdFactCheck,
   MdPsychology,
   MdOutlineLeaderboard,
+  MdHome,
 } from "react-icons/md";
 
 // iOS Status Bar Component
@@ -478,6 +479,453 @@ type MBTIType =
   | "ESTP"
   | "ESFP";
 
+// Harry Potter Houses mapping for MBTI types
+const harryPotterHousesByMBTI: Record<
+  string,
+  {
+    house: string;
+    color: string;
+    traits: string[];
+  }
+> = {
+  // Gryffindor - brave, daring, chivalrous
+  ENFJ: {
+    house: "Gryffindor",
+    color: "#740001", // Gryffindor red
+    traits: ["bravery", "courage", "determination", "leadership"],
+  },
+  ENTJ: {
+    house: "Gryffindor",
+    color: "#740001",
+    traits: ["bravery", "leadership", "boldness", "confidence"],
+  },
+  ESFP: {
+    house: "Gryffindor",
+    color: "#740001",
+    traits: ["courage", "adventurous", "enthusiastic", "spontaneous"],
+  },
+  ESTP: {
+    house: "Gryffindor",
+    color: "#740001",
+    traits: ["boldness", "risk-taking", "action-oriented", "adaptable"],
+  },
+  // Hufflepuff - loyal, patient, fair, hard-working
+  ISFJ: {
+    house: "Hufflepuff",
+    color: "#FFD800", // Hufflepuff yellow
+    traits: ["loyalty", "patience", "fairness", "hard-working"],
+  },
+  ESFJ: {
+    house: "Hufflepuff",
+    color: "#FFD800",
+    traits: ["loyalty", "supportive", "caring", "inclusive"],
+  },
+  ISFP: {
+    house: "Hufflepuff",
+    color: "#FFD800",
+    traits: ["patience", "kindness", "harmony", "authenticity"],
+  },
+  ENFP: {
+    house: "Hufflepuff",
+    color: "#FFD800",
+    traits: ["enthusiasm", "inclusivity", "optimism", "empathy"],
+  },
+  // Ravenclaw - intelligent, wise, creative
+  INTJ: {
+    house: "Ravenclaw",
+    color: "#0E1A40", // Ravenclaw blue
+    traits: ["intelligence", "strategy", "independence", "vision"],
+  },
+  INTP: {
+    house: "Ravenclaw",
+    color: "#0E1A40",
+    traits: ["wisdom", "analysis", "creativity", "logic"],
+  },
+  INFJ: {
+    house: "Ravenclaw",
+    color: "#0E1A40",
+    traits: ["insight", "intuition", "wisdom", "idealism"],
+  },
+  INFP: {
+    house: "Ravenclaw",
+    color: "#0E1A40",
+    traits: ["creativity", "individuality", "depth", "authenticity"],
+  },
+  // Slytherin - ambitious, cunning, resourceful
+  ESTJ: {
+    house: "Slytherin",
+    color: "#1A472A", // Slytherin green
+    traits: ["ambition", "leadership", "efficiency", "determination"],
+  },
+  ISTJ: {
+    house: "Slytherin",
+    color: "#1A472A",
+    traits: ["resourcefulness", "persistence", "strategy", "reliability"],
+  },
+  ENTP: {
+    house: "Slytherin",
+    color: "#1A472A",
+    traits: ["cunning", "adaptability", "innovation", "persuasion"],
+  },
+  ISTP: {
+    house: "Slytherin",
+    color: "#1A472A",
+    traits: ["resourcefulness", "pragmatism", "independence", "efficiency"],
+  },
+};
+
+// Example characters and quotes for each Hogwarts house
+const hogwartsHouseInfo: Record<string, { characters: string[]; quote: string }> = {
+  Gryffindor: {
+    characters: ["Harry Potter", "Hermione Granger", "Ron Weasley"],
+    quote: "Daring, nerve, and chivalry set Gryffindors apart.",
+  },
+  Hufflepuff: {
+    characters: ["Cedric Diggory", "Nymphadora Tonks", "Pomona Sprout"],
+    quote: "Those patient Hufflepuffs are true and unafraid of toil.",
+  },
+  Ravenclaw: {
+    characters: ["Luna Lovegood", "Cho Chang", "Garrick Ollivander"],
+    quote: "Wit beyond measure is man's greatest treasure.",
+  },
+  Slytherin: {
+    characters: ["Severus Snape", "Draco Malfoy", "Tom Riddle"],
+    quote: "Those cunning folk use any means to achieve their ends.",
+  },
+};
+
+// Helper function to get Harry Potter house for a MBTI type
+const getHarryPotterHouse = (mbtiType: string): string => {
+  return harryPotterHousesByMBTI[mbtiType]?.house || "Unknown";
+};
+
+// Group MBTI results by Hogwarts houses
+const groupResultsByHogwartsHouses = (results: DecisionService.SimulationResult[]) => {
+  const houseGroups: Record<
+    string,
+    {
+      name: string;
+      color: string;
+      count: number;
+      types: string[];
+      decisions: Record<string, number>;
+      averageScore: number;
+    }
+  > = {
+    Gryffindor: {
+      name: "Gryffindor",
+      color: "#740001",
+      count: 0,
+      types: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Hufflepuff: {
+      name: "Hufflepuff",
+      color: "#FFD800",
+      count: 0,
+      types: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Ravenclaw: {
+      name: "Ravenclaw",
+      color: "#0E1A40",
+      count: 0,
+      types: [],
+      decisions: {},
+      averageScore: 0,
+    },
+    Slytherin: {
+      name: "Slytherin",
+      color: "#1A472A",
+      count: 0,
+      types: [],
+      decisions: {},
+      averageScore: 0,
+    },
+  };
+
+  // Group results by house
+  let totalScores: Record<string, number> = {
+    Gryffindor: 0,
+    Hufflepuff: 0,
+    Ravenclaw: 0,
+    Slytherin: 0,
+  };
+
+  results.forEach((result) => {
+    const house = getHarryPotterHouse(result.name);
+    if (houseGroups[house]) {
+      houseGroups[house].count++;
+      houseGroups[house].types.push(result.name);
+      houseGroups[house].decisions[result.decision] =
+        (houseGroups[house].decisions[result.decision] || 0) + 1;
+      totalScores[house] += result.score;
+    }
+  });
+
+  // Calculate average scores
+  Object.keys(houseGroups).forEach((house) => {
+    if (houseGroups[house].count > 0) {
+      houseGroups[house].averageScore =
+        totalScores[house] / houseGroups[house].count;
+    }
+  });
+
+  return houseGroups;
+};
+
+// Houses Content Component
+const HousesContent: React.FC<{
+  results: DecisionService.SimulationResult[];
+  mbtiDescriptions: Record<string, DecisionService.MBTIDescription>;
+}> = ({ results, mbtiDescriptions }) => {
+  const [hoveredHouse, setHoveredHouse] = useState<string | null>(null);
+
+  const handleHouseMouseEnter = (house: string) => {
+    setHoveredHouse(house);
+  };
+
+  const handleHouseMouseLeave = () => {
+    setHoveredHouse(null);
+  };
+
+  // Generate data for house-based visualization
+  const hogwartsHousesData = groupResultsByHogwartsHouses(results);
+
+  return (
+    <div className="space-y-6">
+      <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
+        The Hogwarts Sorting Hat has categorized MBTI personality types into
+        four houses. See how each house approaches decisions differently based
+        on their core traits.
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {Object.values(hogwartsHousesData).map((house) => {
+          // Find majority decision for this house
+          const houseDecisions = Object.entries(house.decisions);
+          const majorityDecision =
+            houseDecisions.length > 0
+              ? houseDecisions.reduce((a, b) => (a[1] > b[1] ? a : b))[0]
+              : "No decision";
+
+          const isHighlighted = hoveredHouse === house.name;
+
+          return (
+            <div
+              key={house.name}
+              className={`p-4 rounded-xl shadow-sm transition-all duration-300 ${
+                hoveredHouse && !isHighlighted ? "opacity-50" : "opacity-100"
+              }`}
+              style={{
+                backgroundColor: `${house.color}15`,
+                borderLeft: `4px solid ${house.color}`,
+              }}
+              onMouseEnter={() => handleHouseMouseEnter(house.name)}
+              onMouseLeave={handleHouseMouseLeave}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: house.color }}
+                ></div>
+                <h3
+                  className="font-bold text-lg"
+                  style={{ color: house.color }}
+                >
+                  {house.name}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Personalities:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {house.types.map((type) => (
+                      <span
+                        key={type}
+                        className="text-xs font-medium px-2 py-1 rounded-md"
+                        style={{
+                          backgroundColor: `${mbtiDescriptions[type].color}20`,
+                          color: mbtiDescriptions[type].color,
+                        }}
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Decisions:</p>
+                  {Object.entries(house.decisions).map(
+                    ([decision, count]) => {
+                      const decisionColor =
+                        decision === "Proceed Strategically"
+                          ? "#4ade80"
+                          : decision === "Request Clarification"
+                          ? "#facc15"
+                          : "#f87171";
+
+                      return (
+                        <div
+                          key={decision}
+                          className="flex items-center justify-between text-xs mb-1"
+                        >
+                          <span
+                            style={{ color: decisionColor }}
+                            className="font-medium"
+                          >
+                            {decision}
+                          </span>
+                          <span className="bg-gray-100 px-2 py-0.5 rounded">
+                            {count}/{house.count}
+                          </span>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <p className="text-sm text-gray-600 mb-1">
+                  Average Confidence:
+                </p>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                  <div
+                    className="h-2.5 rounded-full"
+                    style={{
+                      width: `${house.averageScore * 100}%`,
+                      backgroundColor: house.color,
+                    }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>0%</span>
+                  <span
+                    className="font-medium"
+                    style={{ color: house.color }}
+                  >
+                    {(house.averageScore * 100).toFixed(1)}%
+                  </span>
+                  <span>100%</span>
+                </div>
+              </div>
+
+              <div
+                className="mt-4 p-3 rounded-lg"
+                style={{ backgroundColor: `${house.color}10` }}
+              >
+                <p
+                  className="text-sm font-medium mb-1"
+                  style={{ color: house.color }}
+                >
+                  House Verdict: {majorityDecision}
+                </p>
+                <p className="text-xs text-gray-600">
+                  {house.name === "Gryffindor" &&
+                    "Bold and decisive, Gryffindors lean toward action over caution."}
+                  {house.name === "Hufflepuff" &&
+                    "Patient and methodical, Hufflepuffs seek balanced, fair solutions."}
+                  {house.name === "Ravenclaw" &&
+                    "Analytical and thoughtful, Ravenclaws base decisions on thorough evaluation."}
+                  {house.name === "Slytherin" &&
+                    "Strategic and ambitious, Slytherins evaluate both risks and opportunities carefully."}
+                </p>
+                <p className="text-[10px] italic text-gray-500 mt-1">
+                  {hogwartsHouseInfo[house.name]?.quote}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+        <div
+          className="p-3 rounded-lg"
+          style={{
+            backgroundColor: `${hogwartsHousesData.Gryffindor.color}15`,
+          }}
+        >
+          <p
+            className="font-medium mb-1"
+            style={{ color: hogwartsHousesData.Gryffindor.color }}
+          >
+            Gryffindor Traits
+          </p>
+          <p className="text-xs text-gray-600">
+            Brave, daring, chivalrous, determined, and bold
+          </p>
+          <p className="text-[10px] text-gray-500 mt-1">
+            Characters: {hogwartsHouseInfo.Gryffindor.characters.join(", ")}
+          </p>
+        </div>
+        <div
+          className="p-3 rounded-lg"
+          style={{
+            backgroundColor: `${hogwartsHousesData.Hufflepuff.color}15`,
+          }}
+        >
+          <p
+            className="font-medium mb-1"
+            style={{ color: hogwartsHousesData.Hufflepuff.color }}
+          >
+            Hufflepuff Traits
+          </p>
+          <p className="text-xs text-gray-600">
+            Loyal, patient, fair, hard-working, and inclusive
+          </p>
+          <p className="text-[10px] text-gray-500 mt-1">
+            Characters: {hogwartsHouseInfo.Hufflepuff.characters.join(", ")}
+          </p>
+        </div>
+        <div
+          className="p-3 rounded-lg"
+          style={{
+            backgroundColor: `${hogwartsHousesData.Ravenclaw.color}15`,
+          }}
+        >
+          <p
+            className="font-medium mb-1"
+            style={{ color: hogwartsHousesData.Ravenclaw.color }}
+          >
+            Ravenclaw Traits
+          </p>
+          <p className="text-xs text-gray-600">
+            Intelligent, wise, creative, analytical, and thoughtful
+          </p>
+          <p className="text-[10px] text-gray-500 mt-1">
+            Characters: {hogwartsHouseInfo.Ravenclaw.characters.join(", ")}
+          </p>
+        </div>
+        <div
+          className="p-3 rounded-lg"
+          style={{
+            backgroundColor: `${hogwartsHousesData.Slytherin.color}15`,
+          }}
+        >
+          <p
+            className="font-medium mb-1"
+            style={{ color: hogwartsHousesData.Slytherin.color }}
+          >
+            Slytherin Traits
+          </p>
+          <p className="text-xs text-gray-600">
+            Ambitious, cunning, resourceful, strategic, and determined
+          </p>
+          <p className="text-[10px] text-gray-500 mt-1">
+            Characters: {hogwartsHouseInfo.Slytherin.characters.join(", ")}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function UserDecisionDashboard() {
   const [mounted, setMounted] = useState(false);
   const mbtiTypes: MBTIType[] = DecisionService.archetypes.map(
@@ -682,7 +1130,7 @@ export default function UserDecisionDashboard() {
               className="w-full"
             >
               <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 pt-4">
-                <TabsList className="grid w-full grid-cols-4 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                <TabsList className="grid w-full grid-cols-5 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
                   <TabsTrigger
                     value="scenarios"
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
@@ -717,6 +1165,15 @@ export default function UserDecisionDashboard() {
                     <div className="flex flex-col items-center gap-1">
                       <MdPsychology className="h-4 w-4" />
                       <span className="text-xs">Types</span>
+                    </div>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="houses"
+                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <MdHome className="h-4 w-4" />
+                      <span className="text-xs">Houses</span>
                     </div>
                   </TabsTrigger>
 
@@ -1106,6 +1563,37 @@ export default function UserDecisionDashboard() {
                         })}
                     </div>
                   </div>
+                </TabsContent>
+
+                {/* Houses Tab */}
+                <TabsContent value="houses" className="space-y-4 relative">
+                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                    <div className="absolute top-10 left-10 w-[150px] h-[150px] bg-gradient-to-br from-red-600 to-yellow-500 rounded-full blur-xl"></div>
+                  </div>
+                  {results.length > 0 ? (
+                    <HousesContent
+                      results={results}
+                      mbtiDescriptions={DecisionService.mbtiDescriptions}
+                    />
+                  ) : (
+                    <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
+                      <div className="text-[#8e8e93] mb-4">
+                        <MdHome className="h-12 w-12 mx-auto" />
+                      </div>
+                      <p className="text-[#1d1d1f] font-medium">
+                        No simulation results yet
+                      </p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        Run a simulation to see how Hogwarts houses approach decisions
+                      </p>
+                      <Button
+                        onClick={() => setActiveTab("factors")}
+                        className="mt-4 bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-6 py-2 shadow-sm transition-all active:scale-95"
+                      >
+                        Go to Factors
+                      </Button>
+                    </div>
+                  )}
                 </TabsContent>
 
 

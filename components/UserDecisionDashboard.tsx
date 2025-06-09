@@ -321,6 +321,114 @@ const officeCharactersByMBTI: Record<string, string[]> = {
   ESFP: ["Kelly Kapoor"],
 };
 
+// Mapping of MBTI types to characters from Harry Potter
+const harryPotterCharactersByMBTI: Record<string, string[]> = {
+  INTJ: ["Severus Snape", "Tom Riddle"],
+  ENTJ: ["Hermione Granger", "McGonagall"],
+  INTP: ["Luna Lovegood", "Newt Scamander"],
+  ENTP: ["Fred Weasley", "George Weasley"],
+  INFJ: ["Dumbledore", "Remus Lupin"],
+  ENFJ: ["Harry Potter", "Molly Weasley"],
+  INFP: ["Dobby", "Neville Longbottom"],
+  ENFP: ["Ron Weasley", "Tonks"],
+  ISTJ: ["Percy Weasley", "Barty Crouch Sr."],
+  ESTJ: ["Dolores Umbridge", "Vernon Dursley"],
+  ISFJ: ["Hagrid", "Mrs. Weasley"],
+  ESFJ: ["Cedric Diggory", "Fleur Delacour"],
+  ISTP: ["Sirius Black", "Mad-Eye Moody"],
+  ESTP: ["Draco Malfoy", "Gilderoy Lockhart"],
+  ISFP: ["Cho Chang", "Lavender Brown"],
+  ESFP: ["Peeves", "Rita Skeeter"],
+};
+
+// Combined character examples for display
+const characterExamplesByMBTI: Record<string, Array<{name: string, franchise: string}>> = {
+  INTJ: [
+    { name: "Oscar Martinez", franchise: "The Office" },
+    { name: "Severus Snape", franchise: "Harry Potter" }
+  ],
+  ENTJ: [
+    { name: "Jan Levinson", franchise: "The Office" },
+    { name: "Hermione Granger", franchise: "Harry Potter" }
+  ],
+  INTP: [
+    { name: "Gabe Lewis", franchise: "The Office" },
+    { name: "Luna Lovegood", franchise: "Harry Potter" }
+  ],
+  ENTP: [
+    { name: "Jim Halpert", franchise: "The Office" },
+    { name: "Fred Weasley", franchise: "Harry Potter" }
+  ],
+  INFJ: [
+    { name: "Toby Flenderson", franchise: "The Office" },
+    { name: "Dumbledore", franchise: "Harry Potter" }
+  ],
+  ENFJ: [
+    { name: "Andy Bernard", franchise: "The Office" },
+    { name: "Harry Potter", franchise: "Harry Potter" }
+  ],
+  INFP: [
+    { name: "Erin Hannon", franchise: "The Office" },
+    { name: "Dobby", franchise: "Harry Potter" }
+  ],
+  ENFP: [
+    { name: "Michael Scott", franchise: "The Office" },
+    { name: "Ron Weasley", franchise: "Harry Potter" }
+  ],
+  ISTJ: [
+    { name: "Dwight Schrute", franchise: "The Office" },
+    { name: "Percy Weasley", franchise: "Harry Potter" }
+  ],
+  ESTJ: [
+    { name: "Angela Martin", franchise: "The Office" },
+    { name: "Dolores Umbridge", franchise: "Harry Potter" }
+  ],
+  ISFJ: [
+    { name: "Pam Beesly", franchise: "The Office" },
+    { name: "Hagrid", franchise: "Harry Potter" }
+  ],
+  ESFJ: [
+    { name: "Phyllis Vance", franchise: "The Office" },
+    { name: "Cedric Diggory", franchise: "Harry Potter" }
+  ],
+  ISTP: [
+    { name: "Stanley Hudson", franchise: "The Office" },
+    { name: "Sirius Black", franchise: "Harry Potter" }
+  ],
+  ESTP: [
+    { name: "Todd Packer", franchise: "The Office" },
+    { name: "Draco Malfoy", franchise: "Harry Potter" }
+  ],
+  ISFP: [
+    { name: "Holly Flax", franchise: "The Office" },
+    { name: "Cho Chang", franchise: "Harry Potter" }
+  ],
+  ESFP: [
+    { name: "Kelly Kapoor", franchise: "The Office" },
+    { name: "Rita Skeeter", franchise: "Harry Potter" }
+  ],
+};
+
+// Mapping of MBTI types to characters from Harry Potter
+const harryPotterCharactersByMBTI: Record<string, string[]> = {
+  INTJ: ["Severus Snape", "Tom Riddle"],
+  ENTJ: ["Hermione Granger", "McGonagall"],
+  INTP: ["Luna Lovegood", "Newt Scamander"],
+  ENTP: ["Fred Weasley", "George Weasley"],
+  INFJ: ["Dumbledore", "Remus Lupin"],
+  ENFJ: ["Harry Potter", "Molly Weasley"],
+  INFP: ["Dobby", "Neville Longbottom"],
+  ENFP: ["Ron Weasley", "Tonks"],
+  ISTJ: ["Percy Weasley", "Barty Crouch Sr."],
+  ESTJ: ["Dolores Umbridge", "Vernon Dursley"],
+  ISFJ: ["Hagrid", "Mrs. Weasley"],
+  ESFJ: ["Cedric Diggory", "Fleur Delacour"],
+  ISTP: ["Sirius Black", "Mad-Eye Moody"],
+  ESTP: ["Draco Malfoy", "Gilderoy Lockhart"],
+  ISFP: ["Cho Chang", "Lavender Brown"],
+  ESFP: ["Peeves", "Rita Skeeter"],
+};
+
 // Office Departments mapping for MBTI types
 const officeDepartmentsByMBTI: Record<
   string,
@@ -2029,7 +2137,7 @@ export default function UserDecisionDashboard() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
-                          const famousPerson = famousPeopleMap[type];
+                          const characterExamples = characterExamplesByMBTI[type] || [];
                           const img = getMBTIImage(type);
                           return (
                             <div
@@ -2042,7 +2150,7 @@ export default function UserDecisionDashboard() {
                             >
                               <div className="flex items-start gap-3">
                                 <Image src={img} alt={`${type} icon`} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
-                                <div>
+                                <div className="flex-1">
                                   <h4 className="font-bold mb-2" style={{ color: info.color }}>
                                     {info.name}
                                   </h4>
@@ -2052,9 +2160,29 @@ export default function UserDecisionDashboard() {
                               {type === userMBTI && (
                                 <p className="text-xs font-semibold text-[#007aff] mt-1">Your Type</p>
                               )}
-                              <p className="text-xs mt-2 italic text-gray-500">
-                                {famousPerson && `Famous example: ${famousPerson}`}
-                              </p>
+
+                              {/* Character Examples Section */}
+                              {characterExamples.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                  <p className="text-xs font-medium text-gray-700 mb-2">Character Examples:</p>
+                                  <div className="space-y-1">
+                                    {characterExamples.map((character, index) => (
+                                      <div key={index} className="flex items-center justify-between text-xs">
+                                        <span className="font-medium text-gray-800">{character.name}</span>
+                                        <span
+                                          className="px-2 py-1 rounded-full text-xs font-medium"
+                                          style={{
+                                            backgroundColor: character.franchise === "The Office" ? "#e3f2fd" : "#f3e5f5",
+                                            color: character.franchise === "The Office" ? "#1976d2" : "#7b1fa2"
+                                          }}
+                                        >
+                                          {character.franchise}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           );
                         })}

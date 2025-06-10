@@ -26,7 +26,8 @@ function TabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "bg-muted text-muted-foreground flex w-full items-center justify-start rounded-lg p-1 overflow-x-auto gap-1 md:inline-flex md:w-fit md:p-2 md:gap-2 lg:gap-3 lg:p-2.5",
+        "glass rounded-2xl p-1.5 flex w-full items-center justify-start overflow-x-auto gap-1 md:inline-flex md:w-fit md:p-2 md:gap-2 lg:gap-3 lg:p-2.5",
+        "bg-white/5 backdrop-blur-xl border border-white/20 shadow-lg",
         className
       )}
       {...props}
@@ -42,7 +43,12 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex min-h-[52px] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-4 py-2.5 text-base font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 md:min-h-[44px] md:px-5 md:py-2 lg:px-7",
+        "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-all duration-300 disabled:pointer-events-none disabled:opacity-50",
+        "text-gray-600 hover:text-gray-800 hover:bg-white/10",
+        "data-[state=active]:bg-white/20 data-[state=active]:text-gray-900 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:border data-[state=active]:border-white/30",
+        "focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:outline-none",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "md:min-h-[44px] md:px-5 md:py-2 lg:px-7",
         className
       )}
       {...props}

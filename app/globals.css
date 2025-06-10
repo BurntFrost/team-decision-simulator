@@ -41,6 +41,29 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Liquid Glass Design System Variables */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg-strong: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --glass-shadow-strong: 0 16px 64px rgba(0, 0, 0, 0.16);
+  --glass-blur: blur(16px);
+  --glass-blur-strong: blur(24px);
+
+  /* Dynamic Gradient Variables */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-warm: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  --gradient-cool: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
+  /* Animation Variables */
+  --animation-fast: 0.2s ease-out;
+  --animation-normal: 0.3s ease-out;
+  --animation-slow: 0.5s ease-out;
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Custom breakpoints */
@@ -149,6 +172,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Liquid Glass Utility Classes */
+@layer utilities {
+  /* Glass Morphism Effects - Using standard Tailwind classes */
+
+  /* Floating Elements */
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .floating-delayed {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: -2s;
+  }
+
+  /* Liquid Animations */
+  .liquid-morph {
+    animation: liquidMorph 8s ease-in-out infinite;
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  /* Interactive States */
+  .interactive {
+    transition: all var(--animation-normal);
+    cursor: pointer;
+  }
+
+  .interactive:hover {
+    transform: scale(1.02) translateY(-1px);
+  }
+
+  .interactive:active {
+    transform: scale(0.98);
+  }
+
+  /* Gradient Backgrounds */
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .bg-gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
+  .bg-gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .bg-gradient-warm {
+    background: var(--gradient-warm);
+  }
+
+  .bg-gradient-cool {
+    background: var(--gradient-cool);
+  }
+}
+
 /* iOS style improvements */
 .safe-area-inset-bottom {
   padding-bottom: env(safe-area-inset-bottom, 16px);
@@ -240,7 +322,140 @@ button:active {
 }
 
 .dark .bg-grid {
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+}
+
+/* Liquid Glass Keyframe Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes liquidMorph {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+  50% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(103, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(103, 126, 234, 0.6);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInBlur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes liquidFlow {
+  0%, 100% {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  33% {
+    transform: translateX(30px) translateY(-30px) scale(1.1);
+  }
+  66% {
+    transform: translateX(-20px) translateY(20px) scale(0.9);
+  }
+}
+
+@keyframes glassShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Additional utility classes for enhanced effects */
+@layer utilities {
+  .animate-liquid-flow {
+    animation: liquidFlow 12s ease-in-out infinite;
+  }
+
+  .animate-glass-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: glassShimmer 3s ease-in-out infinite;
+  }
+
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  }
+
+  .shadow-3xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(64px);
+    -webkit-backdrop-filter: blur(64px);
+  }
 }

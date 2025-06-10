@@ -19,6 +19,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { GlassContainer } from "@/components/ui/glass-container";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -1762,50 +1763,71 @@ export default function UserDecisionDashboard() {
   }, [decisionCounts, results]);
 
   return (
-    <div className="bg-[#f5f5f7] min-h-screen safe-area-inset-bottom relative">
-      {/* Background decorative elements */}
+    <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
+      {/* Liquid Background */}
+      {/* <LiquidBackground
+        variant="aurora"
+        intensity="medium"
+        animated={true}
+        particles={true}
+      /> */}
+
+      {/* Additional floating elements for depth */}
       <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[30%] left-[-5%] w-[400px] h-[400px] opacity-[0.08] text-blue-900 dark:text-blue-300 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full blur-3xl"></div>
-        <div className="absolute top-[5%] right-[-10%] w-[300px] h-[300px] opacity-[0.1] text-blue-900 dark:text-blue-300 bg-gradient-to-tl from-blue-800 to-purple-700 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[5%] left-[10%] w-[250px] h-[250px] opacity-[0.09] text-blue-900 dark:text-blue-300 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[10%] right-[5%] w-[200px] h-[200px] opacity-[0.08] text-blue-900 dark:text-blue-300 bg-gradient-to-bl from-blue-700 to-indigo-800 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-[40%] right-[20%] w-[500px] h-[500px] opacity-[0.07] text-blue-900 dark:text-blue-300 bg-gradient-to-tr from-purple-700 to-blue-800 rounded-full blur-3xl"></div>
+        <div className="absolute top-[20%] left-[10%] w-[300px] h-[300px] bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-[60%] right-[15%] w-[200px] h-[200px] bg-gradient-to-tl from-pink-400/10 to-blue-400/10 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
+        <div className="absolute bottom-[30%] left-[20%] w-[250px] h-[250px] bg-gradient-to-r from-indigo-400/10 to-cyan-400/10 rounded-full blur-3xl animate-bounce" />
       </div>
 
-      {/* iOS-style Hero Section with App Description */}
-      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 pt-6 sm:p-6 sm:pt-8 rounded-b-[2rem] shadow-sm relative overflow-hidden z-10">
-        <div className="absolute inset-0 bg-grid opacity-10"></div>
-        <div className="absolute top-0 right-0 w-[200px] h-[200px] opacity-[0.15] bg-gradient-to-br from-white/20 to-white/10 rounded-full blur-lg"></div>
-        <div className="absolute bottom-0 left-0 w-[300px] h-[150px] opacity-[0.15] bg-gradient-to-tr from-white/20 to-white/10 rounded-full blur-lg"></div>
-        <div className="relative flex flex-col gap-2 mb-2">
-          <div
-            className="flex items-center gap-2 mb-2 relative"
-            onMouseEnter={handleBrainMouseEnter}
-            onMouseLeave={handleBrainMouseLeave}
-          >
-            <FaBrain className="h-6 w-6 text-white/90" />
-            <h2 className="text-xl sm:text-2xl font-bold text-white/95">
-              MBTI Brain
-            </h2>
+      {/* Liquid Glass Hero Section */}
+      <div className="relative z-10 mx-4 mt-4 mb-6">
+        <GlassContainer
+          variant="floating"
+          rounded="3xl"
+          shadow="2xl"
+          interactive={false}
+          gradient={true}
+          className="p-6 sm:p-8 bg-gradient-to-r from-slate-800/90 via-blue-900/90 to-indigo-900/90 border-white/30 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="absolute inset-0 bg-grid opacity-5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 rounded-3xl"></div>
+          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-[200px] h-[100px] bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-2xl"></div>
+          <div className="relative flex flex-col gap-2 mb-2">
             <div
-              className="absolute left-full ml-2 text-white text-sm pointer-events-none transition-opacity"
-              style={{ opacity: eggOpacity }}
+              className="flex items-center gap-2 mb-2 relative"
+              onMouseEnter={handleBrainMouseEnter}
+              onMouseLeave={handleBrainMouseLeave}
             >
-              🎉
+              <FaBrain className="h-6 w-6 text-white" />
+              <h2 className="text-xl sm:text-2xl font-bold text-white">
+                MBTI Brain
+              </h2>
+              <div
+                className="absolute left-full ml-2 text-white text-sm pointer-events-none transition-opacity"
+                style={{ opacity: eggOpacity }}
+              >
+                🎉
+              </div>
             </div>
+            <p className="text-sm iphone16:text-base sm:text-base text-white/90 max-w-3xl relative">
+              Explore how different personality types approach your decisions.
+              Select a scenario, adjust factors, and discover diverse
+              perspectives.
+            </p>
           </div>
-          <p className="text-sm iphone16:text-base sm:text-base text-white/80 max-w-3xl relative">
-            Explore how different personality types approach your decisions.
-            Select a scenario, adjust factors, and discover diverse
-            perspectives.
-          </p>
-        </div>
+        </GlassContainer>
       </div>
 
       {/* Main Content with Tabs */}
       <div className="px-3 py-4 sm:p-6 -mt-6 relative z-20">
-        <Card className="border-none shadow-xl bg-white rounded-[1.5rem] overflow-hidden relative">
-          <div className="absolute inset-0 bg-grid opacity-10"></div>
+        <GlassContainer
+          variant="floating"
+          rounded="3xl"
+          shadow="2xl"
+          className="bg-white/8 border-white/25 overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-grid opacity-5"></div>
           <CardContent className="p-0 relative">
             <div className="px-4 pt-4 flex justify-end">
               <div className="w-32 flex flex-col items-start">
@@ -1837,8 +1859,8 @@ export default function UserDecisionDashboard() {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 pt-4">
-                <TabsList className="grid w-full grid-cols-4 mb-2 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+              <div className="sticky top-0 z-10 bg-white/12 backdrop-blur-xl border-b border-white/20 px-4 pt-4 rounded-t-3xl">
+                <TabsList className="grid w-full grid-cols-4 mb-2 p-1.5 h-auto overflow-hidden">
                   <TabsTrigger
                     value="scenarios"
                     className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
@@ -1990,9 +2012,9 @@ export default function UserDecisionDashboard() {
                   )}
 
                   {/* 3D MBTI Visualization */}
-                  <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                  <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
                     <div className="mb-4">
-                      <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
                         MBTI Decision Factors in 3D Space
                       </h3>
                       <p className="text-sm text-gray-600">
@@ -2007,11 +2029,11 @@ export default function UserDecisionDashboard() {
                       userMBTI={userMBTI}
                       className="relative"
                     />
-                  </div>
+                  </GlassContainer>
 
-                  <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                  <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
                     <div className="mb-4">
-                      <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
                         Adjust Decision Factors
                       </h3>
                       <p className="text-sm text-gray-600">
@@ -2039,12 +2061,14 @@ export default function UserDecisionDashboard() {
                         />
                       ))}
                     </div>
-                  </div>
+                  </GlassContainer>
 
                   <div className="flex justify-center sm:justify-end mt-6">
                     <Button
                       onClick={handleSimulate}
-                      className="bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-8 py-3 shadow-sm w-full sm:w-auto transition-all active:scale-95"
+                      variant="default"
+                      size="lg"
+                      className="w-full sm:w-auto"
                     >
                       Run Simulation
                     </Button>
@@ -2318,7 +2342,7 @@ export default function UserDecisionDashboard() {
               </div>
             </Tabs>
           </CardContent>
-        </Card>
+        </GlassContainer>
       </div>
     </div>
   );

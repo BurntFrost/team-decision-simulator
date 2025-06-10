@@ -23,22 +23,22 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
         <PopoverTrigger asChild>
           <button
             aria-label={`More information about ${info.label}`}
-            className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full"
+            className="text-sm text-gray-600 cursor-help bg-white/8 backdrop-blur-md border border-white/20 w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-all duration-200"
           >
             ⓘ
           </button>
         </PopoverTrigger>
         <PopoverContent
           id={`${id}-info`}
-          className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3"
+          className="max-w-xs bg-white/12 backdrop-blur-xl border-white/30 shadow-2xl rounded-2xl p-4"
         >
-          <p className="font-medium text-[#1d1d1f]">{info.description}</p>
-            <div className="mt-2 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
-            <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
-              <span className="font-bold text-[#1d1d1f]">Low:</span> {info.lowDesc}
+          <p className="font-medium text-gray-800">{info.description}</p>
+            <div className="mt-3 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
+            <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl border border-white/20">
+              <span className="font-bold text-gray-800">Low:</span> <span className="text-gray-700">{info.lowDesc}</span>
             </div>
-            <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
-              <span className="font-bold text-[#1d1d1f]">High:</span> {info.highDesc}
+            <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl border border-white/20">
+              <span className="font-bold text-gray-800">High:</span> <span className="text-gray-700">{info.highDesc}</span>
             </div>
           </div>
         </PopoverContent>
@@ -58,7 +58,7 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
         aria-describedby={`${id}-info`}
         className="flex-grow"
       />
-      <span className="w-12 text-right font-mono text-[#007aff] font-semibold">
+      <span className="w-14 text-right font-mono text-blue-600 font-semibold bg-white/8 backdrop-blur-md border border-white/20 px-2 py-1 rounded-lg text-sm">
         {(value * 100).toFixed(0)}%
       </span>
     </div>

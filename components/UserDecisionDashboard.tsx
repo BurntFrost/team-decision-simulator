@@ -1028,6 +1028,8 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
   );
 });
 
+EnhancedPersonalityCard.displayName = 'EnhancedPersonalityCard';
+
 // Types for the charts component
 type ChartProps = {
   results: DecisionService.SimulationResult[];

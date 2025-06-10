@@ -170,6 +170,8 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
   );
 });
 
+MBTIPoint.displayName = 'MBTIPoint';
+
 // User position indicator
 interface UserPositionProps {
   position: [number, number, number];
@@ -343,6 +345,8 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
   );
 });
 
+Scene3D.displayName = 'Scene3D';
+
 // Main component
 const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   archetypes,
@@ -430,5 +434,7 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
     JSON.stringify(prevProps.userInputs) === JSON.stringify(nextProps.userInputs)
   );
 });
+
+MBTI3DVisualization.displayName = 'MBTI3DVisualization';
 
 export default MBTI3DVisualization;

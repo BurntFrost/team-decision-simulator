@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class ISTP extends BaseMBTIType {
   protected readonly name = "ISTP";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.25,
-    roi_visibility: 0.15,
-    autonomy_scope: 0.3,
-    time_pressure: 0.15,
-    social_complexity: -0.05,
+    data_quality: 0.24,
+    roi_visibility: 0.16,
+    autonomy_scope: 0.28,
+    time_pressure: 0.14,
+    social_complexity: -0.04,
+    psychological_safety: 0.10,
   };
   protected readonly description: MBTIDescription = {
     name: "ISTP - The Virtuoso",

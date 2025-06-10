@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class INTP extends BaseMBTIType {
   protected readonly name = "INTP";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.4,
-    roi_visibility: 0.15,
-    autonomy_scope: 0.2,
-    time_pressure: 0.05,
-    social_complexity: -0.1,
+    data_quality: 0.36,
+    roi_visibility: 0.14,
+    autonomy_scope: 0.22,
+    time_pressure: 0.06,
+    social_complexity: -0.08,
+    psychological_safety: 0.18,
   };
   protected readonly description: MBTIDescription = {
     name: "INTP - The Thinker",

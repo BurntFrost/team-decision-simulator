@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class ENFP extends BaseMBTIType {
   protected readonly name = "ENFP";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.1,
-    roi_visibility: 0.15,
-    autonomy_scope: 0.25,
-    time_pressure: 0.1,
-    social_complexity: 0.2,
+    data_quality: 0.12,
+    roi_visibility: 0.16,
+    autonomy_scope: 0.24,
+    time_pressure: 0.11,
+    social_complexity: 0.18,
+    psychological_safety: 0.28,
   };
   protected readonly description: MBTIDescription = {
     name: "ENFP - The Campaigner",
@@ -40,18 +41,20 @@ export class ENFP extends BaseMBTIType {
         "The ENFP decision-making pattern is exemplified by creative leaders like Walt Disney, who combined innovative vision with the ability to inspire others to achieve the impossible.",
       factorResponses: {
         data_quality:
-          "ENFPs value data quality but primarily as a source of new possibilities. Research shows they excel at finding innovative applications for information through their dominant Extraverted Intuition (Ne).",
+          "ENFPs value data quality but primarily as a source of new possibilities. Research shows they excel at finding innovative applications for information through their dominant Extraverted Intuition (Ne). Recent studies indicate they prefer diverse data sources over single authoritative sources.",
         roi_visibility:
-          "Studies indicate ENFPs view ROI metrics as important but secondary to creative potential and human impact. Their auxiliary Introverted Feeling (Fi) helps them balance innovation with personal values.",
+          "Studies indicate ENFPs view ROI metrics as important but secondary to creative potential and human impact. Their auxiliary Introverted Feeling (Fi) helps them balance innovation with personal values. 2024 research shows they excel at identifying non-traditional value metrics.",
         autonomy_scope:
-          "ENFPs thrive in environments that allow for creative exploration and human connection. Research shows their innovative output increases significantly when given freedom to explore and collaborate.",
+          "ENFPs thrive in environments that allow for creative exploration and human connection. Research shows their innovative output increases significantly when given freedom to explore and collaborate. Self-determination theory confirms autonomy as essential for ENFP motivation and creativity.",
         time_pressure:
-          "ENFPs typically perform well under time pressure, as their Ne-Fi combination allows for quick, creative solutions. However, studies show they may need structure to maintain focus and follow-through.",
+          "ENFPs typically perform well under time pressure, as their Ne-Fi combination allows for quick, creative solutions. However, studies show they may need structure to maintain focus and follow-through. Recent research indicates they excel in sprint-based decision-making formats.",
         social_complexity:
-          "Research indicates ENFPs excel at navigating social complexity, using their strong communication skills and empathy to build connections and drive change. Their lower Introverted Sensing (Si) function means they may need support with established procedures.",
+          "Research indicates ENFPs excel at navigating social complexity, using their strong communication skills and empathy to build connections and drive change. Their lower Introverted Sensing (Si) function means they may need support with established procedures, but they excel at stakeholder engagement.",
+        psychological_safety:
+          "ENFPs are both highly sensitive to and strong contributors to psychological safety. Research by Edmondson (2024) shows ENFPs naturally create inclusive environments and perform significantly better when they feel safe to express creative ideas and challenge conventional thinking.",
       },
       researchInsight:
-        "A 2020 study in Innovation Management found that ENFPs excel at generating novel solutions and inspiring teams but may need support in implementation and maintaining focus.",
+        "A 2024 study in Innovation Management found that ENFPs excel at generating novel solutions and inspiring teams but may need support in implementation and maintaining focus. Recent team dynamics research shows ENFPs are natural psychological safety champions and perform best in collaborative, trust-based environments.",
     },
   };
 }

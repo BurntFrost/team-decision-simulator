@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class INFP extends BaseMBTIType {
   protected readonly name = "INFP";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.2,
-    roi_visibility: 0.1,
-    autonomy_scope: 0.25,
-    time_pressure: -0.1,
-    social_complexity: 0.25,
+    data_quality: 0.18,
+    roi_visibility: 0.12,
+    autonomy_scope: 0.24,
+    time_pressure: -0.08,
+    social_complexity: 0.22,
+    psychological_safety: 0.32,
   };
   protected readonly description: MBTIDescription = {
     name: "INFP - The Mediator",

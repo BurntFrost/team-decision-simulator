@@ -1,37 +1,43 @@
-import { FactorInfoMap, ArchetypeProfile, MBTIDescription } from "./types";
+import { FactorInfoMap } from "./types";
 
-// Factor information with descriptions
+// Factor information with descriptions - Updated with modern decision-making research
 export const factorInfo: FactorInfoMap = {
   data_quality: {
     label: "Data Quality",
     description:
-      "How reliable, complete, and accurate is the available information?",
-    lowDesc: "Unreliable, incomplete, or dubious data",
-    highDesc: "Complete, verified, and trustworthy data",
+      "How reliable, complete, and accurate is the available information? Research shows data quality significantly impacts decision confidence and outcomes.",
+    lowDesc: "Unreliable, incomplete, or dubious data sources",
+    highDesc: "Complete, verified, and trustworthy data with clear provenance",
   },
   roi_visibility: {
     label: "ROI Visibility",
-    description: "How clear and measurable are the expected returns?",
+    description: "How clear and measurable are the expected returns? Behavioral economics research emphasizes the importance of clear outcome metrics.",
     lowDesc: "Unclear benefits, hard to measure outcomes",
-    highDesc: "Clear, quantifiable returns with specific metrics",
+    highDesc: "Clear, quantifiable returns with specific success metrics",
   },
   autonomy_scope: {
     label: "Autonomy & Scope",
-    description: "How much control will you have over execution?",
-    lowDesc: "Dependent on others with limited control",
-    highDesc: "Full authority within well-defined boundaries",
+    description: "How much control will you have over execution? Self-determination theory shows autonomy is crucial for motivation and decision quality.",
+    lowDesc: "Dependent on others with limited control over implementation",
+    highDesc: "Full authority within well-defined boundaries and clear accountability",
   },
   time_pressure: {
     label: "Time Pressure",
-    description: "How urgent is this decision?",
-    lowDesc: "Plenty of time, minimal urgency",
-    highDesc: "Immediate decision required, high urgency",
+    description: "How urgent is this decision? Research on decision-making under pressure shows varying impacts across personality types and complexity levels.",
+    lowDesc: "Plenty of time for deliberation, minimal urgency",
+    highDesc: "Immediate decision required, high time pressure",
   },
   social_complexity: {
     label: "Social Complexity",
-    description: "How many stakeholders are involved and how aligned are they?",
-    lowDesc: "Few stakeholders with aligned interests",
-    highDesc: "Many stakeholders with conflicting agendas",
+    description: "How many stakeholders are involved and how aligned are they? Team dynamics research shows stakeholder alignment significantly affects implementation success.",
+    lowDesc: "Few stakeholders with aligned interests and clear communication",
+    highDesc: "Many stakeholders with conflicting agendas and complex dynamics",
+  },
+  psychological_safety: {
+    label: "Psychological Safety",
+    description: "Can team members express concerns and ideas without fear of negative consequences? Google's Project Aristotle identified this as the top factor for team effectiveness.",
+    lowDesc: "Low trust environment, fear of speaking up or making mistakes",
+    highDesc: "High trust environment where diverse perspectives are welcomed and valued",
   },
 };
 
@@ -78,7 +84,7 @@ export const presetCategoryDescriptions: Record<string, string> = {
   Relationships: "Considerations for important relationships.",
 };
 
-// Default weights for each scenario
+// Default weights for each scenario - Updated with psychological safety factor
 export const presetScenarios = {
   "Buying a Car": {
     data_quality: 0.8,
@@ -86,6 +92,7 @@ export const presetScenarios = {
     autonomy_scope: 0.6,
     time_pressure: 0.4,
     social_complexity: 0.3,
+    psychological_safety: 0.2,
   },
   "Moving to a New City": {
     data_quality: 0.6,
@@ -93,6 +100,7 @@ export const presetScenarios = {
     autonomy_scope: 0.8,
     time_pressure: 0.4,
     social_complexity: 0.7,
+    psychological_safety: 0.5,
   },
   "Starting a Side Hustle": {
     data_quality: 0.7,
@@ -100,6 +108,7 @@ export const presetScenarios = {
     autonomy_scope: 0.9,
     time_pressure: 0.3,
     social_complexity: 0.5,
+    psychological_safety: 0.4,
   },
   "Home Renovation": {
     data_quality: 0.8,
@@ -107,6 +116,7 @@ export const presetScenarios = {
     autonomy_scope: 0.5,
     time_pressure: 0.4,
     social_complexity: 0.6,
+    psychological_safety: 0.3,
   },
   "Career Development": {
     data_quality: 0.7,
@@ -114,6 +124,7 @@ export const presetScenarios = {
     autonomy_scope: 0.6,
     time_pressure: 0.5,
     social_complexity: 0.4,
+    psychological_safety: 0.7,
   },
   "Major Purchase": {
     data_quality: 0.8,
@@ -121,6 +132,7 @@ export const presetScenarios = {
     autonomy_scope: 0.4,
     time_pressure: 0.3,
     social_complexity: 0.2,
+    psychological_safety: 0.1,
   },
   "Health & Fitness": {
     data_quality: 0.6,
@@ -128,6 +140,7 @@ export const presetScenarios = {
     autonomy_scope: 0.9,
     time_pressure: 0.4,
     social_complexity: 0.3,
+    psychological_safety: 0.6,
   },
   "Relationship Decision": {
     data_quality: 0.5,
@@ -135,23 +148,26 @@ export const presetScenarios = {
     autonomy_scope: 0.7,
     time_pressure: 0.6,
     social_complexity: 0.8,
+    psychological_safety: 0.9,
   },
 };
 
-// Default input values
+// Default input values - Updated with psychological safety
 export const defaultInputs = {
   data_quality: 0.8,
   roi_visibility: 0.6,
   autonomy_scope: 0.7,
   time_pressure: 0.3,
   social_complexity: 0.2,
+  psychological_safety: 0.6,
 };
 
-// Public opinion weights
+// Public opinion weights - Updated based on behavioral research
 export const publicOpinionWeights = {
-  data_quality: 0.15, // General public relies less on data quality
-  roi_visibility: 0.35, // Public strongly focuses on clear returns
-  autonomy_scope: 0.1, // Public cares less about autonomy
-  time_pressure: 0.3, // Public is highly influenced by urgency
-  social_complexity: -0.25, // Public strongly avoids social complexity
+  data_quality: 0.12, // General public relies less on data quality, more on intuition
+  roi_visibility: 0.32, // Public strongly focuses on clear, immediate returns
+  autonomy_scope: 0.08, // Public cares less about autonomy, prefers guidance
+  time_pressure: 0.28, // Public is highly influenced by urgency and FOMO
+  social_complexity: -0.22, // Public strongly avoids social complexity
+  psychological_safety: 0.15, // Public values feeling safe but may not prioritize it consciously
 };

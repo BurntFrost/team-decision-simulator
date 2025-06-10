@@ -8,7 +8,8 @@ import {
 } from '../models/decision/logic';
 import { Inputs } from '../models/decision/types';
 import { archetypes } from '../models/decision/mbti/constants';
-import { publicOpinionWeights } from '../models/decision/constants';
+import { publicOpinionWeights, factorInfo, presetScenarios } from '../models/decision/constants';
+import { MBTIFactory } from '../models/decision/mbti';
 
 describe('getPublicProbabilities', () => {
   it('probabilities sum to 1 and align with high score', () => {
@@ -33,6 +34,7 @@ describe('calculateResults', () => {
     autonomy_scope: 0.5,
     time_pressure: 0.5,
     social_complexity: 0.5,
+    psychological_safety: 0.5,
   };
 
   it('returns a result for every archetype', () => {
@@ -54,6 +56,7 @@ describe('calculatePublicOpinion', () => {
     autonomy_scope: 0.4,
     time_pressure: 0.5,
     social_complexity: 0.3,
+    psychological_safety: 0.6,
   };
 
   it('computes opinion metrics consistently', () => {
@@ -78,5 +81,40 @@ describe('calculatePublicOpinion', () => {
         ? 0.45
         : 0.2;
     expect(result.color).toBe(getDecision(decisionScore).color);
+  });
+});
+
+describe('Psychological Safety Factor Integration', () => {
+  it('all MBTI types include psychological safety factor', () => {
+    const profiles = MBTIFactory.getArchetypeProfiles();
+
+    profiles.forEach(profile => {
+      expect(profile.weights).toHaveProperty('psychological_safety');
+      expect(typeof profile.weights.psychological_safety).toBe('number');
+      // Psychological safety should be a reasonable value between -0.5 and 0.5
+      expect(profile.weights.psychological_safety).toBeGreaterThanOrEqual(-0.5);
+      expect(profile.weights.psychological_safety).toBeLessThanOrEqual(0.5);
+    });
+  });
+
+  it('preset scenarios include psychological safety factor', () => {
+    Object.values(presetScenarios).forEach(scenario => {
+      expect(scenario).toHaveProperty('psychological_safety');
+      expect(typeof scenario.psychological_safety).toBe('number');
+      // Psychological safety in scenarios should be between 0 and 1
+      expect(scenario.psychological_safety).toBeGreaterThanOrEqual(0);
+      expect(scenario.psychological_safety).toBeLessThanOrEqual(1);
+    });
+  });
+
+  it('factor info includes psychological safety', () => {
+    expect(factorInfo).toHaveProperty('psychological_safety');
+    expect(factorInfo.psychological_safety.label).toBe('Psychological Safety');
+    expect(factorInfo.psychological_safety.description).toContain('Project Aristotle');
+  });
+
+  it('public opinion weights include psychological safety', () => {
+    expect(publicOpinionWeights).toHaveProperty('psychological_safety');
+    expect(typeof publicOpinionWeights.psychological_safety).toBe('number');
   });
 });

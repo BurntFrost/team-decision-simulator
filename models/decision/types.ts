@@ -1,10 +1,11 @@
-// Basic Types
+// Basic Types - Updated with modern decision-making research
 export type FactorKey =
   | "data_quality"
   | "roi_visibility"
   | "autonomy_scope"
   | "time_pressure"
-  | "social_complexity";
+  | "social_complexity"
+  | "psychological_safety";
 
 export type FactorInfo = {
   label: string;

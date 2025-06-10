@@ -3,7 +3,7 @@ import { MBTIFactory } from "./index";
 // MBTI Archetypes with their decision weights
 export const archetypes = MBTIFactory.getArchetypeProfiles();
 
-// Famous people examples for each MBTI type
+// Famous people examples for each MBTI type - Updated with diverse, current examples
 export const famousPeopleByMBTI: Record<string, string[]> = {
   INTJ: [
     "Elon Musk",
@@ -11,13 +11,15 @@ export const famousPeopleByMBTI: Record<string, string[]> = {
     "Stephen Hawking",
     "Nikola Tesla",
     "Michelle Obama",
+    "Satya Nadella",
   ],
   ENTJ: [
     "Steve Jobs",
-    "Margaret Thatcher",
-    "Jack Welch",
+    "Oprah Winfrey",
+    "Sheryl Sandberg",
     "Gordon Ramsay",
-    "Jim Carrey",
+    "Franklin D. Roosevelt",
+    "Indra Nooyi",
   ],
   INTP: [
     "Albert Einstein",
@@ -25,13 +27,15 @@ export const famousPeopleByMBTI: Record<string, string[]> = {
     "Bill Gates",
     "Isaac Newton",
     "Marie Curie",
+    "Tina Fey",
   ],
   ENTP: [
     "Leonardo da Vinci",
     "Richard Feynman",
     "Barack Obama",
     "Thomas Edison",
-    "Celine Dion",
+    "Sarah Silverman",
+    "Mark Cuban",
   ],
   INFJ: [
     "Martin Luther King Jr.",
@@ -39,13 +43,15 @@ export const famousPeopleByMBTI: Record<string, string[]> = {
     "Mahatma Gandhi",
     "Taylor Swift",
     "Plato",
+    "Malala Yousafzai",
   ],
   ENFJ: [
-    "Oprah Winfrey",
     "Barack Obama",
     "Jennifer Lawrence",
     "Maya Angelou",
     "Neil deGrasse Tyson",
+    "John Krasinski",
+    "Kamala Harris",
   ],
   INFP: [
     "J.R.R. Tolkien",
@@ -53,6 +59,7 @@ export const famousPeopleByMBTI: Record<string, string[]> = {
     "Johnny Depp",
     "Princess Diana",
     "Bob Dylan",
+    "Tim Burton",
   ],
   ENFP: [
     "Robin Williams",
@@ -60,6 +67,7 @@ export const famousPeopleByMBTI: Record<string, string[]> = {
     "Robert Downey Jr.",
     "Ellen DeGeneres",
     "Mark Twain",
+    "Will Smith",
   ],
   ISTJ: [
     "Jeff Bezos",

@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class ESTJ extends BaseMBTIType {
   protected readonly name = "ESTJ";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.3,
-    roi_visibility: 0.3,
-    autonomy_scope: 0.15,
-    time_pressure: 0.2,
-    social_complexity: -0.05,
+    data_quality: 0.28,
+    roi_visibility: 0.32,
+    autonomy_scope: 0.16,
+    time_pressure: 0.18,
+    social_complexity: -0.04,
+    psychological_safety: 0.14,
   };
   protected readonly description: MBTIDescription = {
     name: "ESTJ - The Executive",

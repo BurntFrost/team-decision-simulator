@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class ESFP extends BaseMBTIType {
   protected readonly name = "ESFP";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.1,
-    roi_visibility: 0.15,
-    autonomy_scope: 0.15,
-    time_pressure: 0.2,
-    social_complexity: 0.2,
+    data_quality: 0.11,
+    roi_visibility: 0.16,
+    autonomy_scope: 0.16,
+    time_pressure: 0.18,
+    social_complexity: 0.18,
+    psychological_safety: 0.24,
   };
 
   protected readonly description: MBTIDescription = {

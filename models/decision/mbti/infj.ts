@@ -4,11 +4,12 @@ import { ArchetypeProfile, MBTIDescription } from "../types";
 export class INFJ extends BaseMBTIType {
   protected readonly name = "INFJ";
   protected readonly weights: ArchetypeProfile["weights"] = {
-    data_quality: 0.25,
-    roi_visibility: 0.15,
-    autonomy_scope: 0.15,
-    time_pressure: 0.05,
-    social_complexity: 0.2,
+    data_quality: 0.22,
+    roi_visibility: 0.14,
+    autonomy_scope: 0.16,
+    time_pressure: 0.06,
+    social_complexity: 0.18,
+    psychological_safety: 0.26,
   };
   protected readonly description: MBTIDescription = {
     name: "INFJ - The Advocate",

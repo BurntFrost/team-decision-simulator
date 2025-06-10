@@ -327,67 +327,195 @@ const harryPotterCharactersByMBTI: Record<string, string[]> = {
 const characterExamplesByMBTI: Record<string, Array<{name: string, franchise: string}>> = {
   INTJ: [
     { name: "Oscar Martinez", franchise: "The Office" },
-    { name: "Severus Snape", franchise: "Harry Potter" }
+    { name: "Severus Snape", franchise: "Harry Potter" },
+    { name: "Doctor Strange", franchise: "Marvel Heroes" },
+    { name: "Vision", franchise: "Marvel Heroes" },
+    { name: "Doctor Doom", franchise: "Marvel Villains" },
+    { name: "Thanos", franchise: "Marvel Villains" },
+    { name: "Batman", franchise: "DC Heroes" },
+    { name: "Martian Manhunter", franchise: "DC Heroes" },
+    { name: "Lex Luthor", franchise: "DC Villains" },
+    { name: "Brainiac", franchise: "DC Villains" }
   ],
   ENTJ: [
     { name: "Jan Levinson", franchise: "The Office" },
-    { name: "Hermione Granger", franchise: "Harry Potter" }
+    { name: "Hermione Granger", franchise: "Harry Potter" },
+    { name: "Nick Fury", franchise: "Marvel Heroes" },
+    { name: "Captain America", franchise: "Marvel Heroes" },
+    { name: "Magneto", franchise: "Marvel Villains" },
+    { name: "Kingpin", franchise: "Marvel Villains" },
+    { name: "Wonder Woman", franchise: "DC Heroes" },
+    { name: "Amanda Waller", franchise: "DC Heroes" },
+    { name: "Ra's al Ghul", franchise: "DC Villains" },
+    { name: "Darkseid", franchise: "DC Villains" }
   ],
   INTP: [
     { name: "Gabe Lewis", franchise: "The Office" },
-    { name: "Luna Lovegood", franchise: "Harry Potter" }
+    { name: "Luna Lovegood", franchise: "Harry Potter" },
+    { name: "Tony Stark", franchise: "Marvel Heroes" },
+    { name: "Bruce Banner", franchise: "Marvel Heroes" },
+    { name: "Green Goblin", franchise: "Marvel Villains" },
+    { name: "Ultron", franchise: "Marvel Villains" },
+    { name: "The Riddler", franchise: "DC Villains" },
+    { name: "Mr. Terrific", franchise: "DC Heroes" },
+    { name: "Scarecrow", franchise: "DC Villains" },
+    { name: "Cyborg", franchise: "DC Heroes" }
   ],
   ENTP: [
     { name: "Jim Halpert", franchise: "The Office" },
-    { name: "Fred Weasley", franchise: "Harry Potter" }
+    { name: "Fred Weasley", franchise: "Harry Potter" },
+    { name: "Spider-Man", franchise: "Marvel Heroes" },
+    { name: "Deadpool", franchise: "Marvel Heroes" },
+    { name: "Loki", franchise: "Marvel Villains" },
+    { name: "Mysterio", franchise: "Marvel Villains" },
+    { name: "The Flash", franchise: "DC Heroes" },
+    { name: "Green Lantern", franchise: "DC Heroes" },
+    { name: "The Joker", franchise: "DC Villains" },
+    { name: "Trickster", franchise: "DC Villains" }
   ],
   INFJ: [
     { name: "Toby Flenderson", franchise: "The Office" },
-    { name: "Dumbledore", franchise: "Harry Potter" }
+    { name: "Dumbledore", franchise: "Harry Potter" },
+    { name: "Professor X", franchise: "Marvel Heroes" },
+    { name: "Daredevil", franchise: "Marvel Heroes" },
+    { name: "Mystique", franchise: "Marvel Villains" },
+    { name: "Silver Surfer", franchise: "Marvel Villains" },
+    { name: "Superman", franchise: "DC Heroes" },
+    { name: "Raven", franchise: "DC Heroes" },
+    { name: "Two-Face", franchise: "DC Villains" },
+    { name: "Poison Ivy", franchise: "DC Villains" }
   ],
   ENFJ: [
     { name: "Andy Bernard", franchise: "The Office" },
-    { name: "Harry Potter", franchise: "Harry Potter" }
+    { name: "Harry Potter", franchise: "Harry Potter" },
+    { name: "Captain Marvel", franchise: "Marvel Heroes" },
+    { name: "Storm", franchise: "Marvel Heroes" },
+    { name: "Emma Frost", franchise: "Marvel Villains" },
+    { name: "Venom", franchise: "Marvel Villains" },
+    { name: "Aquaman", franchise: "DC Heroes" },
+    { name: "Starfire", franchise: "DC Heroes" },
+    { name: "Catwoman", franchise: "DC Villains" },
+    { name: "Black Manta", franchise: "DC Villains" }
   ],
   INFP: [
     { name: "Erin Hannon", franchise: "The Office" },
-    { name: "Dobby", franchise: "Harry Potter" }
+    { name: "Dobby", franchise: "Harry Potter" },
+    { name: "Wanda Maximoff", franchise: "Marvel Heroes" },
+    { name: "Peter Parker", franchise: "Marvel Heroes" },
+    { name: "Bucky Barnes", franchise: "Marvel Villains" },
+    { name: "Gambit", franchise: "Marvel Villains" },
+    { name: "Beast Boy", franchise: "DC Heroes" },
+    { name: "Shazam", franchise: "DC Heroes" },
+    { name: "Harley Quinn", franchise: "DC Villains" },
+    { name: "Mr. Freeze", franchise: "DC Villains" }
   ],
   ENFP: [
     { name: "Michael Scott", franchise: "The Office" },
-    { name: "Ron Weasley", franchise: "Harry Potter" }
+    { name: "Ron Weasley", franchise: "Harry Potter" },
+    { name: "Star-Lord", franchise: "Marvel Heroes" },
+    { name: "Ant-Man", franchise: "Marvel Heroes" },
+    { name: "Rocket Raccoon", franchise: "Marvel Villains" },
+    { name: "Carnage", franchise: "Marvel Villains" },
+    { name: "Booster Gold", franchise: "DC Heroes" },
+    { name: "Plastic Man", franchise: "DC Heroes" },
+    { name: "Captain Cold", franchise: "DC Villains" },
+    { name: "Clayface", franchise: "DC Villains" }
   ],
   ISTJ: [
     { name: "Dwight Schrute", franchise: "The Office" },
-    { name: "Percy Weasley", franchise: "Harry Potter" }
+    { name: "Percy Weasley", franchise: "Harry Potter" },
+    { name: "Captain America", franchise: "Marvel Heroes" },
+    { name: "Hawkeye", franchise: "Marvel Heroes" },
+    { name: "Red Skull", franchise: "Marvel Villains" },
+    { name: "Taskmaster", franchise: "Marvel Villains" },
+    { name: "Commissioner Gordon", franchise: "DC Heroes" },
+    { name: "Green Arrow", franchise: "DC Heroes" },
+    { name: "Deathstroke", franchise: "DC Villains" },
+    { name: "Penguin", franchise: "DC Villains" }
   ],
   ESTJ: [
     { name: "Angela Martin", franchise: "The Office" },
-    { name: "Dolores Umbridge", franchise: "Harry Potter" }
+    { name: "Dolores Umbridge", franchise: "Harry Potter" },
+    { name: "J. Jonah Jameson", franchise: "Marvel Heroes" },
+    { name: "Maria Hill", franchise: "Marvel Heroes" },
+    { name: "Norman Osborn", franchise: "Marvel Villains" },
+    { name: "Baron Zemo", franchise: "Marvel Villains" },
+    { name: "Lex Luthor", franchise: "DC Heroes" },
+    { name: "Alfred Pennyworth", franchise: "DC Heroes" },
+    { name: "General Zod", franchise: "DC Villains" },
+    { name: "Amanda Waller", franchise: "DC Villains" }
   ],
   ISFJ: [
     { name: "Pam Beesly", franchise: "The Office" },
-    { name: "Hagrid", franchise: "Harry Potter" }
+    { name: "Hagrid", franchise: "Harry Potter" },
+    { name: "Aunt May", franchise: "Marvel Heroes" },
+    { name: "Pepper Potts", franchise: "Marvel Heroes" },
+    { name: "Sandman", franchise: "Marvel Villains" },
+    { name: "Lizard", franchise: "Marvel Villains" },
+    { name: "Martha Kent", franchise: "DC Heroes" },
+    { name: "Lois Lane", franchise: "DC Heroes" },
+    { name: "Killer Croc", franchise: "DC Villains" },
+    { name: "Calendar Man", franchise: "DC Villains" }
   ],
   ESFJ: [
     { name: "Phyllis Vance", franchise: "The Office" },
-    { name: "Cedric Diggory", franchise: "Harry Potter" }
+    { name: "Cedric Diggory", franchise: "Harry Potter" },
+    { name: "Spider-Man", franchise: "Marvel Heroes" },
+    { name: "Falcon", franchise: "Marvel Heroes" },
+    { name: "Electro", franchise: "Marvel Villains" },
+    { name: "Rhino", franchise: "Marvel Villains" },
+    { name: "Supergirl", franchise: "DC Heroes" },
+    { name: "Batgirl", franchise: "DC Heroes" },
+    { name: "Cheetah", franchise: "DC Villains" },
+    { name: "Mirror Master", franchise: "DC Villains" }
   ],
   ISTP: [
     { name: "Stanley Hudson", franchise: "The Office" },
-    { name: "Sirius Black", franchise: "Harry Potter" }
+    { name: "Sirius Black", franchise: "Harry Potter" },
+    { name: "Wolverine", franchise: "Marvel Heroes" },
+    { name: "Punisher", franchise: "Marvel Heroes" },
+    { name: "Winter Soldier", franchise: "Marvel Villains" },
+    { name: "Bullseye", franchise: "Marvel Villains" },
+    { name: "Batman", franchise: "DC Heroes" },
+    { name: "Red Hood", franchise: "DC Heroes" },
+    { name: "Deadshot", franchise: "DC Villains" },
+    { name: "Bane", franchise: "DC Villains" }
   ],
   ESTP: [
     { name: "Todd Packer", franchise: "The Office" },
-    { name: "Draco Malfoy", franchise: "Harry Potter" }
+    { name: "Draco Malfoy", franchise: "Harry Potter" },
+    { name: "Thor", franchise: "Marvel Heroes" },
+    { name: "Gambit", franchise: "Marvel Heroes" },
+    { name: "Sabretooth", franchise: "Marvel Villains" },
+    { name: "Juggernaut", franchise: "Marvel Villains" },
+    { name: "Guy Gardner", franchise: "DC Heroes" },
+    { name: "Lobo", franchise: "DC Heroes" },
+    { name: "Captain Boomerang", franchise: "DC Villains" },
+    { name: "Gorilla Grodd", franchise: "DC Villains" }
   ],
   ISFP: [
     { name: "Holly Flax", franchise: "The Office" },
-    { name: "Cho Chang", franchise: "Harry Potter" }
+    { name: "Cho Chang", franchise: "Harry Potter" },
+    { name: "Groot", franchise: "Marvel Heroes" },
+    { name: "Mantis", franchise: "Marvel Heroes" },
+    { name: "Rogue", franchise: "Marvel Villains" },
+    { name: "Quicksilver", franchise: "Marvel Villains" },
+    { name: "Nightwing", franchise: "DC Heroes" },
+    { name: "Zatanna", franchise: "DC Heroes" },
+    { name: "Scarecrow", franchise: "DC Villains" },
+    { name: "Mad Hatter", franchise: "DC Villains" }
   ],
   ESFP: [
     { name: "Kelly Kapoor", franchise: "The Office" },
-    { name: "Rita Skeeter", franchise: "Harry Potter" }
+    { name: "Rita Skeeter", franchise: "Harry Potter" },
+    { name: "Deadpool", franchise: "Marvel Heroes" },
+    { name: "Human Torch", franchise: "Marvel Heroes" },
+    { name: "Shocker", franchise: "Marvel Villains" },
+    { name: "Toad", franchise: "Marvel Villains" },
+    { name: "The Flash", franchise: "DC Heroes" },
+    { name: "Impulse", franchise: "DC Heroes" },
+    { name: "Trickster", franchise: "DC Villains" },
+    { name: "Captain Cold", franchise: "DC Villains" }
   ],
 };
 
@@ -702,6 +830,26 @@ const mbtiImageSeeds: Record<string, string> = {
 const getMBTIImage = (mbtiType: string): string => {
   const seed = mbtiImageSeeds[mbtiType] || mbtiType.toLowerCase();
   return `https://picsum.photos/seed/${seed}/100/100`;
+};
+
+// Helper function to get franchise colors
+const getFranchiseColors = (franchise: string): { backgroundColor: string; color: string } => {
+  switch (franchise) {
+    case "The Office":
+      return { backgroundColor: "#e3f2fd", color: "#1976d2" };
+    case "Harry Potter":
+      return { backgroundColor: "#f3e5f5", color: "#7b1fa2" };
+    case "Marvel Heroes":
+      return { backgroundColor: "#ffebee", color: "#c62828" };
+    case "Marvel Villains":
+      return { backgroundColor: "#fce4ec", color: "#ad1457" };
+    case "DC Heroes":
+      return { backgroundColor: "#e8f5e8", color: "#2e7d32" };
+    case "DC Villains":
+      return { backgroundColor: "#fff3e0", color: "#ef6c00" };
+    default:
+      return { backgroundColor: "#f5f5f5", color: "#666666" };
+  }
 };
 
 // Types for the charts component
@@ -2159,10 +2307,7 @@ export default function UserDecisionDashboard() {
                                         <span className="font-medium text-gray-800">{character.name}</span>
                                         <span
                                           className="px-2 py-1 rounded-full text-xs font-medium"
-                                          style={{
-                                            backgroundColor: character.franchise === "The Office" ? "#e3f2fd" : "#f3e5f5",
-                                            color: character.franchise === "The Office" ? "#1976d2" : "#7b1fa2"
-                                          }}
+                                          style={getFranchiseColors(character.franchise)}
                                         >
                                           {character.franchise}
                                         </span>

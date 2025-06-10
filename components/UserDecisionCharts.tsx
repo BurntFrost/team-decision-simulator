@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import EnhancedFactorTab from "./EnhancedFactorTab";
 
 import * as DecisionService from "@/lib/decisionMatrixService";
 
@@ -1852,109 +1853,28 @@ const UserDecisionCharts: React.FC<Props> = ({
           negative values (red) decrease it.
         </div>
         {inputs ? (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px] border-collapse">
-              <thead>
-                <tr>
-                  <th className="p-2 text-left text-[#4455a6] font-bold">
-                    Personality
-                  </th>
-                  {factorNames.map((factor) => (
-                    <th
-                      key={factor}
-                      className="p-2 text-left text-[#4455a6] font-bold"
-                    >
-                      {factor}
-                    </th>
-                  ))}
-                  <th className="p-2 text-left text-[#4455a6] font-bold">
-                    Total Score
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {heatMapData.map((row) => {
-                  const personality = row.name;
-                  return (
-                    <tr
-                      key={personality}
-                      className="hover:bg-[#4455a6]/5 transition-colors"
-                      onMouseEnter={() => handleMouseEnter(personality)}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      <td
-                        className="p-2 font-semibold"
-                        style={{ color: mbtiDescriptions[personality].color }}
-                      >
-                        {personality}
-                      </td>
-                      {factorNames.map((factor) => {
-                        const value = row[factor] as number;
-                        const scaledValue = Math.max(
-                          -1,
-                          Math.min(1, value * 2.5)
-                        ); // Scale for better visualization
-                        let bgColor = "transparent";
-
-                        if (value > 0) {
-                          const intensity = Math.floor(scaledValue * 100);
-                          bgColor = `rgba(59, 130, 246, ${intensity / 100})`;
-                        } else if (value < 0) {
-                          const intensity = Math.floor(
-                            Math.abs(scaledValue) * 100
-                          );
-                          bgColor = `rgba(239, 68, 68, ${intensity / 100})`;
-                        }
-
-                        return (
-                          <td
-                            key={`${personality}-${factor}`}
-                            className="p-2 text-center relative"
-                            style={{ backgroundColor: bgColor }}
-                          >
-                            <span
-                              className={`font-mono ${
-                                value > 0
-                                  ? "text-blue-900"
-                                  : value < 0
-                                  ? "text-red-900"
-                                  : "text-gray-500"
-                              }`}
-                            >
-                              {value > 0 ? "+" : ""}
-                              {(value * 100).toFixed(1)}%
-                            </span>
-                          </td>
-                        );
-                      })}
-                      <td
-                        className="p-2 font-semibold text-center"
-                        style={{
-                          backgroundColor:
-                            row.totalScore > 0.65
-                              ? "rgba(74, 222, 128, 0.2)"
-                              : row.totalScore > 0.45
-                              ? "rgba(250, 204, 21, 0.2)"
-                              : "rgba(248, 113, 113, 0.2)",
-                          color:
-                            row.totalScore > 0.65
-                              ? "rgb(22, 101, 52)"
-                              : row.totalScore > 0.45
-                              ? "rgb(161, 98, 7)"
-                              : "rgb(153, 27, 27)",
-                        }}
-                      >
-                        {(row.totalScore * 100).toFixed(1)}%
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <EnhancedFactorTab
+            inputs={inputs}
+            heatMapData={heatMapData}
+            mbtiDescriptions={mbtiDescriptions}
+            handleMouseEnter={handleMouseEnter}
+            handleMouseLeave={handleMouseLeave}
+          />
         ) : (
           <div className="w-full h-[300px] flex items-center justify-center text-[#4455a6]">
-            Run a simulation to see the factor influence heat map
+            <div className="text-center">
+              <div className="text-[#8e8e93] mb-4">
+                <svg className="h-12 w-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-[#1d1d1f] font-medium mb-2">
+                No simulation results yet
+              </p>
+              <p className="text-sm text-gray-500">
+                Run a simulation to see the enhanced factor analysis
+              </p>
+            </div>
           </div>
         )}
       </TabsContent>

@@ -328,130 +328,98 @@ const characterPoolsByMBTI: Record<string, Record<string, string[]>> = {
   INTJ: {
     "The Office": ["Oscar Martinez", "Toby Flenderson"],
     "Harry Potter": ["Severus Snape", "Professor McGonagall", "Hermione Granger"],
-    "Marvel Heroes": ["Doctor Strange", "Vision", "Tony Stark"],
-    "Marvel Villains": ["Doctor Doom", "Thanos", "Ultron"],
-    "DC Heroes": ["Batman", "Martian Manhunter", "Cyborg"],
-    "DC Villains": ["Lex Luthor", "Brainiac", "The Riddler"]
+    "Marvel": ["Doctor Strange", "Vision", "Tony Stark", "Doctor Doom", "Thanos", "Ultron"],
+    "DC": ["Batman", "Martian Manhunter", "Cyborg", "Lex Luthor", "Brainiac", "The Riddler"]
   },
   ENTJ: {
     "The Office": ["Jan Levinson", "Charles Miner"],
     "Harry Potter": ["Hermione Granger", "Dolores Umbridge", "Voldemort"],
-    "Marvel Heroes": ["Nick Fury", "Captain America", "Carol Danvers"],
-    "Marvel Villains": ["Magneto", "Kingpin", "Norman Osborn"],
-    "DC Heroes": ["Wonder Woman", "Amanda Waller", "Lex Luthor"],
-    "DC Villains": ["Ra's al Ghul", "Darkseid", "General Zod"]
+    "Marvel": ["Nick Fury", "Captain America", "Carol Danvers", "Magneto", "Kingpin", "Norman Osborn"],
+    "DC": ["Wonder Woman", "Amanda Waller", "Ra's al Ghul", "Darkseid", "General Zod", "Lex Luthor"]
   },
   INTP: {
     "The Office": ["Gabe Lewis", "Ryan Howard"],
     "Harry Potter": ["Luna Lovegood", "Xenophilius Lovegood", "Ollivander"],
-    "Marvel Heroes": ["Tony Stark", "Bruce Banner", "Reed Richards"],
-    "Marvel Villains": ["Green Goblin", "Ultron", "Doctor Octopus"],
-    "DC Heroes": ["Mr. Terrific", "Cyborg", "The Atom"],
-    "DC Villains": ["The Riddler", "Scarecrow", "Calculator"]
+    "Marvel": ["Tony Stark", "Bruce Banner", "Reed Richards", "Green Goblin", "Ultron", "Doctor Octopus"],
+    "DC": ["Mr. Terrific", "Cyborg", "The Atom", "The Riddler", "Scarecrow", "Calculator"]
   },
   ENTP: {
     "The Office": ["Jim Halpert", "Todd Packer"],
     "Harry Potter": ["Fred Weasley", "George Weasley", "Gilderoy Lockhart"],
-    "Marvel Heroes": ["Spider-Man", "Deadpool", "Star-Lord"],
-    "Marvel Villains": ["Loki", "Mysterio", "Green Goblin"],
-    "DC Heroes": ["The Flash", "Green Lantern", "Booster Gold"],
-    "DC Villains": ["The Joker", "Trickster", "Captain Cold"]
+    "Marvel": ["Spider-Man", "Deadpool", "Star-Lord", "Loki", "Mysterio", "Green Goblin"],
+    "DC": ["The Flash", "Green Lantern", "Booster Gold", "The Joker", "Trickster", "Captain Cold"]
   },
   INFJ: {
     "The Office": ["Toby Flenderson", "Karen Filippelli"],
     "Harry Potter": ["Dumbledore", "Remus Lupin", "Newt Scamander"],
-    "Marvel Heroes": ["Professor X", "Daredevil", "Vision"],
-    "Marvel Villains": ["Mystique", "Silver Surfer", "Magneto"],
-    "DC Heroes": ["Superman", "Raven", "Martian Manhunter"],
-    "DC Villains": ["Two-Face", "Poison Ivy", "Mr. Freeze"]
+    "Marvel": ["Professor X", "Daredevil", "Vision", "Mystique", "Silver Surfer", "Magneto"],
+    "DC": ["Superman", "Raven", "Martian Manhunter", "Two-Face", "Poison Ivy", "Mr. Freeze"]
   },
   ENFJ: {
     "The Office": ["Andy Bernard", "Holly Flax"],
     "Harry Potter": ["Harry Potter", "Molly Weasley", "Minerva McGonagall"],
-    "Marvel Heroes": ["Captain Marvel", "Storm", "Captain America"],
-    "Marvel Villains": ["Emma Frost", "Venom", "Loki"],
-    "DC Heroes": ["Aquaman", "Starfire", "Wonder Woman"],
-    "DC Villains": ["Catwoman", "Black Manta", "Talia al Ghul"]
+    "Marvel": ["Captain Marvel", "Storm", "Captain America", "Emma Frost", "Venom", "Loki"],
+    "DC": ["Aquaman", "Starfire", "Wonder Woman", "Catwoman", "Black Manta", "Talia al Ghul"]
   },
   INFP: {
     "The Office": ["Erin Hannon", "Pam Beesly"],
     "Harry Potter": ["Dobby", "Luna Lovegood", "Neville Longbottom"],
-    "Marvel Heroes": ["Wanda Maximoff", "Peter Parker", "Groot"],
-    "Marvel Villains": ["Bucky Barnes", "Gambit", "Rogue"],
-    "DC Heroes": ["Beast Boy", "Shazam", "Zatanna"],
-    "DC Villains": ["Harley Quinn", "Mr. Freeze", "Clayface"]
+    "Marvel": ["Wanda Maximoff", "Peter Parker", "Groot", "Bucky Barnes", "Gambit", "Rogue"],
+    "DC": ["Beast Boy", "Shazam", "Zatanna", "Harley Quinn", "Mr. Freeze", "Clayface"]
   },
   ENFP: {
     "The Office": ["Michael Scott", "Kelly Kapoor"],
     "Harry Potter": ["Ron Weasley", "Tonks", "Hagrid"],
-    "Marvel Heroes": ["Star-Lord", "Ant-Man", "Human Torch"],
-    "Marvel Villains": ["Rocket Raccoon", "Carnage", "Deadpool"],
-    "DC Heroes": ["Booster Gold", "Plastic Man", "The Flash"],
-    "DC Villains": ["Captain Cold", "Clayface", "Trickster"]
+    "Marvel": ["Star-Lord", "Ant-Man", "Human Torch", "Rocket Raccoon", "Carnage", "Deadpool"],
+    "DC": ["Booster Gold", "Plastic Man", "The Flash", "Captain Cold", "Clayface", "Trickster"]
   },
   ISTJ: {
     "The Office": ["Dwight Schrute", "Oscar Martinez"],
     "Harry Potter": ["Percy Weasley", "Barty Crouch Sr.", "Kingsley Shacklebolt"],
-    "Marvel Heroes": ["Captain America", "Hawkeye", "Falcon"],
-    "Marvel Villains": ["Red Skull", "Taskmaster", "Winter Soldier"],
-    "DC Heroes": ["Commissioner Gordon", "Green Arrow", "Alfred Pennyworth"],
-    "DC Villains": ["Deathstroke", "Penguin", "Two-Face"]
+    "Marvel": ["Captain America", "Hawkeye", "Falcon", "Red Skull", "Taskmaster", "Winter Soldier"],
+    "DC": ["Commissioner Gordon", "Green Arrow", "Alfred Pennyworth", "Deathstroke", "Penguin", "Two-Face"]
   },
   ESTJ: {
     "The Office": ["Angela Martin", "Jan Levinson"],
     "Harry Potter": ["Dolores Umbridge", "Vernon Dursley", "Cornelius Fudge"],
-    "Marvel Heroes": ["J. Jonah Jameson", "Maria Hill", "Nick Fury"],
-    "Marvel Villains": ["Norman Osborn", "Baron Zemo", "Kingpin"],
-    "DC Heroes": ["Lex Luthor", "Alfred Pennyworth", "Amanda Waller"],
-    "DC Villains": ["General Zod", "Amanda Waller", "Lex Luthor"]
+    "Marvel": ["J. Jonah Jameson", "Maria Hill", "Nick Fury", "Norman Osborn", "Baron Zemo", "Kingpin"],
+    "DC": ["Amanda Waller", "Alfred Pennyworth", "General Zod", "Lex Luthor", "Commissioner Gordon"]
   },
   ISFJ: {
     "The Office": ["Pam Beesly", "Phyllis Vance"],
     "Harry Potter": ["Hagrid", "Mrs. Weasley", "Neville Longbottom"],
-    "Marvel Heroes": ["Aunt May", "Pepper Potts", "Captain America"],
-    "Marvel Villains": ["Sandman", "Lizard", "Rhino"],
-    "DC Heroes": ["Martha Kent", "Lois Lane", "Alfred Pennyworth"],
-    "DC Villains": ["Killer Croc", "Calendar Man", "Clayface"]
+    "Marvel": ["Aunt May", "Pepper Potts", "Captain America", "Sandman", "Lizard", "Rhino"],
+    "DC": ["Martha Kent", "Lois Lane", "Alfred Pennyworth", "Killer Croc", "Calendar Man", "Clayface"]
   },
   ESFJ: {
     "The Office": ["Phyllis Vance", "Meredith Palmer"],
     "Harry Potter": ["Cedric Diggory", "Cho Chang", "Fleur Delacour"],
-    "Marvel Heroes": ["Spider-Man", "Falcon", "Captain Marvel"],
-    "Marvel Villains": ["Electro", "Rhino", "Shocker"],
-    "DC Heroes": ["Supergirl", "Batgirl", "Wonder Woman"],
-    "DC Villains": ["Cheetah", "Mirror Master", "Livewire"]
+    "Marvel": ["Spider-Man", "Falcon", "Captain Marvel", "Electro", "Rhino", "Shocker"],
+    "DC": ["Supergirl", "Batgirl", "Wonder Woman", "Cheetah", "Mirror Master", "Livewire"]
   },
   ISTP: {
     "The Office": ["Stanley Hudson", "Creed Bratton"],
     "Harry Potter": ["Sirius Black", "Mad-Eye Moody", "Kingsley Shacklebolt"],
-    "Marvel Heroes": ["Wolverine", "Punisher", "Black Widow"],
-    "Marvel Villains": ["Winter Soldier", "Bullseye", "Crossbones"],
-    "DC Heroes": ["Batman", "Red Hood", "Green Arrow"],
-    "DC Villains": ["Deadshot", "Bane", "Deathstroke"]
+    "Marvel": ["Wolverine", "Punisher", "Black Widow", "Winter Soldier", "Bullseye", "Crossbones"],
+    "DC": ["Batman", "Red Hood", "Green Arrow", "Deadshot", "Bane", "Deathstroke"]
   },
   ESTP: {
     "The Office": ["Todd Packer", "Roy Anderson"],
     "Harry Potter": ["Draco Malfoy", "James Potter", "Sirius Black"],
-    "Marvel Heroes": ["Thor", "Gambit", "Iron Man"],
-    "Marvel Villains": ["Sabretooth", "Juggernaut", "Venom"],
-    "DC Heroes": ["Guy Gardner", "Lobo", "Hal Jordan"],
-    "DC Villains": ["Captain Boomerang", "Gorilla Grodd", "Parasite"]
+    "Marvel": ["Thor", "Gambit", "Iron Man", "Sabretooth", "Juggernaut", "Venom"],
+    "DC": ["Guy Gardner", "Lobo", "Hal Jordan", "Captain Boomerang", "Gorilla Grodd", "Parasite"]
   },
   ISFP: {
     "The Office": ["Holly Flax", "Erin Hannon"],
     "Harry Potter": ["Cho Chang", "Lavender Brown", "Colin Creevey"],
-    "Marvel Heroes": ["Groot", "Mantis", "Wanda Maximoff"],
-    "Marvel Villains": ["Rogue", "Quicksilver", "Gambit"],
-    "DC Heroes": ["Nightwing", "Zatanna", "Beast Boy"],
-    "DC Villains": ["Scarecrow", "Mad Hatter", "Poison Ivy"]
+    "Marvel": ["Groot", "Mantis", "Wanda Maximoff", "Rogue", "Quicksilver", "Gambit"],
+    "DC": ["Nightwing", "Zatanna", "Beast Boy", "Scarecrow", "Mad Hatter", "Poison Ivy"]
   },
   ESFP: {
     "The Office": ["Kelly Kapoor", "Meredith Palmer"],
     "Harry Potter": ["Rita Skeeter", "Gilderoy Lockhart", "Peeves"],
-    "Marvel Heroes": ["Deadpool", "Human Torch", "Spider-Man"],
-    "Marvel Villains": ["Shocker", "Toad", "Carnage"],
-    "DC Heroes": ["The Flash", "Impulse", "Plastic Man"],
-    "DC Villains": ["Trickster", "Captain Cold", "Mirror Master"]
+    "Marvel": ["Deadpool", "Human Torch", "Spider-Man", "Shocker", "Toad", "Carnage"],
+    "DC": ["The Flash", "Impulse", "Plastic Man", "Trickster", "Captain Cold", "Mirror Master"]
   },
 };
 
@@ -459,10 +427,8 @@ const characterPoolsByMBTI: Record<string, Record<string, string[]>> = {
 const franchiseCategories = [
   "The Office",
   "Harry Potter",
-  "Marvel Heroes",
-  "Marvel Villains",
-  "DC Heroes",
-  "DC Villains"
+  "Marvel",
+  "DC"
 ];
 
 // Helper function to get current character for display
@@ -810,14 +776,10 @@ const getFranchiseColors = (franchise: string): { backgroundColor: string; color
       return { backgroundColor: "#e3f2fd", color: "#1976d2" };
     case "Harry Potter":
       return { backgroundColor: "#f3e5f5", color: "#7b1fa2" };
-    case "Marvel Heroes":
+    case "Marvel":
       return { backgroundColor: "#ffebee", color: "#c62828" };
-    case "Marvel Villains":
-      return { backgroundColor: "#fce4ec", color: "#ad1457" };
-    case "DC Heroes":
+    case "DC":
       return { backgroundColor: "#e8f5e8", color: "#2e7d32" };
-    case "DC Villains":
-      return { backgroundColor: "#fff3e0", color: "#ef6c00" };
     default:
       return { backgroundColor: "#f5f5f5", color: "#666666" };
   }

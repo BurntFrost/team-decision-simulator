@@ -786,6 +786,249 @@ const getFranchiseColors = (franchise: string): { backgroundColor: string; color
   }
 };
 
+// Enhanced Personality Card Component with Liquid Glass Design
+interface EnhancedPersonalityCardProps {
+  type: string;
+  info: any;
+  img: string;
+  isUserType: boolean;
+  characterExamples: Array<{ name: string; franchise: string }>;
+  characterPoolsByMBTI: any;
+  cycleCharacter: (type: string, franchise: string) => void;
+  getFranchiseColors: (franchise: string) => { backgroundColor: string; color: string };
+}
+
+const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
+  type,
+  info,
+  img,
+  isUserType,
+  characterExamples,
+  characterPoolsByMBTI,
+  cycleCharacter,
+  getFranchiseColors,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <div
+      className={cn(
+        "group relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-[1.02]",
+        isUserType
+          ? "ring-2 ring-[#007aff] ring-offset-2 ring-offset-white shadow-xl"
+          : "shadow-lg hover:shadow-xl"
+      )}
+    >
+      {/* Liquid Glass Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/70 to-white/50 backdrop-blur-xl"></div>
+      <div
+        className="absolute inset-0 opacity-10 bg-gradient-to-br from-transparent via-current to-transparent"
+        style={{ color: info.color }}
+      ></div>
+
+      {/* Animated Border Gradient */}
+      <div
+        className="absolute inset-0 rounded-2xl opacity-20 bg-gradient-to-r from-transparent via-current to-transparent animate-pulse"
+        style={{ color: info.color }}
+      ></div>
+
+      <div className="relative p-6 space-y-4">
+        {/* Header Section */}
+        <div className="flex items-start gap-4">
+          <div className="relative">
+            <Image
+              src={img}
+              alt={`${type} icon`}
+              width={56}
+              height={56}
+              className="w-14 h-14 rounded-2xl object-cover shadow-lg ring-2 ring-white/50"
+            />
+            {isUserType && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#007aff] rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">✓</span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2">
+              <h4
+                className="text-xl font-bold tracking-tight"
+                style={{ color: info.color }}
+              >
+                {info.name}
+              </h4>
+              {isUserType && (
+                <span className="px-2 py-1 text-xs font-semibold bg-[#007aff] text-white rounded-full">
+                  Your Type
+                </span>
+              )}
+            </div>
+            <p className="text-gray-700 leading-relaxed text-sm">
+              {info.description}
+            </p>
+          </div>
+        </div>
+
+        {/* Scientific Factors Preview */}
+        <div className="space-y-3">
+          <div className="flex flex-wrap gap-2">
+            {info.scientificFactors.keyTraits.slice(0, 3).map((trait: string, index: number) => (
+              <span
+                key={index}
+                className="px-3 py-1 text-xs font-medium rounded-full bg-white/60 backdrop-blur-sm border border-white/30"
+                style={{ color: info.color }}
+              >
+                {trait}
+              </span>
+            ))}
+            {info.scientificFactors.keyTraits.length > 3 && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="px-3 py-1 text-xs font-medium rounded-full bg-white/40 backdrop-blur-sm border border-white/30 text-gray-600 hover:bg-white/60 transition-colors"
+              >
+                +{info.scientificFactors.keyTraits.length - 3} more
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Expandable Scientific Details */}
+        {isExpanded && (
+          <div className="space-y-4 pt-4 border-t border-white/30">
+            <div className="grid grid-cols-1 gap-3">
+              {/* Decision Process */}
+              <div className="space-y-2">
+                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: info.color }}></span>
+                  Decision Process
+                </h5>
+                <p className="text-xs text-gray-600 leading-relaxed pl-4">
+                  {info.scientificFactors.decisionProcess}
+                </p>
+              </div>
+
+              {/* Strengths */}
+              <div className="space-y-2">
+                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  Strengths
+                </h5>
+                <div className="flex flex-wrap gap-1 pl-4">
+                  {info.scientificFactors.strengths.map((strength: string, index: number) => (
+                    <span
+                      key={index}
+                      className="px-2 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-200"
+                    >
+                      {strength}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Challenges */}
+              {info.scientificFactors.challenges && (
+                <div className="space-y-2">
+                  <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                    Challenges
+                  </h5>
+                  <div className="flex flex-wrap gap-1 pl-4">
+                    {info.scientificFactors.challenges.map((challenge: string, index: number) => (
+                      <span
+                        key={index}
+                        className="px-2 py-1 text-xs bg-amber-50 text-amber-700 rounded-md border border-amber-200"
+                      >
+                        {challenge}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Character Examples Section */}
+        {characterExamples.length > 0 && (
+          <div className="pt-4 border-t border-white/30 space-y-3">
+            <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+              Character Examples
+              <span className="text-xs text-gray-500 font-normal">(click to cycle)</span>
+            </h5>
+            <div className="grid grid-cols-2 gap-2">
+              {characterExamples.map((character, index) => {
+                const pool = characterPoolsByMBTI[type]?.[character.franchise] || [];
+                const hasMultiple = pool.length > 1;
+                const colors = getFranchiseColors(character.franchise);
+
+                return (
+                  <button
+                    key={character.franchise}
+                    onClick={() => hasMultiple && cycleCharacter(type, character.franchise)}
+                    className={cn(
+                      "p-2 rounded-lg text-left transition-all duration-200 border border-white/30",
+                      hasMultiple
+                        ? "hover:scale-105 hover:shadow-md cursor-pointer"
+                        : "cursor-default",
+                      "bg-white/40 backdrop-blur-sm"
+                    )}
+                    disabled={!hasMultiple}
+                    title={hasMultiple ? `Click to cycle through ${character.franchise} characters` : character.name}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-gray-800 truncate">
+                          {character.name}
+                          {hasMultiple && (
+                            <span className="ml-1 text-purple-500 opacity-70">↻</span>
+                          )}
+                        </p>
+                        <p
+                          className="text-xs font-medium mt-1 px-2 py-0.5 rounded-full text-center"
+                          style={colors}
+                        >
+                          {character.franchise}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Expand/Collapse Button */}
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-white/50 backdrop-blur-sm border border-white/30 hover:bg-white/70 transition-all duration-200"
+            style={{ color: info.color }}
+          >
+            {isExpanded ? (
+              <>
+                <span>Show Less</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+              </>
+            ) : (
+              <>
+                <span>Explore Details</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Types for the charts component
 type ChartProps = {
   results: DecisionService.SimulationResult[];
@@ -2254,82 +2497,42 @@ export default function UserDecisionDashboard() {
 
 
                 {/* Personalities Tab */}
-                <TabsContent value="personalities" className="space-y-4 relative">
-                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute bottom-10 right-10 w-[120px] h-[120px] bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-full blur-xl"></div>
+                <TabsContent value="personalities" className="space-y-6 relative">
+                  <div className="absolute inset-0 opacity-[0.04] pointer-events-none overflow-hidden">
+                    <div className="absolute top-20 right-20 w-[200px] h-[200px] bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-20 left-20 w-[150px] h-[150px] bg-gradient-to-tr from-indigo-500 to-cyan-500 rounded-full blur-2xl"></div>
                   </div>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+                  {/* Header Section */}
+                  <div className="text-center space-y-3 relative z-10">
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-[#1d1d1f] to-[#4455a6] bg-clip-text text-transparent">
+                      MBTI Personality Types
+                    </h3>
+                    <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                      Explore the 16 personality types and their unique decision-making approaches.
+                      Each type brings distinct cognitive preferences and scientific insights to complex decisions.
+                    </p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
                           const characterExamples = getCurrentCharactersForMBTI(type, characterIndices);
                           const img = getMBTIImage(type);
+                          const isUserType = type === userMBTI;
+
                           return (
-                            <div
+                            <EnhancedPersonalityCard
                               key={type}
-                              className={cn(
-                                "p-4 rounded-xl shadow-sm bg-white",
-                                type === userMBTI ? "border-2 border-[#007aff]" : "border border-gray-100"
-                              )}
-                              style={{ borderLeft: `4px solid ${info.color}` }}
-                            >
-                              <div className="flex items-start gap-3">
-                                <Image src={img} alt={`${type} icon`} width={48} height={48} className="w-12 h-12 rounded-full object-cover" />
-                                <div className="flex-1">
-                                  <h4 className="font-bold mb-2" style={{ color: info.color }}>
-                                    {info.name}
-                                  </h4>
-                                  <p className="text-sm text-gray-600">{info.description}</p>
-                                </div>
-                              </div>
-                              {type === userMBTI && (
-                                <p className="text-xs font-semibold text-[#007aff] mt-1">Your Type</p>
-                              )}
-
-                              {/* Character Examples Section */}
-                              {characterExamples.length > 0 && (
-                                <div className="mt-3 pt-3 border-t border-gray-100">
-                                  <p className="text-xs font-medium text-gray-700 mb-2">
-                                    Character Examples:
-                                    <span className="text-gray-500 ml-1">(click to cycle)</span>
-                                  </p>
-                                  <div className="space-y-1">
-                                    {characterExamples.map((character, index) => {
-                                      const pool = characterPoolsByMBTI[type]?.[character.franchise] || [];
-                                      const hasMultiple = pool.length > 1;
-
-                                      return (
-                                        <div key={character.franchise} className="flex items-center justify-between text-xs">
-                                          <button
-                                            onClick={() => cycleCharacter(type, character.franchise)}
-                                            className={cn(
-                                              "font-medium text-gray-800 text-left transition-colors",
-                                              hasMultiple
-                                                ? "hover:text-[#007aff] cursor-pointer hover:underline"
-                                                : "cursor-default"
-                                            )}
-                                            disabled={!hasMultiple}
-                                            title={hasMultiple ? `Click to cycle through ${character.franchise} characters` : character.name}
-                                          >
-                                            {character.name}
-                                            {hasMultiple && (
-                                              <span className="ml-1 text-[#007aff] opacity-60">
-                                                ↻
-                                              </span>
-                                            )}
-                                          </button>
-                                          <span
-                                            className="px-2 py-1 rounded-full text-xs font-medium"
-                                            style={getFranchiseColors(character.franchise)}
-                                          >
-                                            {character.franchise}
-                                          </span>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                              type={type}
+                              info={info}
+                              img={img}
+                              isUserType={isUserType}
+                              characterExamples={characterExamples}
+                              characterPoolsByMBTI={characterPoolsByMBTI}
+                              cycleCharacter={cycleCharacter}
+                              getFranchiseColors={getFranchiseColors}
+                            />
                           );
                         })}
                     </div>

@@ -7,7 +7,6 @@ import {
   XAxis,
   YAxis,
   Tooltip as RechartsTooltip,
-  Legend,
   ResponsiveContainer,
   RadarChart,
   PolarGrid,
@@ -1328,81 +1327,264 @@ const UserDecisionCharts: React.FC<Props> = ({
 
 
 
-      <TabsContent value="radar" className="mt-2">
-        <div className="mb-4 text-sm text-[#4455a6] font-medium bg-[#4455a6]/5 p-3 rounded-lg">
-          This radar chart displays how different personality types weigh each
-          decision factor. Positive values (extending outward) indicate factors
-          that increase confidence, while negative values (toward center)
-          decrease confidence. Larger shapes represent more decisive personality
-          types. Click any personality in the legend to highlight it, or compare
-          the public opinion (dotted line) to see key differences.
+      <TabsContent value="radar" className="mt-2 space-y-4">
+        {/* Enhanced Description */}
+        <div className="bg-gradient-to-r from-[#4455a6]/5 to-blue-50 p-4 rounded-xl border border-[#4455a6]/10">
+          <h4 className="text-lg font-semibold text-[#4455a6] mb-2">Personality Factor Analysis</h4>
+          <p className="text-sm text-gray-700 leading-relaxed mb-3">
+            This radar chart reveals how each personality type weighs decision factors.
+            <span className="font-medium text-[#4455a6]"> Positive values</span> (extending outward) boost confidence, while
+            <span className="font-medium text-red-600"> negative values</span> (toward center) reduce it.
+          </p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <span className="px-2 py-1 bg-[#4455a6]/10 text-[#4455a6] rounded-full">💡 Click legend items to filter</span>
+            <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full">🎯 Hover for detailed insights</span>
+            <span className="px-2 py-1 bg-purple-50 text-purple-700 rounded-full">📊 Compare patterns across types</span>
+          </div>
         </div>
-        <ResponsiveContainer
-          width="100%"
-          height={isClient && window.innerWidth < 768 ? 250 : 350}
-        >
-          <RadarChart data={enhancedRadarData}>
-            <PolarGrid stroke="#4455a6" strokeOpacity={0.2} />
-            <PolarAngleAxis
-              dataKey="factor"
-              tick={{ fill: "#4455a6", fontWeight: 500 }}
-            />
-            <PolarRadiusAxis
-              domain={[-0.3, 0.4]}
-              tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
-              tick={{ fill: "#4455a6", fontWeight: 500 }}
-            />
-            {publicWeights && (
-              <Radar
-                name="Public Opinion"
-                dataKey="Public Opinion"
-                stroke="#6b7280"
-                fill="#6b7280"
-                fillOpacity={
-                  hoveredType && hoveredType !== "Public Opinion" ? 0.1 : 0.3
+
+        {/* Temperament Filter */}
+        <div className="flex flex-wrap gap-2 p-3 bg-white rounded-lg border border-gray-200">
+          <span className="text-sm font-medium text-gray-700 mr-2">Filter by Temperament:</span>
+          {["All", "NT", "NF", "SJ", "SP"].map((temperament) => (
+            <button
+              key={temperament}
+              onClick={() => {
+                if (temperament === "All") {
+                  setHoveredType(null);
+                } else {
+                  // Filter by temperament group
+                  const temperamentTypes = archetypes.filter(arch => {
+                    const type = arch.name;
+                    if (temperament === "NT") return ["INTJ", "INTP", "ENTJ", "ENTP"].includes(type);
+                    if (temperament === "NF") return ["INFJ", "INFP", "ENFJ", "ENFP"].includes(type);
+                    if (temperament === "SJ") return ["ISTJ", "ISFJ", "ESTJ", "ESFJ"].includes(type);
+                    if (temperament === "SP") return ["ISTP", "ISFP", "ESTP", "ESFP"].includes(type);
+                    return false;
+                  });
+                  setHoveredType(temperament);
                 }
-                strokeOpacity={
-                  hoveredType && hoveredType !== "Public Opinion" ? 0.3 : 1
-                }
-                strokeWidth={hoveredType === "Public Opinion" ? 3 : 2}
-                strokeDasharray="5 5"
+              }}
+              className={cn(
+                "px-3 py-1 text-xs font-medium rounded-full transition-all duration-200",
+                hoveredType === temperament || (temperament === "All" && !hoveredType)
+                  ? "bg-[#4455a6] text-white shadow-md"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              )}
+            >
+              {temperament === "All" ? "All Types" : `${temperament} (${
+                temperament === "NT" ? "Analysts" :
+                temperament === "NF" ? "Diplomats" :
+                temperament === "SJ" ? "Sentinels" :
+                "Explorers"
+              })`}
+            </button>
+          ))}
+        </div>
+
+        {/* Enhanced Radar Chart */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+          <ResponsiveContainer
+            width="100%"
+            height={isClient && window.innerWidth < 768 ? 300 : 400}
+          >
+            <RadarChart data={enhancedRadarData} margin={{ top: 20, right: 80, bottom: 20, left: 80 }}>
+              <defs>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <PolarGrid
+                stroke="#e5e7eb"
+                strokeOpacity={0.6}
+                strokeWidth={1}
               />
-            )}
+              <PolarAngleAxis
+                dataKey="factor"
+                tick={{
+                  fill: "#374151",
+                  fontWeight: 600,
+                  fontSize: 12
+                }}
+                className="text-sm"
+              />
+              <PolarRadiusAxis
+                domain={[-0.3, 0.4]}
+                tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
+                tick={{
+                  fill: "#6b7280",
+                  fontWeight: 500,
+                  fontSize: 10
+                }}
+                tickCount={6}
+              />
+
+              {/* Reference lines for positive/negative */}
+              <PolarGrid
+                gridType="polygon"
+                radialLines={false}
+                stroke="#ef4444"
+                strokeOpacity={0.2}
+                strokeDasharray="2 2"
+              />
+
+              {publicWeights && (
+                <Radar
+                  name="Public Opinion"
+                  dataKey="Public Opinion"
+                  stroke="#6b7280"
+                  fill="#6b7280"
+                  fillOpacity={
+                    hoveredType && hoveredType !== "Public Opinion" ? 0.05 : 0.15
+                  }
+                  strokeOpacity={
+                    hoveredType && hoveredType !== "Public Opinion" ? 0.4 : 1
+                  }
+                  strokeWidth={hoveredType === "Public Opinion" ? 4 : 2}
+                  strokeDasharray="8 4"
+                  filter={hoveredType === "Public Opinion" ? "url(#glow)" : undefined}
+                />
+              )}
+
+              {archetypes.map((arch) => {
+                const isVisible = !hoveredType ||
+                  hoveredType === arch.name ||
+                  (hoveredType === "NT" && ["INTJ", "INTP", "ENTJ", "ENTP"].includes(arch.name)) ||
+                  (hoveredType === "NF" && ["INFJ", "INFP", "ENFJ", "ENFP"].includes(arch.name)) ||
+                  (hoveredType === "SJ" && ["ISTJ", "ISFJ", "ESTJ", "ESFJ"].includes(arch.name)) ||
+                  (hoveredType === "SP" && ["ISTP", "ISFP", "ESTP", "ESFP"].includes(arch.name));
+
+                return (
+                  <Radar
+                    key={arch.name}
+                    name={arch.name}
+                    dataKey={arch.name}
+                    stroke={mbtiDescriptions[arch.name].color}
+                    fill={mbtiDescriptions[arch.name].color}
+                    fillOpacity={
+                      !isVisible ? 0.02 :
+                      hoveredType === arch.name ? 0.25 : 0.08
+                    }
+                    strokeOpacity={
+                      !isVisible ? 0.1 :
+                      hoveredType === arch.name ? 1 : 0.6
+                    }
+                    strokeWidth={hoveredType === arch.name ? 3 : 2}
+                    filter={hoveredType === arch.name ? "url(#glow)" : undefined}
+                  />
+                );
+              })}
+
+              <RechartsTooltip
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl p-4 shadow-xl max-w-xs">
+                        <h4 className="font-semibold text-gray-800 mb-2 border-b border-gray-100 pb-2">
+                          {label}
+                        </h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {payload
+                            .filter(entry => Math.abs(entry.value as number) > 0.01)
+                            .sort((a, b) => Math.abs(b.value as number) - Math.abs(a.value as number))
+                            .slice(0, 6)
+                            .map((entry, index) => (
+                            <div key={index} className="flex items-center justify-between text-sm">
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className="w-3 h-3 rounded-full"
+                                  style={{ backgroundColor: entry.color }}
+                                />
+                                <span className="font-medium text-gray-700">
+                                  {entry.dataKey}
+                                </span>
+                              </div>
+                              <span
+                                className={cn(
+                                  "font-mono text-xs px-2 py-1 rounded-full",
+                                  (entry.value as number) > 0
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
+                                )}
+                              >
+                                {(entry.value as number) > 0 ? "+" : ""}
+                                {((entry.value as number) * 100).toFixed(0)}%
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Legend with Enhanced Interactivity */}
+        <div className="bg-gray-50 rounded-xl p-4">
+          <h5 className="text-sm font-semibold text-gray-800 mb-3">Personality Types</h5>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
             {archetypes.map((arch) => (
-              <Radar
+              <button
                 key={arch.name}
-                name={arch.name}
-                dataKey={arch.name}
-                stroke={mbtiDescriptions[arch.name].color}
-                fill={mbtiDescriptions[arch.name].color}
-                fillOpacity={
-                  hoveredType && hoveredType !== arch.name ? 0.1 : 0.3
-                }
-                strokeOpacity={
-                  hoveredType && hoveredType !== arch.name ? 0.3 : 1
-                }
-                strokeWidth={hoveredType === arch.name ? 3 : 2}
-              />
+                onMouseEnter={() => handleMouseEnter(arch.name)}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => setHoveredType(hoveredType === arch.name ? null : arch.name)}
+                className={cn(
+                  "flex items-center gap-2 p-2 rounded-lg transition-all duration-200 text-left",
+                  hoveredType === arch.name
+                    ? "bg-white shadow-md scale-105 ring-2 ring-offset-1"
+                    : "bg-white/60 hover:bg-white hover:shadow-sm"
+                )}
+                style={{
+                  ...(hoveredType === arch.name && {
+                    '--tw-ring-color': mbtiDescriptions[arch.name].color
+                  } as React.CSSProperties)
+                }}
+              >
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: mbtiDescriptions[arch.name].color }}
+                />
+                <span
+                  className="text-xs font-medium truncate"
+                  style={{
+                    color: hoveredType === arch.name ? mbtiDescriptions[arch.name].color : "#374151"
+                  }}
+                >
+                  {arch.name}
+                </span>
+              </button>
             ))}
-            <Legend
-              onMouseEnter={(e) => handleMouseEnter(e.value)}
-              onMouseLeave={handleMouseLeave}
-              wrapperStyle={{
-                fontWeight: 500,
-                color: "#4455a6",
-              }}
-            />
-            <RechartsTooltip
-              contentStyle={{
-                backgroundColor: "white",
-                border: "2px solid #4455a6",
-                borderRadius: "8px",
-                padding: "8px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              }}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
+          </div>
+          {publicWeights && (
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <button
+                onMouseEnter={() => handleMouseEnter("Public Opinion")}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => setHoveredType(hoveredType === "Public Opinion" ? null : "Public Opinion")}
+                className={cn(
+                  "flex items-center gap-2 p-2 rounded-lg transition-all duration-200",
+                  hoveredType === "Public Opinion"
+                    ? "bg-white shadow-md scale-105 ring-2 ring-gray-400 ring-offset-1"
+                    : "bg-white/60 hover:bg-white hover:shadow-sm"
+                )}
+              >
+                <div className="w-3 h-3 rounded-full bg-gray-500 flex-shrink-0" />
+                <span className="text-xs font-medium text-gray-700">Public Opinion</span>
+                <span className="text-xs text-gray-500">(dashed line)</span>
+              </button>
+            </div>
+          )}
+        </div>
       </TabsContent>
 
       <TabsContent value="quadrant" className="mt-2">

@@ -1,6 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
-import React from 'react';
 
 // Mock the UserDecisionCharts component to test the famous people stability
 // We'll create a simplified version that demonstrates the fix

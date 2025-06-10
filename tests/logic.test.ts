@@ -9,11 +9,12 @@ import { Weights, Inputs } from '../models/decision/types';
 describe('calculateScore', () => {
   it('computes weighted sum of inputs', () => {
     const weights: Weights = {
-      data_quality: 0.2,
-      roi_visibility: 0.2,
-      autonomy_scope: 0.2,
-      time_pressure: 0.2,
-      social_complexity: 0.2,
+      data_quality: 1/6,
+      roi_visibility: 1/6,
+      autonomy_scope: 1/6,
+      time_pressure: 1/6,
+      social_complexity: 1/6,
+      psychological_safety: 1/6,
     };
     const inputs: Inputs = {
       data_quality: 0.5,
@@ -21,6 +22,7 @@ describe('calculateScore', () => {
       autonomy_scope: 0.5,
       time_pressure: 0.5,
       social_complexity: 0.5,
+      psychological_safety: 0.5,
     };
     expect(calculateScore(weights, inputs)).toBeCloseTo(0.5);
   });

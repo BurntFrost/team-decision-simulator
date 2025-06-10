@@ -4,7 +4,7 @@ import React, { Suspense, useMemo, useState, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
 import * as THREE from "three";
-import { ArchetypeProfile, MBTIDescription, FactorKey, Weights } from "@/lib/decisionMatrixService";
+import { ArchetypeProfile, MBTIDescription, Weights } from "@/lib/decisionMatrixService";
 
 interface MBTI3DVisualizationProps {
   archetypes: ArchetypeProfile[];
@@ -39,17 +39,48 @@ const getTemperamentGroup = (mbtiType: string): keyof typeof temperamentGroups =
   return "NT"; // fallback
 };
 
+// Normalize user inputs to MBTI weight scale
+const normalizeUserInputs = (inputs: Weights): Weights => {
+  // MBTI weights typically range from -0.22 to 0.36
+  // User inputs range from 0 to 1
+  // We need to scale user inputs to match MBTI weight distribution
+
+  // Calculate scaling factors based on typical MBTI weight ranges
+  const scalingFactors = {
+    data_quality: 0.36,      // Max observed in MBTI weights
+    roi_visibility: 0.34,    // Max observed in MBTI weights
+    autonomy_scope: 0.28,    // Max observed in MBTI weights
+    time_pressure: 0.18,     // Max observed in MBTI weights
+    social_complexity: 0.26, // Max observed in MBTI weights (positive range)
+    psychological_safety: 0.32, // Max observed in MBTI weights
+  };
+
+  // Apply scaling to normalize user inputs to MBTI weight scale
+  return {
+    data_quality: inputs.data_quality * scalingFactors.data_quality,
+    roi_visibility: inputs.roi_visibility * scalingFactors.roi_visibility,
+    autonomy_scope: inputs.autonomy_scope * scalingFactors.autonomy_scope,
+    time_pressure: inputs.time_pressure * scalingFactors.time_pressure,
+    // For social_complexity, allow negative values by centering around 0
+    social_complexity: (inputs.social_complexity - 0.5) * 0.48, // Range: -0.24 to 0.24
+    psychological_safety: inputs.psychological_safety * scalingFactors.psychological_safety,
+  };
+};
+
 // Convert MBTI weights to 3D coordinates
-const weightsTo3D = (weights: Weights): [number, number, number] => {
+const weightsTo3D = (weights: Weights, isUserInput: boolean = false): [number, number, number] => {
+  // Normalize user inputs to MBTI scale if needed
+  const normalizedWeights = isUserInput ? normalizeUserInputs(weights) : weights;
+
   // X-axis: Analytical factors (data_quality + roi_visibility)
-  const x = (weights.data_quality + weights.roi_visibility) * 5 - 2.5;
-  
+  const x = (normalizedWeights.data_quality + normalizedWeights.roi_visibility) * 5 - 2.5;
+
   // Y-axis: Decision style factors (autonomy_scope - time_pressure)
-  const y = (weights.autonomy_scope - weights.time_pressure) * 5;
-  
+  const y = (normalizedWeights.autonomy_scope - normalizedWeights.time_pressure) * 5;
+
   // Z-axis: Social complexity
-  const z = weights.social_complexity * 10 - 2.5;
-  
+  const z = normalizedWeights.social_complexity * 10 - 2.5;
+
   return [x, y, z];
 };
 
@@ -234,7 +265,7 @@ const Scene3D: React.FC<Scene3DProps> = ({
   hoveredType,
   setHoveredType,
 }) => {
-  const userPosition = useMemo(() => weightsTo3D(userInputs), [userInputs]);
+  const userPosition = useMemo(() => weightsTo3D(userInputs, true), [userInputs]);
 
   return (
     <>
@@ -251,7 +282,7 @@ const Scene3D: React.FC<Scene3DProps> = ({
       {/* MBTI points */}
       {archetypes.map((archetype) => {
         const mbtiType = archetype.name.split(" - ")[0]; // Extract MBTI code
-        const position = weightsTo3D(archetype.weights);
+        const position = weightsTo3D(archetype.weights, false);
         const temperament = getTemperamentGroup(mbtiType);
         const color = temperamentColors[temperament];
         

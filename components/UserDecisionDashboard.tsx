@@ -37,51 +37,7 @@ import {
   MdPsychology,
 } from "react-icons/md";
 
-// iOS Status Bar Component
-const IOSStatusBar = () => {
-  const [time, setTime] = useState<string>("");
 
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTime(
-        now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      );
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 60000); // Update every minute
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="sticky top-0 z-50 bg-[#007aff] text-white px-4 py-2 flex justify-between items-center">
-      <div className="text-xs font-bold">{time}</div>
-      <div className="flex items-center space-x-1">
-        <div className="w-3 h-3" aria-hidden="true">
-          <BsClockFill className="w-full h-full" />
-        </div>
-        <div className="w-4 h-4" aria-hidden="true">
-          <BsGeoAlt className="w-full h-full" />
-        </div>
-        <div className="w-6 h-5" aria-hidden="true">
-          <div className="h-full relative">
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center px-0.5">
-              <div className="h-2 rounded-sm w-1 bg-white mx-0.5"></div>
-              <div className="h-3 rounded-sm w-1 bg-white mx-0.5"></div>
-              <div className="h-4 rounded-sm w-1 bg-white mx-0.5"></div>
-              <div className="h-2.5 rounded-sm w-1 bg-white mx-0.5"></div>
-            </div>
-          </div>
-        </div>
-        <div className="w-6 h-3 border border-white rounded-sm relative" aria-hidden="true">
-          <div className="absolute right-0 top-0 bottom-0 bg-white w-3 mr-px my-px rounded-sm"></div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Custom Stepper Component
 const StepperContainer = ({
@@ -796,6 +752,7 @@ interface EnhancedPersonalityCardProps {
   characterExamples: Array<{ name: string; franchise: string }>;
   characterPoolsByMBTI: any;
   cycleCharacter: (type: string, franchise: string) => void;
+  shuffleAllCharacters: (type: string) => void;
   getFranchiseColors: (franchise: string) => { backgroundColor: string; color: string };
 }
 
@@ -808,6 +765,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
   characterExamples,
   characterPoolsByMBTI,
   cycleCharacter,
+  shuffleAllCharacters,
   getFranchiseColors,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -818,10 +776,20 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
     setIsHovered(hovered);
   }, 100);
 
+  // Handle card click to shuffle all characters
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent triggering when clicking on interactive elements
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'BUTTON' || target.closest('button')) {
+      return;
+    }
+    shuffleAllCharacters(type);
+  };
+
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl transition-all duration-300",
+        "group relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer",
         isHovered ? "scale-[1.02] shadow-xl" : "shadow-lg",
         isUserType
           ? "ring-2 ring-[#007aff] ring-offset-2 ring-offset-white"
@@ -829,6 +797,8 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
       )}
       onMouseEnter={() => debouncedSetHovered(true)}
       onMouseLeave={() => debouncedSetHovered(false)}
+      onClick={handleCardClick}
+      title="Click to shuffle character examples"
     >
       {/* Simplified Glass Background - reduced backdrop-blur for better text visibility */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/85 to-white/75"></div>
@@ -968,7 +938,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
             <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-purple-500"></span>
               Character Examples
-              <span className="text-xs text-gray-500 font-normal">(click to cycle)</span>
+              <span className="text-xs text-gray-500 font-normal">(click card to shuffle all, click character to cycle)</span>
             </h5>
             <div className="grid grid-cols-2 gap-2">
               {characterExamples.map((character, index) => {
@@ -1042,10 +1012,18 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
   );
 }, (prevProps, nextProps) => {
   // Custom comparison function for React.memo
+  // Check if character examples have actually changed (not just length)
+  const characterExamplesChanged =
+    prevProps.characterExamples.length !== nextProps.characterExamples.length ||
+    prevProps.characterExamples.some((char, index) =>
+      char.name !== nextProps.characterExamples[index]?.name ||
+      char.franchise !== nextProps.characterExamples[index]?.franchise
+    );
+
   return (
     prevProps.type === nextProps.type &&
     prevProps.isUserType === nextProps.isUserType &&
-    prevProps.characterExamples.length === nextProps.characterExamples.length &&
+    !characterExamplesChanged &&
     prevProps.img === nextProps.img
   );
 });
@@ -1925,6 +1903,32 @@ export default function UserDecisionDashboard() {
     });
   };
 
+  // Function to shuffle all characters for a specific MBTI type
+  const shuffleAllCharacters = (mbtiType: string) => {
+    setCharacterIndices(prev => {
+      const newIndices = { ...prev[mbtiType] };
+
+      // Shuffle each franchise's character index
+      franchiseCategories.forEach(franchise => {
+        const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
+        if (pool.length > 1) {
+          // Generate a random index different from the current one
+          const currentIndex = prev[mbtiType]?.[franchise] || 0;
+          let newIndex;
+          do {
+            newIndex = Math.floor(Math.random() * pool.length);
+          } while (newIndex === currentIndex && pool.length > 1);
+          newIndices[franchise] = newIndex;
+        }
+      });
+
+      return {
+        ...prev,
+        [mbtiType]: newIndices
+      };
+    });
+  };
+
   // Random famous person for each MBTI type, generated once per mount
   const famousPeopleMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -2029,83 +2033,66 @@ export default function UserDecisionDashboard() {
   return (
     <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
       {/* Liquid Background */}
-      {/* <LiquidBackground
-        variant="aurora"
-        intensity="medium"
-        animated={true}
-        particles={true}
-      /> */}
-
-      {/* Additional floating elements for depth */}
       <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
         <div className="absolute top-[20%] left-[10%] w-[300px] h-[300px] bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute top-[60%] right-[15%] w-[200px] h-[200px] bg-gradient-to-tl from-pink-400/10 to-blue-400/10 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
         <div className="absolute bottom-[30%] left-[20%] w-[250px] h-[250px] bg-gradient-to-r from-indigo-400/10 to-cyan-400/10 rounded-full blur-3xl animate-bounce" />
       </div>
 
-      {/* Liquid Glass Hero Section */}
-      <div className="relative z-10 mx-4 mt-4 mb-6">
-        <GlassContainer
-          variant="floating"
-          rounded="3xl"
-          shadow="2xl"
-          interactive={false}
-          gradient={true}
-          className="p-6 sm:p-8 bg-gradient-to-r from-slate-800/90 via-blue-900/90 to-indigo-900/90 border-white/30 backdrop-blur-xl shadow-2xl"
-        >
-          <div className="absolute inset-0 bg-grid opacity-5"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 rounded-3xl"></div>
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl"></div>
-          <div className="absolute bottom-0 left-0 w-[200px] h-[100px] bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-2xl"></div>
-          <div className="relative flex flex-col gap-2 mb-2">
-            <div
-              className="flex items-center gap-2 mb-2 relative"
-              onMouseEnter={handleBrainMouseEnter}
-              onMouseLeave={handleBrainMouseLeave}
-            >
-              <FaBrain className="h-6 w-6 text-white" />
-              <h2 className="text-xl sm:text-2xl font-bold text-white">
-                MBTI Brain
-              </h2>
-              <div
-                className="absolute left-full ml-2 text-white text-sm pointer-events-none transition-opacity"
-                style={{ opacity: eggOpacity }}
-              >
-                🎉
-              </div>
-            </div>
-            <p className="text-sm iphone16:text-base sm:text-base text-white/90 max-w-3xl relative">
-              Explore how different personality types approach your decisions.
-              Select a scenario, adjust factors, and discover diverse
-              perspectives.
-            </p>
-          </div>
-        </GlassContainer>
-      </div>
+      {/* Unified Header and Main Container */}
+      <GlassContainer
+        variant="floating"
+        rounded="3xl"
+        shadow="2xl"
+        className="bg-white/8 border-white/25 overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-grid opacity-5"></div>
 
-      {/* Main Content with Tabs */}
-      <div className="px-3 py-4 sm:p-6 -mt-6 relative z-20">
-        <GlassContainer
-          variant="floating"
-          rounded="3xl"
-          shadow="2xl"
-          className="bg-white/8 border-white/25 overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-grid opacity-5"></div>
-          <CardContent className="p-0 relative">
-            <div className="px-4 pt-4 flex justify-end">
-              <div className="w-32 flex flex-col items-start">
+        {/* Header Section */}
+        <header className="relative">
+          <div className="bg-gradient-to-r from-slate-800/90 via-blue-900/90 to-indigo-900/90 p-4 sm:p-6 rounded-t-3xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 rounded-t-3xl"></div>
+            <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-[200px] h-[100px] bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-2xl"></div>
+
+            <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Brand Section */}
+              <div className="flex flex-col gap-2">
+                <div
+                  className="flex items-center gap-2 relative"
+                  onMouseEnter={handleBrainMouseEnter}
+                  onMouseLeave={handleBrainMouseLeave}
+                >
+                  <FaBrain className="h-6 w-6 text-white" />
+                  <h1 className="text-xl sm:text-2xl font-bold text-white">
+                    MBTI Brain
+                  </h1>
+                  <div
+                    className="absolute left-full ml-2 text-white text-sm pointer-events-none transition-opacity"
+                    style={{ opacity: eggOpacity }}
+                  >
+                    🎉
+                  </div>
+                </div>
+                <p className="text-sm sm:text-base text-white/90 max-w-2xl">
+                  Explore how different personality types approach your decisions.
+                  Select a scenario, adjust factors, and discover diverse perspectives.
+                </p>
+              </div>
+
+              {/* User Controls */}
+              <div className="flex flex-col items-start sm:items-end">
                 <label
                   htmlFor="user-mbti"
-                  className="text-xs font-medium text-gray-600 mb-1"
+                  className="text-xs font-medium text-white/70 mb-1"
                 >
-                  MBTI Type
+                  Your MBTI Type
                 </label>
                 <Select
                   value={userMBTI}
                   onValueChange={(v) => setUserMBTI(v as MBTIType)}
                 >
-                  <SelectTrigger id="user-mbti">
+                  <SelectTrigger id="user-mbti" className="w-32 bg-white/10 border-white/20 text-white">
                     <SelectValue aria-label={userMBTI}>{userMBTI}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -2118,126 +2105,132 @@ export default function UserDecisionDashboard() {
                 </Select>
               </div>
             </div>
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
-              <div className="sticky top-0 z-10 bg-white/12 backdrop-blur-xl border-b border-white/20 px-4 pt-4 rounded-t-3xl">
-                <TabsList className="grid w-full grid-cols-4 mb-2 p-1.5 h-auto overflow-hidden">
-                  <TabsTrigger
-                    value="scenarios"
-                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <MdOutlineAssessment className="h-4 w-4" />
-                      <span className="text-xs">Scenarios</span>
-                    </div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="factors"
-                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <MdFactCheck className="h-4 w-4" />
-                      <span className="text-xs">Factors</span>
-                    </div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="results"
-                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <IoMdAnalytics className="h-4 w-4" />
-                      <span className="text-xs">Results</span>
-                    </div>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="personalities"
-                    className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
-                  >
-                    <div className="flex flex-col items-center gap-1">
-                      <MdPsychology className="h-4 w-4" />
-                      <span className="text-xs">Types</span>
-                    </div>
-                  </TabsTrigger>
+          </div>
+        </header>
 
-                </TabsList>
-              </div>
-
-              <div className="p-4 sm:p-6 overflow-auto">
-                {/* Scenarios Tab */}
-                <TabsContent
+        {/* Main Content */}
+        <CardContent className="p-0 relative">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            {/* Navigation Tabs */}
+            <div className="bg-white/12 backdrop-blur-xl border-b border-white/20 px-4 py-4">
+              <TabsList className="grid w-full grid-cols-4 mb-0 p-1.5 h-auto overflow-hidden">
+                <TabsTrigger
                   value="scenarios"
-                  className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95 relative"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
                 >
-                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute top-10 right-10 w-[150px] h-[150px] bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full blur-xl"></div>
+                  <div className="flex flex-col items-center gap-1">
+                    <MdOutlineAssessment className="h-4 w-4" />
+                    <span className="text-xs">Scenarios</span>
                   </div>
-                  <div className="space-y-6">
-                    {Object.entries(DecisionService.presetCategories).map(
-                      ([category, scenarios]) => (
-                        <div key={category}>
-                          <h4 className="font-semibold text-[#1d1d1f] mb-1">
-                            {category}
-                          </h4>
-                          <p className="text-xs text-gray-600 mb-3">
-                            {
-                              DecisionService.presetCategoryDescriptions[
-                                category as keyof typeof DecisionService.presetCategoryDescriptions
-                              ]
-                            }
-                          </p>
-                          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3">
-                            {scenarios.map((scenario) => {
-                              const isActive = scenario === activePreset;
-                              return (
-                                <Card
-                                  key={scenario}
-                                  className={cn(
-                                    "cursor-pointer transition-all duration-200 hover:shadow-md border",
-                                    isActive
-                                      ? "border-[#007aff] bg-[#007aff]/5"
-                                      : "border-gray-100"
-                                  )}
-                                  onClick={() =>
-                                    applyPreset(
-                                      scenario as keyof typeof DecisionService.presetScenarios
-                                    )
-                                  }
-                                >
-                                  <CardContent className="p-4">
-                                    <h5 className="font-semibold text-[#1d1d1f]">
-                                      {scenario}
-                                    </h5>
-                                    <p className="text-sm text-gray-600 mt-2">
-                                      {
-                                        DecisionService.presetDescriptions[
-                                          scenario as keyof typeof DecisionService.presetDescriptions
-                                        ]
-                                      }
-                                    </p>
-                                    {isActive && (
-                                      <div className="mt-3 text-xs bg-[#007aff] text-white px-3 py-1 rounded-full inline-block">
-                                        Selected
-                                      </div>
-                                    )}
-                                  </CardContent>
-                                </Card>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )
-                    )}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="factors"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <MdFactCheck className="h-4 w-4" />
+                    <span className="text-xs">Factors</span>
                   </div>
-                </TabsContent>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="results"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <IoMdAnalytics className="h-4 w-4" />
+                    <span className="text-xs">Results</span>
+                  </div>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="personalities"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <MdPsychology className="h-4 w-4" />
+                    <span className="text-xs">Types</span>
+                  </div>
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
-                {/* Factors Tab */}
-                <TabsContent value="factors" className="space-y-6 relative">
-                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute bottom-10 left-10 w-[200px] h-[200px] bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-full blur-xl"></div>
-                  </div>
+            {/* Tab Content */}
+            <div className="p-4 sm:p-6 overflow-auto">
+              {/* Scenarios Tab */}
+              <TabsContent
+                value="scenarios"
+                className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95 relative"
+              >
+                <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                  <div className="absolute top-10 right-10 w-[150px] h-[150px] bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full blur-xl"></div>
+                </div>
+                <div className="space-y-6">
+                  {Object.entries(DecisionService.presetCategories).map(
+                    ([category, scenarios]) => (
+                      <div key={category}>
+                        <h2 className="font-semibold text-[#1d1d1f] mb-1">
+                          {category}
+                        </h2>
+                        <p className="text-xs text-gray-600 mb-3">
+                          {
+                            DecisionService.presetCategoryDescriptions[
+                              category as keyof typeof DecisionService.presetCategoryDescriptions
+                            ]
+                          }
+                        </p>
+                        <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3">
+                          {scenarios.map((scenario) => {
+                            const isActive = scenario === activePreset;
+                            return (
+                              <Card
+                                key={scenario}
+                                className={cn(
+                                  "cursor-pointer transition-all duration-200 hover:shadow-md border",
+                                  isActive
+                                    ? "border-[#007aff] bg-[#007aff]/5"
+                                    : "border-gray-100"
+                                )}
+                                onClick={() =>
+                                  applyPreset(
+                                    scenario as keyof typeof DecisionService.presetScenarios
+                                  )
+                                }
+                              >
+                                <CardContent className="p-4">
+                                  <h3 className="font-semibold text-[#1d1d1f]">
+                                    {scenario}
+                                  </h3>
+                                  <p className="text-sm text-gray-600 mt-2">
+                                    {
+                                      DecisionService.presetDescriptions[
+                                        scenario as keyof typeof DecisionService.presetDescriptions
+                                      ]
+                                    }
+                                  </p>
+                                  {isActive && (
+                                    <div className="mt-3 text-xs bg-[#007aff] text-white px-3 py-1 rounded-full inline-block">
+                                      Selected
+                                    </div>
+                                  )}
+                                </CardContent>
+                              </Card>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* Factors Tab */}
+              <TabsContent value="factors" className="space-y-6 relative">
+                <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                  <div className="absolute bottom-10 left-10 w-[200px] h-[200px] bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-full blur-xl"></div>
+                </div>
                   {activePreset && (
                     <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
                       <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
@@ -2275,17 +2268,17 @@ export default function UserDecisionDashboard() {
                     </div>
                   )}
 
-                  {/* 3D MBTI Visualization */}
-                  <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
-                    <div className="mb-4">
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                        MBTI Decision Factors in 3D Space
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Explore how different personality types prioritize decision factors.
-                        Your current settings are shown as a red ring. Hover over points to see details.
-                      </p>
-                    </div>
+                {/* 3D MBTI Visualization */}
+                <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
+                  <div className="mb-4">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                      MBTI Decision Factors in 3D Space
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      Explore how different personality types prioritize decision factors.
+                      Your current settings are shown as a red ring. Hover over points to see details.
+                    </p>
+                  </div>
                     <MBTI3DWrapper
                       archetypes={DecisionService.archetypes}
                       mbtiDescriptions={DecisionService.mbtiDescriptions}
@@ -2295,15 +2288,15 @@ export default function UserDecisionDashboard() {
                     />
                   </GlassContainer>
 
-                  <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
-                    <div className="mb-4">
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                        Adjust Decision Factors
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Move the sliders to see how your position changes in the 3D space above.
-                      </p>
-                    </div>
+                <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
+                  <div className="mb-4">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                      Adjust Decision Factors
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      Move the sliders to see how your position changes in the 3D space above.
+                    </p>
+                  </div>
                     <div className="grid grid-cols-1 gap-4">
                       {Object.keys(inputs).map((key) => (
                         <SliderInput
@@ -2339,11 +2332,11 @@ export default function UserDecisionDashboard() {
                   </div>
                 </TabsContent>
 
-                {/* Results Tab */}
-                <TabsContent value="results" className="space-y-6 relative">
-                  <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                    <div className="absolute top-10 right-10 w-[180px] h-[180px] bg-gradient-to-bl from-blue-500 to-purple-600 rounded-full blur-xl"></div>
-                  </div>
+              {/* Results Tab */}
+              <TabsContent value="results" className="space-y-6 relative">
+                <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
+                  <div className="absolute top-10 right-10 w-[180px] h-[180px] bg-gradient-to-bl from-blue-500 to-purple-600 rounded-full blur-xl"></div>
+                </div>
                   {results.length > 0 ? (
                     <Tabs value={resultsSubTab} onValueChange={setResultsSubTab} className="w-full space-y-4">
                       <TabsList className="grid w-full grid-cols-3 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
@@ -2352,10 +2345,10 @@ export default function UserDecisionDashboard() {
                         <TabsTrigger value="houses" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Houses</TabsTrigger>
                       </TabsList>
                       <TabsContent value="analysis" className="space-y-6">
-                        <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
-                          <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-                            Decision Analysis
-                          </h3>
+                      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
+                        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+                          Decision Analysis
+                        </h2>
                           {userResult && (
                             <div className="mb-4 text-sm">
                               <span>Your ({userMBTI}) decision:</span>
@@ -2459,11 +2452,11 @@ export default function UserDecisionDashboard() {
                           </div>
                         </div>
                           </div>
-                      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
-                        <div className="mb-4">
-                          <h4 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
-                            Detailed Analysis
-                          </h4>
+                    <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                      <div className="mb-4">
+                        <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                          Detailed Analysis
+                        </h3>
                           <p className="text-gray-600 text-sm">
                             The charts below show how different MBTI
                             personalities analyze and approach this decision.
@@ -2517,23 +2510,23 @@ export default function UserDecisionDashboard() {
                 </TabsContent>
 
 
-                {/* Personalities Tab */}
-                <TabsContent value="personalities" className="space-y-6 relative">
-                  <div className="absolute inset-0 opacity-[0.04] pointer-events-none overflow-hidden">
-                    <div className="absolute top-20 right-20 w-[200px] h-[200px] bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-20 left-20 w-[150px] h-[150px] bg-gradient-to-tr from-indigo-500 to-cyan-500 rounded-full blur-2xl"></div>
-                  </div>
+              {/* Personalities Tab */}
+              <TabsContent value="personalities" className="space-y-6 relative">
+                <div className="absolute inset-0 opacity-[0.04] pointer-events-none overflow-hidden">
+                  <div className="absolute top-20 right-20 w-[200px] h-[200px] bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full blur-3xl"></div>
+                  <div className="absolute bottom-20 left-20 w-[150px] h-[150px] bg-gradient-to-tr from-indigo-500 to-cyan-500 rounded-full blur-2xl"></div>
+                </div>
 
-                  {/* Header Section */}
-                  <div className="text-center space-y-3 relative z-10">
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-[#1d1d1f] to-[#4455a6] bg-clip-text text-transparent">
-                      MBTI Personality Types
-                    </h3>
-                    <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                      Explore the 16 personality types and their unique decision-making approaches.
-                      Each type brings distinct cognitive preferences and scientific insights to complex decisions.
-                    </p>
-                  </div>
+                {/* Section Header */}
+                <div className="text-center space-y-3 relative z-10">
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-[#1d1d1f] to-[#4455a6] bg-clip-text text-transparent">
+                    MBTI Personality Types
+                  </h2>
+                  <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                    Explore the 16 personality types and their unique decision-making approaches.
+                    Each type brings distinct cognitive preferences and scientific insights to complex decisions.
+                  </p>
+                </div>
 
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -2552,6 +2545,7 @@ export default function UserDecisionDashboard() {
                               characterExamples={characterExamples}
                               characterPoolsByMBTI={characterPoolsByMBTI}
                               cycleCharacter={cycleCharacter}
+                              shuffleAllCharacters={shuffleAllCharacters}
                               getFranchiseColors={getFranchiseColors}
                             />
                           );
@@ -2563,11 +2557,10 @@ export default function UserDecisionDashboard() {
 
 
 
-              </div>
-            </Tabs>
-          </CardContent>
-        </GlassContainer>
-      </div>
+            </div>
+          </Tabs>
+        </CardContent>
+      </GlassContainer>
     </div>
   );
 }

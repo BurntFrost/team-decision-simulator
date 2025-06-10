@@ -4,6 +4,7 @@ import {
   getDecision,
   getPublicProbabilities,
   calculateResults,
+  calculateMajorityDecision,
 } from '../models/decision/logic';
 import { Weights, Inputs } from '../models/decision/types';
 import { MBTIFactory } from '../models/decision/mbti';
@@ -145,10 +146,10 @@ describe('Edge Cases and Input Validation', () => {
 
       const results1 = calculateResults(inputs);
       const results2 = calculateResults(inputs);
-      
+
       expect(results1).toEqual(results2);
       expect(results1.length).toBe(16); // Should have all 16 MBTI types
-      
+
       // Each result should have valid structure
       results1.forEach(result => {
         expect(result.name).toBeTruthy();
@@ -157,6 +158,26 @@ describe('Edge Cases and Input Validation', () => {
         expect(result.decision).toBeTruthy();
         expect(result.color).toMatch(/^#[0-9a-f]{6}$/i); // Valid hex color
       });
+    });
+  });
+
+  describe('calculateMajorityDecision edge cases', () => {
+    it('handles empty results array', () => {
+      const result = calculateMajorityDecision([]);
+
+      expect(result.decision).toBe('');
+      expect(result.color).toBe('#6b7280'); // Default color
+      expect(result.counts).toEqual({});
+    });
+
+    it('handles results with no matching decision color', () => {
+      const mockResults = [
+        { name: 'Test', score: 0.5, decision: 'Unknown Decision', color: '#123456' }
+      ];
+
+      const result = calculateMajorityDecision(mockResults);
+      expect(result.decision).toBe('Unknown Decision');
+      expect(result.color).toBe('#123456'); // Should find the color from the result
     });
   });
 });

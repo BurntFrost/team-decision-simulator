@@ -82,6 +82,37 @@ describe('calculatePublicOpinion', () => {
         : 0.2;
     expect(result.color).toBe(getDecision(decisionScore).color);
   });
+
+  it('handles specific decision types in public opinion', () => {
+    // Test scenario that should result in "Full Speed Ahead" being most likely
+    // Focus on highest weighted positive factors: ROI (0.32) and time pressure (0.28)
+    const highConfidenceInputs: Inputs = {
+      data_quality: 1.0,
+      roi_visibility: 1.0,
+      autonomy_scope: 0.0,
+      time_pressure: 1.0,
+      social_complexity: 0.0,
+      psychological_safety: 1.0,
+    };
+
+    const fullSpeedResult = calculatePublicOpinion(highConfidenceInputs);
+    expect(fullSpeedResult.mostLikely).toBe('Full Speed Ahead');
+    expect(fullSpeedResult.color).toBe(getDecision(0.9).color);
+
+    // Test scenario that should result in "Proceed Strategically" being most likely
+    const moderateConfidenceInputs: Inputs = {
+      data_quality: 0.5,
+      roi_visibility: 0.9,
+      autonomy_scope: 0.3,
+      time_pressure: 0.7,
+      social_complexity: 0.0,
+      psychological_safety: 0.6,
+    };
+
+    const proceedResult = calculatePublicOpinion(moderateConfidenceInputs);
+    expect(proceedResult.mostLikely).toBe('Proceed Strategically');
+    expect(proceedResult.color).toBe(getDecision(0.75).color);
+  });
 });
 
 describe('Psychological Safety Factor Integration', () => {

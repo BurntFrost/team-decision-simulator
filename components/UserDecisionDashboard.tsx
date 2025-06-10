@@ -24,6 +24,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
+import MBTI3DWrapper from "@/components/MBTI3DWrapper";
 // Import react-icons
 import { FaBrain, FaCheck } from "react-icons/fa";
 import { BsFileText, BsClockFill, BsGeoAlt } from "react-icons/bs";
@@ -1876,7 +1877,35 @@ export default function UserDecisionDashboard() {
                     </div>
                   )}
 
+                  {/* 3D MBTI Visualization */}
                   <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="mb-4">
+                      <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                        MBTI Decision Factors in 3D Space
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Explore how different personality types prioritize decision factors.
+                        Your current settings are shown as a red ring. Hover over points to see details.
+                      </p>
+                    </div>
+                    <MBTI3DWrapper
+                      archetypes={DecisionService.archetypes}
+                      mbtiDescriptions={DecisionService.mbtiDescriptions}
+                      userInputs={inputs}
+                      userMBTI={userMBTI}
+                      className="relative"
+                    />
+                  </div>
+
+                  <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div className="mb-4">
+                      <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                        Adjust Decision Factors
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Move the sliders to see how your position changes in the 3D space above.
+                      </p>
+                    </div>
                     <div className="grid grid-cols-1 gap-4">
                       {Object.keys(inputs).map((key) => (
                         <SliderInput

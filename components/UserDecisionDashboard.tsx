@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
 import MBTI3DWrapper from "@/components/MBTI3DWrapper";
+import { useDebounce } from "@/lib/hooks/useDebounce";
 // Import react-icons
 import { FaBrain, FaCheck } from "react-icons/fa";
 import { BsFileText, BsClockFill, BsGeoAlt } from "react-icons/bs";
@@ -798,7 +799,8 @@ interface EnhancedPersonalityCardProps {
   getFranchiseColors: (franchise: string) => { backgroundColor: string; color: string };
 }
 
-const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
+// Memoized component to prevent unnecessary re-renders
+const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.memo(({
   type,
   info,
   img,
@@ -809,28 +811,39 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
   getFranchiseColors,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Debounced hover handlers to improve performance
+  const debouncedSetHovered = useDebounce((hovered: boolean) => {
+    setIsHovered(hovered);
+  }, 100);
 
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-[1.02]",
+        "group relative overflow-hidden rounded-2xl transition-all duration-300",
+        isHovered ? "scale-[1.02] shadow-xl" : "shadow-lg",
         isUserType
-          ? "ring-2 ring-[#007aff] ring-offset-2 ring-offset-white shadow-xl"
-          : "shadow-lg hover:shadow-xl"
+          ? "ring-2 ring-[#007aff] ring-offset-2 ring-offset-white"
+          : ""
       )}
+      onMouseEnter={() => debouncedSetHovered(true)}
+      onMouseLeave={() => debouncedSetHovered(false)}
     >
-      {/* Liquid Glass Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/70 to-white/50 backdrop-blur-xl"></div>
+      {/* Simplified Glass Background - reduced backdrop-blur for better text visibility */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/85 to-white/75"></div>
       <div
-        className="absolute inset-0 opacity-10 bg-gradient-to-br from-transparent via-current to-transparent"
+        className="absolute inset-0 opacity-5 bg-gradient-to-br from-transparent via-current to-transparent"
         style={{ color: info.color }}
       ></div>
 
-      {/* Animated Border Gradient */}
-      <div
-        className="absolute inset-0 rounded-2xl opacity-20 bg-gradient-to-r from-transparent via-current to-transparent animate-pulse"
-        style={{ color: info.color }}
-      ></div>
+      {/* Simplified Border Gradient - removed animation for better performance */}
+      {isHovered && (
+        <div
+          className="absolute inset-0 rounded-2xl opacity-15 bg-gradient-to-r from-transparent via-current to-transparent"
+          style={{ color: info.color }}
+        ></div>
+      )}
 
       <div className="relative p-6 space-y-4">
         {/* Header Section */}
@@ -864,7 +877,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-gray-700 leading-relaxed text-sm">
+            <p className="text-gray-800 leading-relaxed text-sm font-medium">
               {info.description}
             </p>
           </div>
@@ -876,7 +889,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
             {info.scientificFactors.keyTraits.slice(0, 3).map((trait: string, index: number) => (
               <span
                 key={index}
-                className="px-3 py-1 text-xs font-medium rounded-full bg-white/60 backdrop-blur-sm border border-white/30"
+                className="px-3 py-1 text-xs font-medium rounded-full bg-white/80 border border-gray-200"
                 style={{ color: info.color }}
               >
                 {trait}
@@ -885,7 +898,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
             {info.scientificFactors.keyTraits.length > 3 && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="px-3 py-1 text-xs font-medium rounded-full bg-white/40 backdrop-blur-sm border border-white/30 text-gray-600 hover:bg-white/60 transition-colors"
+                className="px-3 py-1 text-xs font-medium rounded-full bg-white/70 border border-gray-200 text-gray-700 hover:bg-white/90 transition-colors"
               >
                 +{info.scientificFactors.keyTraits.length - 3} more
               </button>
@@ -895,7 +908,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
 
         {/* Expandable Scientific Details */}
         {isExpanded && (
-          <div className="space-y-4 pt-4 border-t border-white/30">
+          <div className="space-y-4 pt-4 border-t border-gray-200">
             <div className="grid grid-cols-1 gap-3">
               {/* Decision Process */}
               <div className="space-y-2">
@@ -951,7 +964,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
 
         {/* Character Examples Section */}
         {characterExamples.length > 0 && (
-          <div className="pt-4 border-t border-white/30 space-y-3">
+          <div className="pt-4 border-t border-gray-200 space-y-3">
             <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-purple-500"></span>
               Character Examples
@@ -968,11 +981,11 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
                     key={character.franchise}
                     onClick={() => hasMultiple && cycleCharacter(type, character.franchise)}
                     className={cn(
-                      "p-2 rounded-lg text-left transition-all duration-200 border border-white/30",
+                      "p-2 rounded-lg text-left transition-all duration-200 border border-gray-200",
                       hasMultiple
                         ? "hover:scale-105 hover:shadow-md cursor-pointer"
                         : "cursor-default",
-                      "bg-white/40 backdrop-blur-sm"
+                      "bg-white/70"
                     )}
                     disabled={!hasMultiple}
                     title={hasMultiple ? `Click to cycle through ${character.franchise} characters` : character.name}
@@ -1004,7 +1017,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
         <div className="flex justify-center pt-2">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-white/50 backdrop-blur-sm border border-white/30 hover:bg-white/70 transition-all duration-200"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-white/80 border border-gray-200 hover:bg-white/95 transition-all duration-200"
             style={{ color: info.color }}
           >
             {isExpanded ? (
@@ -1027,7 +1040,15 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = ({
       </div>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison function for React.memo
+  return (
+    prevProps.type === nextProps.type &&
+    prevProps.isUserType === nextProps.isUserType &&
+    prevProps.characterExamples.length === nextProps.characterExamples.length &&
+    prevProps.img === nextProps.img
+  );
+});
 
 // Types for the charts component
 type ChartProps = {

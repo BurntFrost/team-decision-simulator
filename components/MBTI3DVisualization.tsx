@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo, useState, useRef } from "react";
+import React, { Suspense, useMemo, useState, useRef, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
 import * as THREE from "three";
@@ -94,7 +94,7 @@ interface MBTIPointProps {
   isHovered: boolean;
 }
 
-const MBTIPoint: React.FC<MBTIPointProps> = ({
+const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
   position,
   color,
   mbtiType,
@@ -103,38 +103,44 @@ const MBTIPoint: React.FC<MBTIPointProps> = ({
   isHovered,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  
+
+  // Throttled animation for better performance
   useFrame((state) => {
     if (meshRef.current && isHovered) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 2;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 2;
+      const time = state.clock.elapsedTime;
+      meshRef.current.rotation.x = time * 1.5; // Reduced rotation speed
+      meshRef.current.rotation.y = time * 1.5;
     }
   });
+
+  // Memoized hover handlers
+  const handlePointerEnter = useCallback(() => onHover(mbtiType), [onHover, mbtiType]);
+  const handlePointerLeave = useCallback(() => onHover(null), [onHover]);
 
   return (
     <group position={position}>
       <mesh
         ref={meshRef}
-        onPointerEnter={() => onHover(mbtiType)}
-        onPointerLeave={() => onHover(null)}
-        scale={isHovered ? 1.5 : 1}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        scale={isHovered ? 1.3 : 1} // Reduced scale change for smoother animation
       >
         <sphereGeometry args={[0.15, 16, 16]} />
         <meshStandardMaterial color={color} />
       </mesh>
       
       {isHovered && (
-        <Html distanceFactor={10}>
-          <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200 max-w-xs pointer-events-none">
-            <h4 className="font-bold text-sm mb-1" style={{ color }}>
+        <Html distanceFactor={8} zIndexRange={[100, 0]}>
+          <div className="bg-white/95 backdrop-blur-sm p-3 rounded-lg shadow-xl border border-gray-200 max-w-xs pointer-events-none z-50">
+            <h4 className="font-bold text-sm mb-1 text-gray-900" style={{ color }}>
               {description.name}
             </h4>
-            <p className="text-xs text-gray-600 mb-2">
+            <p className="text-xs text-gray-700 mb-2 font-medium">
               {description.description}
             </p>
-            <div className="text-xs text-gray-500 space-y-1">
+            <div className="text-xs text-gray-600 space-y-1">
               <div><strong>Key Traits:</strong> {description.scientificFactors.keyTraits.slice(0, 3).join(", ")}</div>
-              <div><strong>Decision Style:</strong> {description.scientificFactors.decisionProcess.slice(0, 80)}...</div>
+              <div><strong>Decision Style:</strong> {description.scientificFactors.decisionProcess.slice(0, 60)}...</div>
               <div><strong>Strengths:</strong> {description.scientificFactors.strengths.slice(0, 2).join(", ")}</div>
             </div>
           </div>
@@ -152,7 +158,17 @@ const MBTIPoint: React.FC<MBTIPointProps> = ({
       </Text>
     </group>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison for React.memo
+  return (
+    prevProps.mbtiType === nextProps.mbtiType &&
+    prevProps.isHovered === nextProps.isHovered &&
+    prevProps.color === nextProps.color &&
+    prevProps.position[0] === nextProps.position[0] &&
+    prevProps.position[1] === nextProps.position[1] &&
+    prevProps.position[2] === nextProps.position[2]
+  );
+});
 
 // User position indicator
 interface UserPositionProps {
@@ -257,7 +273,7 @@ interface Scene3DProps {
   setHoveredType: (type: string | null) => void;
 }
 
-const Scene3D: React.FC<Scene3DProps> = ({
+const Scene3D: React.FC<Scene3DProps> = React.memo(({
   archetypes,
   mbtiDescriptions,
   userInputs,
@@ -266,6 +282,11 @@ const Scene3D: React.FC<Scene3DProps> = ({
   setHoveredType,
 }) => {
   const userPosition = useMemo(() => weightsTo3D(userInputs, true), [userInputs]);
+
+  // Memoized hover handler to prevent unnecessary re-renders
+  const handleHover = useCallback((type: string | null) => {
+    setHoveredType(type);
+  }, [setHoveredType]);
 
   return (
     <>
@@ -293,7 +314,7 @@ const Scene3D: React.FC<Scene3DProps> = ({
             color={color}
             mbtiType={mbtiType}
             description={mbtiDescriptions[mbtiType]}
-            onHover={setHoveredType}
+            onHover={handleHover}
             isHovered={hoveredType === mbtiType}
           />
         );
@@ -308,13 +329,22 @@ const Scene3D: React.FC<Scene3DProps> = ({
         enableRotate={true}
         minDistance={5}
         maxDistance={20}
+        enableDamping={true}
+        dampingFactor={0.05}
       />
     </>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison for React.memo
+  return (
+    prevProps.hoveredType === nextProps.hoveredType &&
+    prevProps.userMBTI === nextProps.userMBTI &&
+    JSON.stringify(prevProps.userInputs) === JSON.stringify(nextProps.userInputs)
+  );
+});
 
 // Main component
-const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = ({
+const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   archetypes,
   mbtiDescriptions,
   userInputs,
@@ -322,6 +352,11 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = ({
   className = "",
 }) => {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
+
+  // Debounced hover handler to improve performance
+  const debouncedSetHoveredType = useCallback((type: string | null) => {
+    setHoveredType(type);
+  }, []);
 
   return (
     <div className={`w-full h-[400px] sm:h-[500px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden relative ${className}`}>
@@ -336,7 +371,7 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = ({
             userInputs={userInputs}
             userMBTI={userMBTI}
             hoveredType={hoveredType}
-            setHoveredType={setHoveredType}
+            setHoveredType={debouncedSetHoveredType}
           />
         </Suspense>
       </Canvas>
@@ -387,6 +422,13 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = ({
       </div>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison for React.memo
+  return (
+    prevProps.userMBTI === nextProps.userMBTI &&
+    prevProps.className === nextProps.className &&
+    JSON.stringify(prevProps.userInputs) === JSON.stringify(nextProps.userInputs)
+  );
+});
 
 export default MBTI3DVisualization;

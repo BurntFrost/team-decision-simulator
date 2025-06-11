@@ -92,6 +92,7 @@ interface MBTIPointProps {
   description: MBTIDescription;
   onHover: (mbtiType: string | null) => void;
   isHovered: boolean;
+  showFullNames: boolean;
 }
 
 const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
@@ -101,6 +102,7 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
   description,
   onHover,
   isHovered,
+  showFullNames,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -123,39 +125,81 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
         ref={meshRef}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
-        scale={isHovered ? 1.3 : 1} // Reduced scale change for smoother animation
+        scale={isHovered ? 1.4 : 1.1} // Slightly larger base size and more prominent hover
       >
-        <sphereGeometry args={[0.15, 16, 16]} />
-        <meshStandardMaterial color={color} />
+        <sphereGeometry args={[0.18, 20, 20]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={isHovered ? color : "#000000"}
+          emissiveIntensity={isHovered ? 0.2 : 0}
+          roughness={0.3}
+          metalness={0.1}
+        />
       </mesh>
       
       {isHovered && (
-        <Html distanceFactor={8} zIndexRange={[100, 0]}>
-          <div className="bg-white/95 backdrop-blur-sm p-3 rounded-lg shadow-xl border border-gray-200 max-w-xs pointer-events-none z-50">
-            <h4 className="font-bold text-sm mb-1 text-gray-900" style={{ color }}>
-              {description.name}
-            </h4>
-            <p className="text-xs text-gray-700 mb-2 font-medium">
+        <Html
+          distanceFactor={6}
+          zIndexRange={[100, 0]}
+          transform
+          occlude
+          position={[0, 0.8, 0]}
+        >
+          <div className="bg-white/98 backdrop-blur-md p-4 rounded-xl shadow-2xl border-2 border-gray-300 max-w-sm pointer-events-none z-50 transform -translate-x-1/2">
+            <div className="flex items-center gap-2 mb-2">
+              <div
+                className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                style={{ backgroundColor: color }}
+              />
+              <h4 className="font-bold text-base text-gray-900">
+                {description.name}
+              </h4>
+            </div>
+            <p className="text-sm text-gray-700 mb-3 font-medium leading-relaxed">
               {description.description}
             </p>
-            <div className="text-xs text-gray-600 space-y-1">
-              <div><strong>Key Traits:</strong> {description.scientificFactors.keyTraits.slice(0, 3).join(", ")}</div>
-              <div><strong>Decision Style:</strong> {description.scientificFactors.decisionProcess.slice(0, 60)}...</div>
-              <div><strong>Strengths:</strong> {description.scientificFactors.strengths.slice(0, 2).join(", ")}</div>
+            <div className="text-sm text-gray-600 space-y-2">
+              <div className="flex flex-wrap gap-1">
+                <strong className="text-gray-800">Key Traits:</strong>
+                <span className="text-gray-600">{description.scientificFactors.keyTraits.slice(0, 3).join(", ")}</span>
+              </div>
+              <div>
+                <strong className="text-gray-800">Decision Style:</strong>
+                <span className="text-gray-600">{description.scientificFactors.decisionProcess.slice(0, 80)}...</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                <strong className="text-gray-800">Strengths:</strong>
+                <span className="text-gray-600">{description.scientificFactors.strengths.slice(0, 2).join(", ")}</span>
+              </div>
             </div>
           </div>
         </Html>
       )}
       
+      {/* MBTI Type Label with improved readability */}
       <Text
-        position={[0, 0.3, 0]}
-        fontSize={0.2}
-        color={color}
+        position={[0, 0.45, 0]}
+        fontSize={showFullNames ? 0.15 : 0.28}
+        color="#ffffff"
         anchorX="center"
         anchorY="middle"
+        outlineWidth={0.03}
+        outlineColor="#000000"
+        maxWidth={showFullNames ? 2.5 : 1.5}
+        textAlign="center"
       >
-        {mbtiType}
+        {showFullNames ? description.name.replace(" - ", "\n") : mbtiType}
       </Text>
+
+      {/* Background for better text contrast */}
+      <mesh position={[0, 0.45, 0]}>
+        <planeGeometry args={[showFullNames ? 2.8 : 1.2, showFullNames ? 0.8 : 0.5]} />
+        <meshBasicMaterial
+          color={color}
+          opacity={0.85}
+          transparent={true}
+        />
+      </mesh>
     </group>
   );
 }, (prevProps, nextProps) => {
@@ -164,6 +208,7 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
     prevProps.mbtiType === nextProps.mbtiType &&
     prevProps.isHovered === nextProps.isHovered &&
     prevProps.color === nextProps.color &&
+    prevProps.showFullNames === nextProps.showFullNames &&
     prevProps.position[0] === nextProps.position[0] &&
     prevProps.position[1] === nextProps.position[1] &&
     prevProps.position[2] === nextProps.position[2]
@@ -273,6 +318,7 @@ interface Scene3DProps {
   userMBTI?: string;
   hoveredType: string | null;
   setHoveredType: (type: string | null) => void;
+  showFullNames: boolean;
 }
 
 const Scene3D: React.FC<Scene3DProps> = React.memo(({
@@ -282,6 +328,7 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
   userMBTI,
   hoveredType,
   setHoveredType,
+  showFullNames,
 }) => {
   const userPosition = useMemo(() => weightsTo3D(userInputs, true), [userInputs]);
 
@@ -308,7 +355,7 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
         const position = weightsTo3D(archetype.weights, false);
         const temperament = getTemperamentGroup(mbtiType);
         const color = temperamentColors[temperament];
-        
+
         return (
           <MBTIPoint
             key={mbtiType}
@@ -318,6 +365,7 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
             description={mbtiDescriptions[mbtiType]}
             onHover={handleHover}
             isHovered={hoveredType === mbtiType}
+            showFullNames={showFullNames}
           />
         );
       })}
@@ -341,6 +389,7 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
   return (
     prevProps.hoveredType === nextProps.hoveredType &&
     prevProps.userMBTI === nextProps.userMBTI &&
+    prevProps.showFullNames === nextProps.showFullNames &&
     JSON.stringify(prevProps.userInputs) === JSON.stringify(nextProps.userInputs)
   );
 });
@@ -356,10 +405,16 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   className = "",
 }) => {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
+  const [showFullNames, setShowFullNames] = useState<boolean>(false);
 
   // Debounced hover handler to improve performance
   const debouncedSetHoveredType = useCallback((type: string | null) => {
     setHoveredType(type);
+  }, []);
+
+  // Toggle display mode
+  const toggleDisplayMode = useCallback(() => {
+    setShowFullNames(prev => !prev);
   }, []);
 
   return (
@@ -376,13 +431,22 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
             userMBTI={userMBTI}
             hoveredType={hoveredType}
             setHoveredType={debouncedSetHoveredType}
+            showFullNames={showFullNames}
           />
         </Suspense>
       </Canvas>
       
       {/* Legend */}
       <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 rounded-lg shadow-lg max-w-xs">
-        <h4 className="text-xs sm:text-sm font-semibold mb-1 sm:mb-2">MBTI Temperaments</h4>
+        <div className="flex items-center justify-between mb-1 sm:mb-2">
+          <h4 className="text-xs sm:text-sm font-semibold">MBTI Temperaments</h4>
+          <button
+            onClick={toggleDisplayMode}
+            className="sm:hidden px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+          >
+            {showFullNames ? "Codes" : "Names"}
+          </button>
+        </div>
         <div className="space-y-0.5 sm:space-y-1">
           {Object.entries(temperamentColors).map(([group, color]) => (
             <div key={group} className="flex items-center gap-1 sm:gap-2 text-xs">
@@ -408,11 +472,17 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
       {/* Controls Info - Hidden on mobile */}
       <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 rounded-lg shadow-lg hidden sm:block">
         <h4 className="text-sm font-semibold mb-2">3D Controls</h4>
-        <div className="space-y-1 text-xs text-gray-600">
+        <div className="space-y-1 text-xs text-gray-600 mb-3">
           <div>🖱️ Drag to rotate</div>
           <div>🔍 Scroll to zoom</div>
           <div>👆 Hover for details</div>
         </div>
+        <button
+          onClick={toggleDisplayMode}
+          className="w-full px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+        >
+          {showFullNames ? "Show Codes" : "Show Names"}
+        </button>
       </div>
 
       {/* Axis Info */}

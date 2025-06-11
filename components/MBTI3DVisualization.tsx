@@ -1,10 +1,11 @@
 "use client";
 
 import React, { Suspense, useMemo, useState, useRef, useCallback } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { ArchetypeProfile, MBTIDescription, Weights } from "@/lib/decisionMatrixService";
+import { factorInfo } from "@/models/decision/constants";
 
 interface MBTI3DVisualizationProps {
   archetypes: ArchetypeProfile[];
@@ -83,6 +84,100 @@ const weightsTo3D = (weights: Weights, isUserInput: boolean = false): [number, n
 
   return [x, y, z];
 };
+
+// Billboard Text component that always faces the camera
+interface BillboardTextProps {
+  position: [number, number, number];
+  text: string;
+  fontSize?: number;
+  color?: string;
+  backgroundColor?: string;
+  backgroundOpacity?: number;
+  onHover?: (hovered: boolean) => void;
+}
+
+const BillboardText: React.FC<BillboardTextProps> = React.memo(({
+  position,
+  text,
+  fontSize = 0.2,
+  color = "#ffffff",
+  backgroundColor = "#000000",
+  backgroundOpacity = 0.7,
+  onHover,
+}) => {
+  const textRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+  const { camera } = useThree();
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Use useFrame with a throttled update for better performance
+  useFrame(() => {
+    if (textRef.current && camera) {
+      // Make the text always face the camera
+      textRef.current.lookAt(camera.position);
+    }
+
+    // Add subtle hover animation
+    if (meshRef.current && isHovered) {
+      const time = Date.now() * 0.001;
+      meshRef.current.scale.setScalar(1 + Math.sin(time * 4) * 0.05);
+    } else if (meshRef.current) {
+      meshRef.current.scale.setScalar(1);
+    }
+  });
+
+  // Calculate background size based on text length and font size
+  // Handle multi-line text by checking for line breaks
+  const lines = text.split('\n');
+  const maxLineLength = Math.max(...lines.map(line => line.length));
+  const backgroundWidth = Math.max(maxLineLength * fontSize * 0.55, fontSize * 2);
+  const backgroundHeight = fontSize * (1.4 + (lines.length - 1) * 0.8);
+
+  const handlePointerEnter = useCallback(() => {
+    setIsHovered(true);
+    onHover?.(true);
+  }, [onHover]);
+
+  const handlePointerLeave = useCallback(() => {
+    setIsHovered(false);
+    onHover?.(false);
+  }, [onHover]);
+
+  return (
+    <group ref={textRef} position={position}>
+      {/* Background plane for better readability */}
+      <mesh
+        ref={meshRef}
+        position={[0, 0, -0.01]}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+      >
+        <planeGeometry args={[backgroundWidth, backgroundHeight]} />
+        <meshBasicMaterial
+          color={backgroundColor}
+          opacity={isHovered ? Math.min(backgroundOpacity + 0.2, 1) : backgroundOpacity}
+          transparent={true}
+        />
+      </mesh>
+
+      {/* Text with improved styling */}
+      <Text
+        fontSize={fontSize}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.015}
+        outlineColor="#000000"
+        maxWidth={backgroundWidth * 0.9}
+        textAlign="center"
+      >
+        {text}
+      </Text>
+    </group>
+  );
+});
+
+BillboardText.displayName = 'BillboardText';
 
 // Individual MBTI point component
 interface MBTIPointProps {
@@ -176,30 +271,15 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
         </Html>
       )}
       
-      {/* MBTI Type Label with improved readability */}
-      <Text
+      {/* MBTI Type Label with billboard behavior */}
+      <BillboardText
         position={[0, 0.45, 0]}
+        text={showFullNames ? description.name.replace(" - ", "\n") : mbtiType}
         fontSize={showFullNames ? 0.15 : 0.28}
         color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.03}
-        outlineColor="#000000"
-        maxWidth={showFullNames ? 2.5 : 1.5}
-        textAlign="center"
-      >
-        {showFullNames ? description.name.replace(" - ", "\n") : mbtiType}
-      </Text>
-
-      {/* Background for better text contrast */}
-      <mesh position={[0, 0.45, 0]}>
-        <planeGeometry args={[showFullNames ? 2.8 : 1.2, showFullNames ? 0.8 : 0.5]} />
-        <meshBasicMaterial
-          color={color}
-          opacity={0.85}
-          transparent={true}
-        />
-      </mesh>
+        backgroundColor={color}
+        backgroundOpacity={0.85}
+      />
     </group>
   );
 }, (prevProps, nextProps) => {
@@ -238,16 +318,68 @@ const UserPosition: React.FC<UserPositionProps> = ({ position, userMBTI }) => {
         <ringGeometry args={[0.2, 0.3, 8]} />
         <meshStandardMaterial color="#ff6b6b" />
       </mesh>
-      <Text
+      {/* User label with billboard behavior */}
+      <BillboardText
         position={[0, -0.5, 0]}
+        text={userMBTI ? `YOU (${userMBTI})` : "YOU"}
         fontSize={0.15}
-        color="#ff6b6b"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {userMBTI ? `YOU (${userMBTI})` : "YOU"}
-      </Text>
+        color="#ffffff"
+        backgroundColor="#ff6b6b"
+        backgroundOpacity={0.9}
+      />
     </group>
+  );
+};
+
+// Factor Labels component with billboard behavior
+const FactorLabels: React.FC = () => {
+  const [hoveredFactor, setHoveredFactor] = useState<string | null>(null);
+
+  // Define positions for each factor label in 3D space
+  // Positioned to represent their influence on the decision space
+  const factorPositions: Record<string, [number, number, number]> = {
+    data_quality: [4.2, 1.8, 0.5],        // High X (analytical), slightly positive Y and Z
+    roi_visibility: [4.2, -1.8, -0.5],    // High X (analytical), slightly negative Y and Z
+    autonomy_scope: [-1.8, 4.2, 0.5],     // High Y (autonomy), slightly negative X and positive Z
+    time_pressure: [1.8, -4.2, -0.5],     // Low Y (speed), slightly positive X and negative Z
+    social_complexity: [0.5, 0.8, 4.2],   // High Z (social), slightly positive X and Y
+    psychological_safety: [-0.5, 2.8, -3.5], // Negative Z (safety), positive Y, slightly negative X
+  };
+
+  // Color coding for different factor categories
+  const factorColors: Record<string, { bg: string; text: string }> = {
+    data_quality: { bg: "#3b82f6", text: "#ffffff" },      // Blue - Analytical
+    roi_visibility: { bg: "#1d4ed8", text: "#ffffff" },    // Dark Blue - Analytical
+    autonomy_scope: { bg: "#10b981", text: "#ffffff" },    // Green - Control
+    time_pressure: { bg: "#f59e0b", text: "#ffffff" },     // Amber - Urgency
+    social_complexity: { bg: "#ef4444", text: "#ffffff" }, // Red - Complexity
+    psychological_safety: { bg: "#8b5cf6", text: "#ffffff" }, // Purple - Safety
+  };
+
+  const handleFactorHover = useCallback((factor: string, hovered: boolean) => {
+    setHoveredFactor(hovered ? factor : null);
+  }, []);
+
+  return (
+    <>
+      {Object.entries(factorInfo).map(([key, info]) => {
+        const colors = factorColors[key] || { bg: "#4455a6", text: "#ffffff" };
+        const isHovered = hoveredFactor === key;
+
+        return (
+          <BillboardText
+            key={key}
+            position={factorPositions[key]}
+            text={info.label}
+            fontSize={isHovered ? 0.18 : 0.15}
+            color={colors.text}
+            backgroundColor={colors.bg}
+            backgroundOpacity={isHovered ? 0.95 : 0.85}
+            onHover={(hovered) => handleFactorHover(key, hovered)}
+          />
+        );
+      })}
+    </>
   );
 };
 
@@ -273,39 +405,35 @@ const AxisLabels: React.FC = () => {
         <meshStandardMaterial color="#999" />
       </mesh>
 
-      {/* X-axis label */}
-      <Text
+      {/* X-axis label with billboard behavior */}
+      <BillboardText
         position={[4, -3, 0]}
-        fontSize={0.25}
-        color="#555"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Data + ROI Focus →
-      </Text>
+        text="Data + ROI Focus →"
+        fontSize={0.22}
+        color="#ffffff"
+        backgroundColor="#555555"
+        backgroundOpacity={0.8}
+      />
 
-      {/* Y-axis label */}
-      <Text
+      {/* Y-axis label with billboard behavior */}
+      <BillboardText
         position={[-3.5, 3, 0]}
-        fontSize={0.25}
-        color="#555"
-        anchorX="center"
-        anchorY="middle"
-        rotation={[0, 0, Math.PI / 2]}
-      >
-        Autonomy vs Speed →
-      </Text>
+        text="Autonomy vs Speed →"
+        fontSize={0.22}
+        color="#ffffff"
+        backgroundColor="#555555"
+        backgroundOpacity={0.8}
+      />
 
-      {/* Z-axis label */}
-      <Text
+      {/* Z-axis label with billboard behavior */}
+      <BillboardText
         position={[0, -3.5, 3]}
-        fontSize={0.25}
-        color="#555"
-        anchorX="center"
-        anchorY="middle"
-      >
-        Social Complexity →
-      </Text>
+        text="Social Complexity →"
+        fontSize={0.22}
+        color="#ffffff"
+        backgroundColor="#555555"
+        backgroundOpacity={0.8}
+      />
     </>
   );
 };
@@ -348,7 +476,10 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
       
       {/* Axis labels */}
       <AxisLabels />
-      
+
+      {/* Factor labels with billboard behavior */}
+      <FactorLabels />
+
       {/* MBTI points */}
       {archetypes.map((archetype) => {
         const mbtiType = archetype.name.split(" - ")[0]; // Extract MBTI code
@@ -492,6 +623,9 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
           <div><strong>X:</strong> Data + ROI</div>
           <div><strong>Y:</strong> Autonomy - Speed</div>
           <div><strong>Z:</strong> Social Complexity</div>
+          <div className="text-xs text-blue-600 mt-2 pt-1 border-t border-gray-200">
+            💡 All text labels always face you as you rotate the view
+          </div>
         </div>
       </div>
     </div>

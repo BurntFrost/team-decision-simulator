@@ -36,8 +36,117 @@ import {
   MdFactCheck,
   MdPsychology,
 } from "react-icons/md";
+// Import Lucide icons for enhanced brain options
+import { Brain, Zap } from "lucide-react";
 
+// Enhanced Brain Icon Component with multiple visual options
+interface EnhancedBrainIconProps {
+  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+  onClick?: () => void;
+}
 
+const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
+  variant = 'gradient',
+  size = 'md',
+  className = '',
+  onClick
+}) => {
+  const sizeClasses = {
+    sm: 'h-5 w-5',
+    md: 'h-6 w-6',
+    lg: 'h-8 w-8',
+    xl: 'h-10 w-10'
+  };
+
+  const baseClasses = `${sizeClasses[size]} transition-all duration-300 ${className}`;
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  switch (variant) {
+    case 'gradient':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:scale-110 group-hover:rotate-3`} />
+        </div>
+      );
+
+    case 'animated':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          <Brain className={`${baseClasses} text-white animate-pulse group-hover:animate-bounce drop-shadow-lg`} />
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping group-hover:bg-blue-400"></div>
+        </div>
+      );
+
+    case 'glow':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          <div className="absolute inset-0 bg-white rounded-full blur-md opacity-30 group-hover:opacity-60 transition-opacity duration-300 animate-pulse"></div>
+          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-2xl group-hover:scale-105`} />
+        </div>
+      );
+
+    case 'pulse':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          <div className="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
+          <div className="absolute inset-0 bg-white/10 rounded-full animate-ping animation-delay-75"></div>
+          <Brain className={`${baseClasses} text-white relative z-10 group-hover:scale-110 drop-shadow-lg`} />
+        </div>
+      );
+
+    case 'modern':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg blur-sm opacity-50 group-hover:opacity-75 transition-all duration-300"></div>
+          <div className="relative z-10 p-1 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 group-hover:bg-white/20 transition-all duration-300">
+            <Brain className={`${baseClasses} text-white group-hover:scale-105`} />
+          </div>
+          <Zap className="absolute -top-1 -right-1 h-3 w-3 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+      );
+
+    default:
+      return <Brain className={`${baseClasses} text-white`} />;
+  }
+};
 
 // Custom Stepper Component
 const StepperContainer = ({
@@ -1871,8 +1980,7 @@ export default function UserDecisionDashboard() {
     color: "#6b7280",
   });
 
-  // Easter egg opacity and mouse tracking
-  const [eggOpacity, setEggOpacity] = useState(0);
+
 
   // Character cycling state - tracks current index for each MBTI type and franchise
   const [characterIndices, setCharacterIndices] = useState<Record<string, Record<string, number>>>(() => {
@@ -1940,13 +2048,7 @@ export default function UserDecisionDashboard() {
     return map;
   }, [mbtiTypes]);
 
-  const handleBrainMouseEnter = () => {
-    setEggOpacity(1);
-  };
 
-  const handleBrainMouseLeave = () => {
-    setEggOpacity(0);
-  };
 
   useEffect(() => {
     setMounted(true);
@@ -2060,21 +2162,15 @@ export default function UserDecisionDashboard() {
             <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               {/* Brand Section */}
               <div className="flex flex-col gap-2">
-                <div
-                  className="flex items-center gap-2 relative"
-                  onMouseEnter={handleBrainMouseEnter}
-                  onMouseLeave={handleBrainMouseLeave}
-                >
-                  <FaBrain className="h-6 w-6 text-white" />
+                <div className="flex items-center gap-3">
+                  <EnhancedBrainIcon
+                    variant="gradient"
+                    size="lg"
+                    className="flex-shrink-0"
+                  />
                   <h1 className="text-xl sm:text-2xl font-bold text-white">
                     MBTI Brain
                   </h1>
-                  <div
-                    className="absolute left-full ml-2 text-white text-sm pointer-events-none transition-opacity"
-                    style={{ opacity: eggOpacity }}
-                  >
-                    🎉
-                  </div>
                 </div>
                 <p className="text-sm sm:text-base text-white/90 max-w-2xl">
                   Explore how different personality types approach your decisions.

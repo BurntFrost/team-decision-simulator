@@ -458,4 +458,16 @@ button:active {
     backdrop-filter: blur(64px);
     -webkit-backdrop-filter: blur(64px);
   }
+
+  .animation-delay-75 {
+    animation-delay: 75ms;
+  }
+
+  .animation-delay-150 {
+    animation-delay: 150ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
 }

@@ -2270,57 +2270,65 @@ export default function UserDecisionDashboard() {
                     </div>
                   )}
 
-                {/* 3D MBTI Visualization */}
+                {/* Combined 3D Visualization and Factor Controls */}
                 <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
-                  <div className="mb-4">
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                      MBTI Decision Factors in 3D Space
-                    </h2>
-                    <p className="text-sm text-gray-600">
-                      Explore how different personality types prioritize decision factors.
-                      Your current settings are shown as a red ring. Hover over points to see details.
-                    </p>
-                  </div>
-                    <MBTI3DWrapper
-                      archetypes={DecisionService.archetypes}
-                      mbtiDescriptions={DecisionService.mbtiDescriptions}
-                      userInputs={inputs}
-                      userMBTI={userMBTI}
-                      className="relative"
-                    />
-                  </GlassContainer>
-
-                <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
-                  <div className="mb-4">
-                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
-                      Adjust Decision Factors
-                    </h2>
-                    <p className="text-sm text-gray-600">
-                      Move the sliders to see how your position changes in the 3D space above.
-                    </p>
-                  </div>
-                    <div className="grid grid-cols-1 gap-4">
-                      {Object.keys(inputs).map((key) => (
-                        <SliderInput
-                          key={key}
-                          id={key}
-                          label={key}
-                          value={inputs[key as DecisionService.FactorKey]}
-                          onChange={(value) =>
-                            handleInputChange(
-                              key as DecisionService.FactorKey,
-                              value
-                            )
-                          }
-                          info={
-                            DecisionService.factorInfo[
-                              key as DecisionService.FactorKey
-                            ]
-                          }
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-8">
+                    {/* 3D Visualization Section - Takes 2/3 of space on large screens */}
+                    <div className="xl:col-span-2 space-y-4">
+                      <div className="mb-4">
+                        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                          MBTI Decision Factors in 3D Space
+                        </h2>
+                        <p className="text-sm text-gray-600">
+                          Explore how different personality types prioritize decision factors.
+                          Your current settings are shown as a red ring. Hover over points to see details.
+                        </p>
+                      </div>
+                      <div className="relative">
+                        <MBTI3DWrapper
+                          archetypes={DecisionService.archetypes}
+                          mbtiDescriptions={DecisionService.mbtiDescriptions}
+                          userInputs={inputs}
+                          userMBTI={userMBTI}
+                          className="relative"
                         />
-                      ))}
+                      </div>
                     </div>
-                  </GlassContainer>
+
+                    {/* Factor Controls Section - Takes 1/3 of space on large screens */}
+                    <div className="xl:col-span-1 space-y-4 xl:border-l xl:border-white/20 xl:pl-6">
+                      <div className="mb-4">
+                        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                          Adjust Decision Factors
+                        </h2>
+                        <p className="text-sm text-gray-600">
+                          Move the sliders to see how your position changes in the 3D space in real-time.
+                        </p>
+                      </div>
+                      <div className="space-y-3 xl:space-y-4">
+                        {Object.keys(inputs).map((key) => (
+                          <SliderInput
+                            key={key}
+                            id={key}
+                            label={key}
+                            value={inputs[key as DecisionService.FactorKey]}
+                            onChange={(value) =>
+                              handleInputChange(
+                                key as DecisionService.FactorKey,
+                                value
+                              )
+                            }
+                            info={
+                              DecisionService.factorInfo[
+                                key as DecisionService.FactorKey
+                              ]
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </GlassContainer>
 
                   <div className="flex justify-center sm:justify-end mt-6">
                     <Button

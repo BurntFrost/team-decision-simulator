@@ -14,9 +14,9 @@ export interface SliderInputProps {
 }
 
 const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, info }) => (
-  <div className="flex flex-col mb-5">
+  <div className="flex flex-col">
     <div className="flex justify-between items-center mb-2">
-      <label htmlFor={id} className="font-medium text-md text-[#1d1d1f]">
+      <label htmlFor={id} className="font-medium text-sm sm:text-md text-[#1d1d1f] leading-tight">
         {info.label}
       </label>
       <Popover>

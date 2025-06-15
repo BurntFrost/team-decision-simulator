@@ -924,4 +924,75 @@ button:active {
   .animate-neural-network-burst {
     animation: neuralNetworkBurst 1.2s ease-in-out infinite;
   }
+
+  /* Optimized Neural Network Animation Classes */
+  .neural-soma {
+    transition: transform 0.1s ease-out;
+    will-change: transform, opacity;
+  }
+
+  .neural-axon {
+    will-change: stroke-dashoffset, opacity;
+  }
+
+  .neural-dendrite {
+    will-change: opacity;
+  }
+
+  .neural-connections {
+    will-change: transform;
+  }
+
+  .neural-nodes {
+    will-change: transform;
+  }
+
+  /* Performance-optimized animations using CSS custom properties */
+  @media (prefers-reduced-motion: no-preference) {
+    .neural-soma {
+      animation: optimizedNeuralPulse calc(2.5s / var(--neural-intensity, 1)) ease-in-out infinite;
+      animation-delay: calc(var(--pulse-phase, 0) * 0.5s);
+    }
+
+    .neural-axon {
+      animation: optimizedAxonFlow calc(3s / var(--neural-intensity, 1)) linear infinite;
+      animation-delay: calc(var(--wave-phase, 0) * 0.3s);
+    }
+  }
+
+  /* Reduced motion fallbacks */
+  @media (prefers-reduced-motion: reduce) {
+    .neural-soma,
+    .neural-axon,
+    .neural-dendrite {
+      animation: none !important;
+      transition: opacity 0.3s ease;
+    }
+  }
+}
+
+/* Optimized keyframe animations for better performance */
+@keyframes optimizedNeuralPulse {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate3d(0, 0, 0) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes optimizedAxonFlow {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    stroke-dashoffset: -6;
+    opacity: 0.3;
+  }
 }

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NeuralAnimationProvider } from "@/lib/contexts/neural-animation-context";
-import { NeuralNetworkBackground } from "@/components/ui/neural-network-background";
+import { OptimizedNeuralBackground } from "@/components/ui/optimized-neural-background";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,11 +51,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen`}
       >
         <NeuralAnimationProvider>
-          <NeuralNetworkBackground
-            nodeCount={30}
-            connectionDensity={0.25}
+          <OptimizedNeuralBackground
+            nodeCount={25}
+            connectionDensity={0.3}
             animated={true}
             useContext={true}
+            respectReducedMotion={true}
           />
           {children}
         </NeuralAnimationProvider>

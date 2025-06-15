@@ -429,6 +429,125 @@ button:active {
   }
 }
 
+@keyframes neuralPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes connectionFlow {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+}
+
+@keyframes glassBreathing {
+  0%, 100% {
+    backdrop-filter: blur(16px);
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    backdrop-filter: blur(20px);
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+@keyframes liquidMorph {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    transform: scale(1.05) rotate(90deg);
+  }
+  50% {
+    border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+    transform: scale(0.95) rotate(180deg);
+  }
+  75% {
+    border-radius: 60% 40% 60% 30% / 70% 30% 60% 40%;
+    transform: scale(1.02) rotate(270deg);
+  }
+}
+
+@keyframes liquidFlow {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%) skewX(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes organicFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) translateX(5px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-5px) translateX(-3px) rotate(-0.5deg);
+  }
+  75% {
+    transform: translateY(-15px) translateX(2px) rotate(0.5deg);
+  }
+}
+
+@keyframes liquidRipple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes fluidExpand {
+  0% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: blur(2px);
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes viscousWave {
+  0%, 100% {
+    clip-path: polygon(0% 45%, 15% 44%, 32% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+  }
+  50% {
+    clip-path: polygon(0% 60%, 16% 65%, 34% 66%, 51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
+  }
+}
+
 
 
 
@@ -502,6 +621,334 @@ button:active {
 
 
 
+  .animate-neural-pulse {
+    animation: neuralPulse 2s ease-in-out infinite;
+  }
+
+  .animate-connection-flow {
+    animation: connectionFlow 3s ease-in-out infinite;
+  }
+
+  .animate-glass-breathing {
+    animation: glassBreathing 4s ease-in-out infinite;
+  }
+
+  .animate-liquid-morph {
+    animation: liquidMorph 8s ease-in-out infinite;
+  }
+
+
+
+  .animate-organic-float {
+    animation: organicFloat 6s ease-in-out infinite;
+  }
+
+  .animate-liquid-ripple {
+    animation: liquidRipple 0.6s ease-out;
+  }
+
+  .animate-fluid-expand {
+    animation: fluidExpand 2s ease-in-out infinite;
+  }
+
+  .animate-viscous-wave {
+    animation: viscousWave 4s ease-in-out infinite;
+  }
+
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+  }
+
+
+
+  .shadow-4xl {
+    box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.3);
+  }
+
+  .shadow-5xl {
+    box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.4);
+  }
+
+  .shadow-liquid {
+    box-shadow:
+      0 10px 25px -5px rgba(59, 130, 246, 0.1),
+      0 20px 40px -10px rgba(139, 92, 246, 0.1),
+      0 30px 60px -15px rgba(6, 182, 212, 0.1);
+  }
+
+  .shadow-glass {
+    box-shadow:
+      0 8px 32px rgba(31, 38, 135, 0.37),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .transform-gpu {
+    transform: translateZ(0);
+  }
+
+  /* Enhanced Typography System */
+  .text-liquid-gradient {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  .text-glass-effect {
+    color: rgba(31, 41, 55, 0.9);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .text-enhanced-contrast {
+    color: rgba(17, 24, 39, 0.95);
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  .text-subtle-glass {
+    color: rgba(75, 85, 99, 0.8);
+    font-weight: 400;
+    line-height: 1.5;
+    text-shadow: 0 0.5px 1px rgba(255, 255, 255, 0.3);
+  }
+
+  /* Enhanced Spacing System */
+  .space-liquid {
+    margin-bottom: 1.5rem;
+  }
+
+  .space-liquid-sm {
+    margin-bottom: 1rem;
+  }
+
+  .space-liquid-lg {
+    margin-bottom: 2rem;
+  }
+
+  .space-liquid-xl {
+    margin-bottom: 2.5rem;
+  }
+
+  /* Improved Readability */
+  .prose-liquid {
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+    color: rgba(31, 41, 55, 0.9);
+  }
+
+  .prose-liquid h1,
+  .prose-liquid h2,
+  .prose-liquid h3,
+  .prose-liquid h4,
+  .prose-liquid h5,
+  .prose-liquid h6 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75em;
+    margin-top: 1.5em;
+    color: rgba(17, 24, 39, 0.95);
+  }
+
+  .prose-liquid h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+  }
+
+  .prose-liquid h2 {
+    font-size: 1.875rem;
+    line-height: 1.3;
+  }
+
+  .prose-liquid h3 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+  }
+
+  .prose-liquid p {
+    margin-bottom: 1.25em;
+    color: rgba(55, 65, 81, 0.9);
+  }
+
+  /* Enhanced Focus States */
+  .focus-liquid:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  .focus-liquid:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.8);
+    outline-offset: 2px;
+  }
+
+  /* Advanced Interaction Utilities */
+  .hover-liquid {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-liquid:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+  }
+
+  .press-liquid:active {
+    transform: translateY(0) scale(0.98);
+    transition: all 0.1s ease-out;
+  }
+
+  .magnetic-hover {
+    transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .magnetic-hover:hover {
+    transform: scale(1.05) rotate(1deg);
+  }
+
+  .liquid-border {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: subtract;
+    animation: liquidFlow 3s linear infinite;
+  }
+
+  /* Performance Optimizations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .optimize-animations {
+    animation-fill-mode: both;
+    animation-play-state: running;
+  }
+
+  .smooth-60fps {
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Force GPU layers for better performance */
+  .force-gpu-layer {
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+  }
+
+  /* Optimized blur effects */
+  .optimized-blur {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transform: translateZ(0);
+  }
+
+  /* Responsive Animation Controls */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-liquid-morph,
+    .animate-liquid-flow,
+    .animate-organic-float,
+    .animate-fluid-expand,
+    .animate-viscous-wave,
+    .animate-glass-breathing,
+    .animate-neural-pulse,
+    .animate-connection-flow {
+      animation: none !important;
+    }
+
+    .hover-liquid:hover,
+    .magnetic-hover:hover {
+      transform: none !important;
+    }
+
+    .gpu-accelerated,
+    .force-gpu-layer {
+      will-change: auto;
+    }
+  }
+
+  /* High refresh rate optimizations */
+  @media (min-resolution: 120dpi) {
+    .animate-liquid-morph {
+      animation-duration: 6s;
+    }
+
+    .animate-organic-float {
+      animation-duration: 4s;
+    }
+  }
+
+  /* Accessibility Enhancements */
+  .focus-visible-liquid:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.8);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  .high-contrast-text {
+    color: rgba(17, 24, 39, 0.95);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+
+  /* Screen reader optimizations */
+  .sr-only-liquid {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Reduced motion fallbacks */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .gpu-accelerated,
+    .force-gpu-layer {
+      will-change: auto !important;
+      transform: none !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .text-liquid-gradient {
+      background: none;
+      color: #000;
+      -webkit-text-fill-color: #000;
+    }
+
+    .text-glass-effect {
+      color: #000;
+      text-shadow: none;
+    }
+
+    .text-enhanced-contrast {
+      color: #000;
+    }
+  }
 }
 
 

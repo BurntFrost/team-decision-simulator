@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { GlassContainer } from "@/components/ui/glass-container";
+import { LiquidBackground } from "@/components/ui/liquid-background";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -41,27 +42,46 @@ import { Brain, Zap } from "lucide-react";
 
 // Enhanced Brain Icon Component with multiple visual options
 interface EnhancedBrainIconProps {
-  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern' | 'premium';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern' | 'premium' | 'liquid' | 'neural';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   className?: string;
   onClick?: () => void;
+  interactive?: boolean;
+  neuralActivity?: boolean;
 }
 
 const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
   variant = 'gradient',
   size = 'md',
   className = '',
-  onClick
+  onClick,
+  interactive = false,
+  neuralActivity = false
 }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [pulseIntensity, setPulseIntensity] = React.useState(1);
+
   const sizeClasses = {
     sm: 'h-5 w-5',
     md: 'h-6 w-6',
     lg: 'h-8 w-8',
     xl: 'h-10 w-10',
-    '2xl': 'h-12 w-12'
+    '2xl': 'h-12 w-12',
+    '3xl': 'h-16 w-16'
   };
 
-  const baseClasses = `${sizeClasses[size]} transition-all duration-300 ${className}`;
+  const baseClasses = `${sizeClasses[size]} transition-all duration-500 ease-out transform-gpu ${className}`;
+
+  // Enhanced neural activity simulation
+  React.useEffect(() => {
+    if (neuralActivity) {
+      const interval = setInterval(() => {
+        setPulseIntensity(Math.random() * 0.5 + 0.75); // Random intensity between 0.75 and 1.25
+      }, 2000 + Math.random() * 1000); // Random interval between 2-3 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [neuralActivity]);
 
   const handleClick = () => {
     if (onClick) {
@@ -174,6 +194,117 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           {/* Enhanced sparkle effects on hover */}
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 motion-safe:group-hover:animate-ping transition-opacity duration-300"></div>
           <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-blue-200 rounded-full opacity-0 group-hover:opacity-80 motion-safe:group-hover:animate-ping motion-safe:[animation-delay:0.3s] transition-opacity duration-300"></div>
+        </div>
+      );
+
+    case 'liquid':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          {/* Liquid glass container */}
+          <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl group-hover:shadow-4xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-1">
+            {/* Liquid morphing background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 via-purple-500/30 to-cyan-400/30 rounded-2xl blur-sm opacity-60 group-hover:opacity-90 transition-opacity duration-500 animate-liquid-flow"></div>
+
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 animate-glass-shimmer rounded-2xl"></div>
+
+            {/* Brain icon */}
+            <Brain
+              className={`${baseClasses} text-white relative z-10 drop-shadow-2xl group-hover:scale-105 group-hover:rotate-1`}
+              style={{
+                filter: `brightness(${1 + (isHovered ? 0.3 : 0)}) saturate(${1 + (isHovered ? 0.2 : 0)})`,
+                transform: `scale(${pulseIntensity})`,
+              }}
+            />
+
+            {/* Neural activity indicators */}
+            {neuralActivity && (
+              <>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-neural-pulse"></div>
+                <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-neural-pulse animation-delay-150"></div>
+                <div className="absolute top-1 -left-1 w-1 h-1 bg-cyan-400 rounded-full animate-neural-pulse animation-delay-300"></div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+
+    case 'neural':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          {/* Neural network background */}
+          <div className="absolute -inset-6 opacity-40 group-hover:opacity-70 transition-opacity duration-500">
+            {/* Neural connections */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.6" />
+                  <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
+                </linearGradient>
+              </defs>
+
+              {/* Animated neural pathways */}
+              <path
+                d="M20,20 Q50,10 80,30 Q90,50 70,80 Q50,90 30,70 Q10,50 20,20"
+                stroke="url(#neuralGradient)"
+                strokeWidth="1"
+                fill="none"
+                className="animate-connection-flow"
+                strokeDasharray="5,5"
+              />
+              <path
+                d="M80,20 Q50,30 20,50 Q30,80 60,70 Q90,60 80,20"
+                stroke="url(#neuralGradient)"
+                strokeWidth="1"
+                fill="none"
+                className="animate-connection-flow animation-delay-150"
+                strokeDasharray="3,7"
+              />
+            </svg>
+
+            {/* Neural nodes */}
+            <div className="absolute top-2 right-2 w-2 h-2 bg-blue-400 rounded-full animate-neural-pulse"></div>
+            <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-purple-500 rounded-full animate-neural-pulse animation-delay-75"></div>
+            <div className="absolute top-1/2 left-1 w-1 h-1 bg-cyan-400 rounded-full animate-neural-pulse animation-delay-150"></div>
+            <div className="absolute top-1 right-1/2 w-1.5 h-1.5 bg-indigo-400 rounded-full animate-neural-pulse animation-delay-300"></div>
+          </div>
+
+          {/* Central brain container */}
+          <div className="relative p-1 bg-gradient-to-br from-white/15 via-white/10 to-white/8 backdrop-blur-lg border border-white/25 rounded-xl shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:scale-105">
+            <Brain
+              className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-125`}
+              style={{
+                filter: `hue-rotate(${isHovered ? '10deg' : '0deg'}) saturate(${1 + (pulseIntensity - 1) * 0.5})`,
+                transform: `scale(${0.95 + pulseIntensity * 0.05})`,
+              }}
+            />
+          </div>
+
+          {/* Synaptic activity */}
+          {neuralActivity && (
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-0 left-1/2 w-px h-4 bg-gradient-to-b from-blue-400 to-transparent animate-pulse"></div>
+              <div className="absolute bottom-0 right-1/3 w-px h-3 bg-gradient-to-t from-purple-400 to-transparent animate-pulse animation-delay-150"></div>
+              <div className="absolute left-0 top-1/3 w-3 h-px bg-gradient-to-r from-cyan-400 to-transparent animate-pulse animation-delay-300"></div>
+            </div>
+          )}
         </div>
       );
 
@@ -932,10 +1063,10 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-2xl transition-all duration-300 cursor-pointer",
-        isHovered ? "scale-[1.02] shadow-xl" : "shadow-lg",
+        "group relative overflow-hidden rounded-3xl transition-all duration-700 ease-out cursor-pointer transform-gpu",
+        isHovered ? "scale-[1.03] -translate-y-2 shadow-4xl" : "shadow-2xl",
         isUserType
-          ? "ring-2 ring-[#007aff] ring-offset-2 ring-offset-white"
+          ? "ring-2 ring-[#007aff] ring-offset-4 ring-offset-white/50"
           : ""
       )}
       onMouseEnter={() => debouncedSetHovered(true)}
@@ -943,66 +1074,91 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
       onClick={handleCardClick}
       title="Click to shuffle character examples"
     >
-      {/* Simplified Glass Background - reduced backdrop-blur for better text visibility */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/85 to-white/75"></div>
+      {/* Enhanced Liquid Glass Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-2xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-tl from-white/8 via-transparent to-white/12 backdrop-blur-xl"></div>
+
+      {/* Dynamic color overlay based on personality type */}
       <div
-        className="absolute inset-0 opacity-5 bg-gradient-to-br from-transparent via-current to-transparent"
+        className="absolute inset-0 opacity-8 bg-gradient-to-br from-transparent via-current/20 to-current/10 transition-opacity duration-500"
         style={{ color: info.color }}
       ></div>
 
-      {/* Simplified Border Gradient - removed animation for better performance */}
+      {/* Enhanced border effects */}
+      <div className="absolute inset-0 rounded-3xl border border-white/30 pointer-events-none"></div>
+      <div className="absolute inset-[1px] rounded-3xl border border-white/15 pointer-events-none"></div>
+
+      {/* Interactive glow effect */}
       {isHovered && (
         <div
-          className="absolute inset-0 rounded-2xl opacity-15 bg-gradient-to-r from-transparent via-current to-transparent"
+          className="absolute inset-0 rounded-3xl opacity-20 bg-gradient-to-r from-transparent via-current/30 to-transparent animate-glass-shimmer transition-opacity duration-700"
           style={{ color: info.color }}
         ></div>
       )}
 
-      <div className="relative p-6 space-y-4">
+      {/* Subtle noise texture for realism */}
+      <div
+        className="absolute inset-0 rounded-3xl opacity-[0.02] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      <div className="relative z-10 p-6 space-y-5">
         {/* Header Section */}
         <div className="flex items-start gap-4">
           <div className="relative">
-            <Image
-              src={img}
-              alt={`${type} icon`}
-              width={56}
-              height={56}
-              className="w-14 h-14 rounded-2xl object-cover shadow-lg ring-2 ring-white/50"
-            />
+            {/* Enhanced image container with liquid glass effect */}
+            <div className="relative p-1 bg-gradient-to-br from-white/25 via-white/15 to-white/10 backdrop-blur-lg rounded-3xl shadow-xl">
+              <Image
+                src={img}
+                alt={`${type} icon`}
+                width={56}
+                height={56}
+                className="w-14 h-14 rounded-2xl object-cover shadow-lg"
+              />
+              {/* Inner glow effect */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 via-transparent to-white/10 pointer-events-none"></div>
+            </div>
+
             {isUserType && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#007aff] rounded-full flex items-center justify-center">
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-[#007aff] to-[#5856d6] rounded-full flex items-center justify-center shadow-lg animate-pulse">
                 <span className="text-white text-xs font-bold">✓</span>
               </div>
             )}
           </div>
 
-          <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2">
+          <div className="flex-1 space-y-3">
+            <div className="flex items-center gap-3">
               <h4
-                className="text-xl font-bold tracking-tight"
-                style={{ color: info.color }}
+                className="text-xl font-bold tracking-tight bg-gradient-to-r bg-clip-text text-transparent filter drop-shadow-sm"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, ${info.color}, ${info.color}dd)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
               >
                 {info.name}
               </h4>
               {isUserType && (
-                <span className="px-2 py-1 text-xs font-semibold bg-[#007aff] text-white rounded-full">
+                <span className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white rounded-full shadow-lg animate-pulse">
                   Your Type
                 </span>
               )}
             </div>
-            <p className="text-gray-800 leading-relaxed text-sm font-medium">
+            <p className="text-gray-800 leading-relaxed text-sm font-medium bg-white/30 backdrop-blur-sm rounded-xl p-3 border border-white/20">
               {info.description}
             </p>
           </div>
         </div>
 
-        {/* Scientific Factors Preview */}
-        <div className="space-y-3">
+        {/* Enhanced Scientific Factors Preview */}
+        <div className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {info.scientificFactors.keyTraits.slice(0, 3).map((trait: string, index: number) => (
               <span
                 key={index}
-                className="px-3 py-1 text-xs font-medium rounded-full bg-white/80 border border-gray-200"
+                className="px-4 py-2 text-xs font-medium rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/50 hover:scale-105 transition-all duration-300 transform-gpu"
                 style={{ color: info.color }}
               >
                 {trait}
@@ -1011,7 +1167,7 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
             {info.scientificFactors.keyTraits.length > 3 && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="px-3 py-1 text-xs font-medium rounded-full bg-white/70 border border-gray-200 text-gray-700 hover:bg-white/90 transition-colors"
+                className="px-4 py-2 text-xs font-medium rounded-2xl bg-gradient-to-r from-white/30 to-white/20 backdrop-blur-md border border-white/25 text-gray-700 hover:from-white/40 hover:to-white/30 hover:scale-105 transition-all duration-300 transform-gpu shadow-lg"
               >
                 +{info.scientificFactors.keyTraits.length - 3} more
               </button>
@@ -1019,32 +1175,35 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
           </div>
         </div>
 
-        {/* Expandable Scientific Details */}
+        {/* Enhanced Expandable Scientific Details */}
         {isExpanded && (
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <div className="grid grid-cols-1 gap-3">
-              {/* Decision Process */}
-              <div className="space-y-2">
-                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: info.color }}></span>
+          <div className="space-y-5 pt-5 border-t border-white/30 bg-white/20 backdrop-blur-sm rounded-2xl p-4 -mx-2">
+            <div className="grid grid-cols-1 gap-4">
+              {/* Enhanced Decision Process */}
+              <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
+                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                  <span
+                    className="w-3 h-3 rounded-full shadow-lg animate-pulse"
+                    style={{ backgroundColor: info.color }}
+                  ></span>
                   Decision Process
                 </h5>
-                <p className="text-xs text-gray-600 leading-relaxed pl-4">
+                <p className="text-xs text-gray-700 leading-relaxed pl-6 bg-white/40 backdrop-blur-sm rounded-lg p-3 border border-white/20">
                   {info.scientificFactors.decisionProcess}
                 </p>
               </div>
 
-              {/* Strengths */}
-              <div className="space-y-2">
-                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              {/* Enhanced Strengths */}
+              <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
+                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-600 shadow-lg animate-pulse"></span>
                   Strengths
                 </h5>
-                <div className="flex flex-wrap gap-1 pl-4">
+                <div className="flex flex-wrap gap-2 pl-6">
                   {info.scientificFactors.strengths.map((strength: string, index: number) => (
                     <span
                       key={index}
-                      className="px-2 py-1 text-xs bg-green-50 text-green-700 rounded-md border border-green-200"
+                      className="px-3 py-1.5 text-xs bg-gradient-to-r from-green-50/80 to-green-100/80 text-green-700 rounded-xl border border-green-200/50 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform duration-200"
                     >
                       {strength}
                     </span>
@@ -1052,18 +1211,18 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
                 </div>
               </div>
 
-              {/* Challenges */}
+              {/* Enhanced Challenges */}
               {info.scientificFactors.challenges && (
-                <div className="space-y-2">
-                  <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
+                  <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                    <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg animate-pulse"></span>
                     Challenges
                   </h5>
-                  <div className="flex flex-wrap gap-1 pl-4">
+                  <div className="flex flex-wrap gap-2 pl-6">
                     {info.scientificFactors.challenges.map((challenge: string, index: number) => (
                       <span
                         key={index}
-                        className="px-2 py-1 text-xs bg-amber-50 text-amber-700 rounded-md border border-amber-200"
+                        className="px-3 py-1.5 text-xs bg-gradient-to-r from-amber-50/80 to-amber-100/80 text-amber-700 rounded-xl border border-amber-200/50 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform duration-200"
                       >
                         {challenge}
                       </span>
@@ -1075,15 +1234,17 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
           </div>
         )}
 
-        {/* Character Examples Section */}
+        {/* Enhanced Character Examples Section */}
         {characterExamples.length > 0 && (
-          <div className="pt-4 border-t border-gray-200 space-y-3">
-            <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+          <div className="pt-5 border-t border-white/30 space-y-4">
+            <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+              <span className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 shadow-lg animate-pulse"></span>
               Character Examples
-              <span className="text-xs text-gray-500 font-normal">(click card to shuffle all, click character to cycle)</span>
+              <span className="text-xs text-gray-600 font-normal bg-white/40 backdrop-blur-sm px-2 py-1 rounded-lg border border-white/20">
+                (click card to shuffle all, click character to cycle)
+              </span>
             </h5>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {characterExamples.map((character, index) => {
                 const pool = characterPoolsByMBTI[type]?.[character.franchise] || [];
                 const hasMultiple = pool.length > 1;
@@ -1094,26 +1255,30 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
                     key={character.franchise}
                     onClick={() => hasMultiple && cycleCharacter(type, character.franchise)}
                     className={cn(
-                      "p-2 rounded-lg text-left transition-all duration-200 border border-gray-200",
+                      "p-3 rounded-2xl text-left transition-all duration-300 border border-white/30 bg-white/40 backdrop-blur-md shadow-lg transform-gpu",
                       hasMultiple
-                        ? "hover:scale-105 hover:shadow-md cursor-pointer"
+                        ? "hover:scale-105 hover:shadow-xl hover:bg-white/50 cursor-pointer"
                         : "cursor-default",
-                      "bg-white/70"
+                      "hover:-translate-y-0.5"
                     )}
                     disabled={!hasMultiple}
                     title={hasMultiple ? `Click to cycle through ${character.franchise} characters` : character.name}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-gray-800 truncate">
+                        <p className="text-xs font-medium text-gray-800 truncate flex items-center gap-1">
                           {character.name}
                           {hasMultiple && (
-                            <span className="ml-1 text-purple-500 opacity-70">↻</span>
+                            <span className="text-purple-500 opacity-70 animate-spin">↻</span>
                           )}
                         </p>
                         <p
-                          className="text-xs font-medium mt-1 px-2 py-0.5 rounded-full text-center"
-                          style={colors}
+                          className="text-xs font-medium mt-2 px-3 py-1 rounded-xl text-center backdrop-blur-sm border border-white/20 shadow-sm"
+                          style={{
+                            backgroundColor: `${colors.backgroundColor}40`,
+                            color: colors.color,
+                            borderColor: `${colors.backgroundColor}60`
+                          }}
                         >
                           {character.franchise}
                         </p>
@@ -1126,24 +1291,24 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
           </div>
         )}
 
-        {/* Expand/Collapse Button */}
-        <div className="flex justify-center pt-2">
+        {/* Enhanced Expand/Collapse Button */}
+        <div className="flex justify-center pt-4">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full bg-white/80 border border-gray-200 hover:bg-white/95 transition-all duration-200"
+            className="flex items-center gap-3 px-6 py-3 text-sm font-medium rounded-2xl bg-gradient-to-r from-white/50 to-white/40 backdrop-blur-lg border border-white/30 hover:from-white/60 hover:to-white/50 hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-lg transform-gpu"
             style={{ color: info.color }}
           >
             {isExpanded ? (
               <>
                 <span>Show Less</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                 </svg>
               </>
             ) : (
               <>
                 <span>Explore Details</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </>
@@ -1192,64 +1357,94 @@ type SliderInputProps = {
   info: DecisionService.FactorInfo;
 };
 
-// Slider Input Component with tooltips
+// Enhanced Slider Input Component with liquid glass styling
 const SliderInput: React.FC<SliderInputProps> = ({
   id,
   label,
   value,
   onChange,
   info,
-}) => (
-  <div className="flex flex-col mb-5">
-    <div className="flex justify-between items-center mb-2">
-      <label htmlFor={id} className="font-medium text-md text-[#1d1d1f]">
-        {info.label}
-      </label>
-      <Popover>
-        <PopoverTrigger asChild>
-          <button
-            aria-label={`More information about ${info.label}`}
-            className="text-sm text-gray-500 cursor-help bg-[#f2f2f7] w-6 h-6 flex items-center justify-center rounded-full"
-          >
-            ⓘ
-          </button>
-        </PopoverTrigger>
-        <PopoverContent
-          id={`${id}-info`}
-          className="max-w-xs bg-[#f5f5f7] border border-[#e6e6e6] shadow-lg rounded-xl p-3"
+}) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [isFocused, setIsFocused] = React.useState(false);
+
+  return (
+    <div className="flex flex-col mb-6 p-4 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 hover:bg-white/25">
+      <div className="flex justify-between items-center mb-3">
+        <label
+          htmlFor={id}
+          className="font-semibold text-md text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
         >
-          <p className="font-medium text-[#1d1d1f]">{info.description}</p>
-          <div className="mt-2 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
-            <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
-              <span className="font-bold text-[#1d1d1f]">Low:</span>{" "}
-              {info.lowDesc}
+          {info.label}
+        </label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              aria-label={`More information about ${info.label}`}
+              className="text-sm text-gray-600 cursor-help bg-white/40 backdrop-blur-md w-8 h-8 flex items-center justify-center rounded-full border border-white/30 hover:bg-white/50 hover:scale-110 transition-all duration-300 shadow-lg"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <span className={`transition-transform duration-300 ${isHovered ? 'scale-125' : ''}`}>ⓘ</span>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            id={`${id}-info`}
+            className="max-w-xs bg-white/20 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-2xl p-4"
+          >
+            <p className="font-semibold text-gray-800 mb-3">{info.description}</p>
+            <div className="mt-3 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
+              <div className="bg-white/30 backdrop-blur-md p-3 rounded-xl border border-white/20 shadow-lg">
+                <span className="font-bold text-gray-800">Low:</span>{" "}
+                <span className="text-gray-700">{info.lowDesc}</span>
+              </div>
+              <div className="bg-white/30 backdrop-blur-md p-3 rounded-xl border border-white/20 shadow-lg">
+                <span className="font-bold text-gray-800">High:</span>{" "}
+                <span className="text-gray-700">{info.highDesc}</span>
+              </div>
             </div>
-            <div className="bg-[#f9f9fb] p-2 rounded-lg border border-[#e6e6e6]">
-              <span className="font-bold text-[#1d1d1f]">High:</span>{" "}
-              {info.highDesc}
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      <div className="flex items-center space-x-4">
+        <div className="flex-grow relative">
+          <Slider
+            id={id}
+            min={0}
+            max={1}
+            step={0.05}
+            value={value}
+            onChange={(_, v) => onChange((Array.isArray(v) ? v[0] : v).toString())}
+            aria-label={info.label}
+            aria-describedby={`${id}-info`}
+            className="flex-grow"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+          {/* Enhanced visual feedback */}
+          {isFocused && (
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-500/20 to-cyan-400/20 rounded-lg blur-sm animate-pulse pointer-events-none"></div>
+          )}
+        </div>
+
+        <div className="w-16 text-right">
+          <span className="font-mono text-lg font-bold bg-gradient-to-r from-[#007aff] to-[#5856d6] bg-clip-text text-transparent filter drop-shadow-sm">
+            {(value * 100).toFixed(0)}%
+          </span>
+        </div>
+      </div>
+
+      {/* Progress indicator */}
+      <div className="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 rounded-full transition-all duration-500 ease-out shadow-lg"
+          style={{ width: `${value * 100}%` }}
+        />
+      </div>
     </div>
-    <div className="flex items-center space-x-4">
-      <Slider
-        id={id}
-        min={0}
-        max={1}
-        step={0.05}
-        value={value}
-        onChange={(_, v) => onChange((Array.isArray(v) ? v[0] : v).toString())}
-        aria-label={info.label}
-        aria-describedby={`${id}-info`}
-        className="flex-grow"
-      />
-      <span className="w-12 text-right font-mono text-[#007aff] font-semibold">
-        {(value * 100).toFixed(0)}%
-      </span>
-    </div>
-  </div>
-);
+  );
+};
 
 // Dynamically import Recharts components with no SSR
 const Charts = dynamic(() => import("@/components/UserDecisionCharts"), {
@@ -2170,19 +2365,26 @@ export default function UserDecisionDashboard() {
 
   return (
     <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
-      {/* Liquid Background */}
-      <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[20%] left-[10%] w-[300px] h-[300px] bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-[60%] right-[15%] w-[200px] h-[200px] bg-gradient-to-tl from-pink-400/10 to-blue-400/10 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}} />
-        <div className="absolute bottom-[30%] left-[20%] w-[250px] h-[250px] bg-gradient-to-r from-indigo-400/10 to-cyan-400/10 rounded-full blur-3xl animate-bounce" />
-      </div>
+      {/* Enhanced Neural Network Background */}
+      <LiquidBackground
+        variant="primary"
+        intensity="medium"
+        animated={true}
+        particles={true}
+        neuralNetwork={true}
+        interactionIntensity="medium"
+        className="z-0"
+      />
 
       {/* Unified Header and Main Container */}
       <GlassContainer
-        variant="floating"
+        variant="premium"
         rounded="3xl"
-        shadow="2xl"
-        className="bg-white/8 border-white/25 overflow-hidden"
+        shadow="4xl"
+        shimmer={true}
+        borderGlow={true}
+        animated={true}
+        className="bg-white/8 border-white/25 overflow-hidden gpu-accelerated"
       >
         <div className="absolute inset-0 bg-grid opacity-5"></div>
 
@@ -2199,16 +2401,18 @@ export default function UserDecisionDashboard() {
                 <div className="flex items-center gap-3">
                   <div>
                     <EnhancedBrainIcon
-                      variant="premium"
-                      size="2xl"
+                      variant="liquid"
+                      size="3xl"
                       className="flex-shrink-0"
+                      interactive={true}
+                      neuralActivity={true}
                     />
                   </div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-white">
+                  <h1 className="text-xl sm:text-2xl font-bold text-liquid-gradient drop-shadow-lg">
                     MBTI Brain
                   </h1>
                 </div>
-                <p className="text-sm sm:text-base text-white/90 max-w-2xl">
+                <p className="text-sm sm:text-base text-enhanced-contrast max-w-2xl leading-relaxed">
                   Explore how different personality types approach your decisions.
                   Select a scenario, adjust factors, and discover diverse perspectives.
                 </p>
@@ -2405,15 +2609,22 @@ export default function UserDecisionDashboard() {
                   )}
 
                 {/* Combined 3D Visualization and Factor Controls */}
-                <GlassContainer variant="strong" rounded="2xl" shadow="lg" className="p-4 sm:p-6">
+                <GlassContainer
+                  variant="premium"
+                  rounded="2xl"
+                  shadow="3xl"
+                  shimmer={true}
+                  depth="floating"
+                  className="p-4 sm:p-6 gpu-accelerated"
+                >
                   <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-8">
                     {/* 3D Visualization Section - Takes 2/3 of space on large screens */}
                     <div className="xl:col-span-2 space-y-4">
                       <div className="mb-4">
-                        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                        <h2 className="text-lg sm:text-xl font-semibold text-glass-effect mb-3 tracking-tight">
                           MBTI Decision Factors in 3D Space
                         </h2>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-subtle-glass leading-relaxed">
                           Explore how different personality types prioritize decision factors.
                           Your current settings are shown as a red ring. Hover over points to see details.
                         </p>
@@ -2432,10 +2643,10 @@ export default function UserDecisionDashboard() {
                     {/* Factor Controls Section - Takes 1/3 of space on large screens */}
                     <div className="xl:col-span-1 space-y-4 xl:border-l xl:border-white/20 xl:pl-6">
                       <div className="mb-4">
-                        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">
+                        <h2 className="text-lg sm:text-xl font-semibold text-glass-effect mb-3 tracking-tight">
                           Adjust Decision Factors
                         </h2>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-subtle-glass leading-relaxed">
                           Move the sliders to see how your position changes in the 3D space in real-time.
                         </p>
                       </div>
@@ -2469,9 +2680,9 @@ export default function UserDecisionDashboard() {
                       onClick={() => {
                         handleSimulate();
                       }}
-                      variant="default"
+                      variant="liquid"
                       size="lg"
-                      className="w-full sm:w-auto"
+                      className="w-full sm:w-auto hover-liquid"
                     >
                       Run Simulation
                     </Button>
@@ -2492,7 +2703,7 @@ export default function UserDecisionDashboard() {
                       </TabsList>
                       <TabsContent value="analysis" className="space-y-6">
                       <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
-                        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+                        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-white drop-shadow-lg tracking-tight">
                           Decision Analysis
                         </h2>
                           {userResult && (
@@ -2665,10 +2876,10 @@ export default function UserDecisionDashboard() {
 
                 {/* Section Header */}
                 <div className="text-center space-y-3 relative z-10">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-[#1d1d1f] to-[#4455a6] bg-clip-text text-transparent">
+                  <h2 className="text-2xl font-bold text-liquid-gradient drop-shadow-lg tracking-tight">
                     MBTI Personality Types
                   </h2>
-                  <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                  <p className="text-enhanced-contrast max-w-2xl mx-auto leading-relaxed">
                     Explore the 16 personality types and their unique decision-making approaches.
                     Each type brings distinct cognitive preferences and scientific insights to complex decisions.
                   </p>

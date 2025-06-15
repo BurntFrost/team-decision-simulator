@@ -549,10 +549,25 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   }, []);
 
   return (
-    <div className={`w-full h-[400px] sm:h-[500px] bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden relative ${className}`}>
+    <div className={`w-full h-[400px] sm:h-[500px] bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-2xl border border-white/30 rounded-3xl overflow-hidden relative shadow-2xl ${className}`}>
+      {/* Enhanced background layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-purple-500/5 to-cyan-400/5"></div>
+      <div className="absolute inset-0 bg-gradient-to-tl from-white/8 via-transparent to-white/12"></div>
+
+      {/* Subtle noise texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
       <Canvas
         camera={{ position: [8, 8, 8], fov: 60 }}
-        style={{ background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)" }}
+        style={{
+          background: "linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(226, 232, 240, 0.6) 100%)",
+          borderRadius: "inherit"
+        }}
       >
         <Suspense fallback={null}>
           <Scene3D
@@ -567,25 +582,27 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
         </Suspense>
       </Canvas>
       
-      {/* Legend */}
-      <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 rounded-lg shadow-lg max-w-xs">
-        <div className="flex items-center justify-between mb-1 sm:mb-2">
-          <h4 className="text-xs sm:text-sm font-semibold">MBTI Temperaments</h4>
+      {/* Enhanced Legend */}
+      <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 bg-white/20 backdrop-blur-xl border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl max-w-xs">
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          <h4 className="text-xs sm:text-sm font-semibold text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+            MBTI Temperaments
+          </h4>
           <button
             onClick={toggleDisplayMode}
-            className="sm:hidden px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+            className="sm:hidden px-3 py-1.5 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl transition-all duration-300 shadow-lg hover:scale-105 transform-gpu"
           >
             {showFullNames ? "Codes" : "Names"}
           </button>
         </div>
-        <div className="space-y-0.5 sm:space-y-1">
+        <div className="space-y-1 sm:space-y-2">
           {Object.entries(temperamentColors).map(([group, color]) => (
-            <div key={group} className="flex items-center gap-1 sm:gap-2 text-xs">
+            <div key={group} className="flex items-center gap-2 sm:gap-3 text-xs p-1.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30 transition-all duration-200">
               <div
-                className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full shadow-lg animate-pulse"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-xs">
+              <span className="text-xs font-medium text-gray-700">
                 {group === "NT" && "Analysts (NT)"}
                 {group === "NF" && "Diplomats (NF)"}
                 {group === "SJ" && "Sentinels (SJ)"}
@@ -593,37 +610,56 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
               </span>
             </div>
           ))}
-          <div className="flex items-center gap-1 sm:gap-2 text-xs pt-1 border-t">
-            <div className="w-2 h-2 sm:w-3 sm:h-3 rounded-full border-2 border-red-500" />
-            <span>Your Position</span>
+          <div className="flex items-center gap-2 sm:gap-3 text-xs pt-2 border-t border-white/30 p-1.5 rounded-xl bg-white/30 backdrop-blur-sm">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-red-500 shadow-lg animate-pulse" />
+            <span className="font-medium text-gray-700">Your Position</span>
           </div>
         </div>
       </div>
 
-      {/* Controls Info - Hidden on mobile */}
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 rounded-lg shadow-lg hidden sm:block">
-        <h4 className="text-sm font-semibold mb-2">3D Controls</h4>
-        <div className="space-y-1 text-xs text-gray-600 mb-3">
-          <div>🖱️ Drag to rotate</div>
-          <div>🔍 Scroll to zoom</div>
-          <div>👆 Hover for details</div>
+      {/* Enhanced Controls Info - Hidden on mobile */}
+      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 bg-white/20 backdrop-blur-xl border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl hidden sm:block">
+        <h4 className="text-sm font-semibold mb-3 text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+          3D Controls
+        </h4>
+        <div className="space-y-2 text-xs text-gray-700 mb-4">
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <span>🖱️</span>
+            <span>Drag to rotate</span>
+          </div>
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <span>🔍</span>
+            <span>Scroll to zoom</span>
+          </div>
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <span>👆</span>
+            <span>Hover for details</span>
+          </div>
         </div>
         <button
           onClick={toggleDisplayMode}
-          className="w-full px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors"
+          className="w-full px-3 py-2 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl transition-all duration-300 shadow-lg hover:scale-105 transform-gpu font-medium"
         >
           {showFullNames ? "Show Codes" : "Show Names"}
         </button>
       </div>
 
-      {/* Axis Info */}
-      <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-3 rounded-lg shadow-lg max-w-xs">
-        <h4 className="text-xs sm:text-sm font-semibold mb-1 sm:mb-2">Decision Factors</h4>
-        <div className="space-y-0.5 sm:space-y-1 text-xs text-gray-600">
-          <div><strong>X:</strong> Data + ROI</div>
-          <div><strong>Y:</strong> Autonomy - Speed</div>
-          <div><strong>Z:</strong> Social Complexity</div>
-          <div className="text-xs text-blue-600 mt-2 pt-1 border-t border-gray-200">
+      {/* Enhanced Axis Info */}
+      <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 bg-white/20 backdrop-blur-xl border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl max-w-xs">
+        <h4 className="text-xs sm:text-sm font-semibold mb-2 sm:mb-3 text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+          Decision Factors
+        </h4>
+        <div className="space-y-2 sm:space-y-3 text-xs text-gray-700">
+          <div className="p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <strong className="text-red-600">X:</strong> Data + ROI
+          </div>
+          <div className="p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <strong className="text-green-600">Y:</strong> Autonomy - Speed
+          </div>
+          <div className="p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+            <strong className="text-blue-600">Z:</strong> Social Complexity
+          </div>
+          <div className="text-xs text-blue-600 mt-3 pt-2 border-t border-white/30 p-2 rounded-xl bg-white/40 backdrop-blur-sm">
             💡 All text labels always face you as you rotate the view
           </div>
         </div>

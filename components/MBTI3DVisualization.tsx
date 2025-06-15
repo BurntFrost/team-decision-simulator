@@ -2,7 +2,7 @@
 
 import React, { Suspense, useMemo, useState, useRef, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Text, Html } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { ArchetypeProfile, MBTIDescription, Weights } from "@/lib/decisionMatrixService";
 import { factorInfo } from "@/models/decision/constants";
@@ -32,12 +32,15 @@ const temperamentColors = {
 
 // Helper function to get temperament group
 const getTemperamentGroup = (mbtiType: string): keyof typeof temperamentGroups => {
-  for (const [group, types] of Object.entries(temperamentGroups)) {
-    if (types.includes(mbtiType)) {
-      return group as keyof typeof temperamentGroups;
-    }
-  }
-  return "NT"; // fallback
+  // Optimized lookup using direct character checking for better performance
+  const n = mbtiType[0] === 'E' ? mbtiType[1] : mbtiType[0];
+  const t = mbtiType[2];
+  const p = mbtiType[3];
+
+  if (n === 'N' && t === 'T') return "NT";
+  if (n === 'N' && t === 'F') return "NF";
+  if (n === 'S' && p === 'P') return "SP";
+  return "SJ"; // Default for SJ types
 };
 
 // Normalize user inputs to MBTI weight scale
@@ -68,19 +71,20 @@ const normalizeUserInputs = (inputs: Weights): Weights => {
   };
 };
 
-// Convert MBTI weights to 3D coordinates
+// Convert MBTI weights to 3D coordinates (simplified mapping)
 const weightsTo3D = (weights: Weights, isUserInput: boolean = false): [number, number, number] => {
   // Normalize user inputs to MBTI scale if needed
   const normalizedWeights = isUserInput ? normalizeUserInputs(weights) : weights;
 
+  // Simplified 3D mapping with reduced range for better visibility
   // X-axis: Analytical factors (data_quality + roi_visibility)
-  const x = (normalizedWeights.data_quality + normalizedWeights.roi_visibility) * 5 - 2.5;
+  const x = (normalizedWeights.data_quality + normalizedWeights.roi_visibility) * 3 - 1.5;
 
   // Y-axis: Decision style factors (autonomy_scope - time_pressure)
-  const y = (normalizedWeights.autonomy_scope - normalizedWeights.time_pressure) * 5;
+  const y = (normalizedWeights.autonomy_scope - normalizedWeights.time_pressure) * 3;
 
-  // Z-axis: Social complexity
-  const z = normalizedWeights.social_complexity * 10 - 2.5;
+  // Z-axis: Social complexity (reduced range)
+  const z = normalizedWeights.social_complexity * 4 - 1;
 
   return [x, y, z];
 };
@@ -99,39 +103,26 @@ interface BillboardTextProps {
 const BillboardText: React.FC<BillboardTextProps> = React.memo(({
   position,
   text,
-  fontSize = 0.2,
+  fontSize = 0.18,
   color = "#ffffff",
-  backgroundColor = "#000000",
-  backgroundOpacity = 0.7,
+  backgroundColor = "#1e293b",
+  backgroundOpacity = 0.85,
   onHover,
 }) => {
   const textRef = useRef<THREE.Group>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
   const { camera } = useThree();
   const [isHovered, setIsHovered] = useState(false);
 
-  // Use useFrame with a throttled update for better performance
-  useFrame(() => {
-    if (textRef.current && camera) {
-      // Make the text always face the camera
+  // Optimized billboard behavior with reduced frequency for better performance
+  useFrame((state) => {
+    if (textRef.current && camera && state.clock.elapsedTime % 0.1 < 0.016) {
       textRef.current.lookAt(camera.position);
-    }
-
-    // Add subtle hover animation
-    if (meshRef.current && isHovered) {
-      const time = Date.now() * 0.001;
-      meshRef.current.scale.setScalar(1 + Math.sin(time * 4) * 0.05);
-    } else if (meshRef.current) {
-      meshRef.current.scale.setScalar(1);
     }
   });
 
-  // Calculate background size based on text length and font size
-  // Handle multi-line text by checking for line breaks
-  const lines = text.split('\n');
-  const maxLineLength = Math.max(...lines.map(line => line.length));
-  const backgroundWidth = Math.max(maxLineLength * fontSize * 0.55, fontSize * 2);
-  const backgroundHeight = fontSize * (1.4 + (lines.length - 1) * 0.8);
+  // Simplified background dimensions
+  const backgroundWidth = Math.max(text.length * fontSize * 0.5, 1.2);
+  const backgroundHeight = fontSize * 1.6;
 
   const handlePointerEnter = useCallback(() => {
     setIsHovered(true);
@@ -145,9 +136,8 @@ const BillboardText: React.FC<BillboardTextProps> = React.memo(({
 
   return (
     <group ref={textRef} position={position}>
-      {/* Background plane for better readability */}
+      {/* Simplified background with liquid glass styling */}
       <mesh
-        ref={meshRef}
         position={[0, 0, -0.01]}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
@@ -155,18 +145,18 @@ const BillboardText: React.FC<BillboardTextProps> = React.memo(({
         <planeGeometry args={[backgroundWidth, backgroundHeight]} />
         <meshBasicMaterial
           color={backgroundColor}
-          opacity={isHovered ? Math.min(backgroundOpacity + 0.2, 1) : backgroundOpacity}
+          opacity={isHovered ? Math.min(backgroundOpacity + 0.15, 1) : backgroundOpacity}
           transparent={true}
         />
       </mesh>
 
-      {/* Text with improved styling */}
+      {/* Simplified text styling */}
       <Text
         fontSize={fontSize}
         color={color}
         anchorX="center"
         anchorY="middle"
-        outlineWidth={0.015}
+        outlineWidth={0.01}
         outlineColor="#000000"
         maxWidth={backgroundWidth * 0.9}
         textAlign="center"
@@ -188,6 +178,7 @@ interface MBTIPointProps {
   onHover: (mbtiType: string | null) => void;
   isHovered: boolean;
   showFullNames: boolean;
+  prefersReducedMotion?: boolean;
 }
 
 const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
@@ -201,12 +192,11 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
-  // Throttled animation for better performance
+  // Simplified animation with better performance and accessibility
   useFrame((state) => {
-    if (meshRef.current && isHovered) {
+    if (meshRef.current && isHovered && !prefersReducedMotion) {
       const time = state.clock.elapsedTime;
-      meshRef.current.rotation.x = time * 1.5; // Reduced rotation speed
-      meshRef.current.rotation.y = time * 1.5;
+      meshRef.current.rotation.y = time * 0.8; // Reduced rotation speed
     }
   });
 
@@ -220,15 +210,15 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
         ref={meshRef}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
-        scale={isHovered ? 1.4 : 1.1} // Slightly larger base size and more prominent hover
+        scale={isHovered ? 1.3 : 1.0} // Simplified scaling
       >
-        <sphereGeometry args={[0.18, 20, 20]} />
+        <sphereGeometry args={[0.15, 16, 16]} /> {/* Reduced geometry complexity */}
         <meshStandardMaterial
           color={color}
           emissive={isHovered ? color : "#000000"}
-          emissiveIntensity={isHovered ? 0.2 : 0}
-          roughness={0.3}
-          metalness={0.1}
+          emissiveIntensity={isHovered ? 0.15 : 0}
+          roughness={0.4}
+          metalness={0.2}
         />
       </mesh>
       
@@ -301,30 +291,35 @@ MBTIPoint.displayName = 'MBTIPoint';
 interface UserPositionProps {
   position: [number, number, number];
   userMBTI?: string;
+  prefersReducedMotion?: boolean;
 }
 
-const UserPosition: React.FC<UserPositionProps> = ({ position, userMBTI }) => {
+const UserPosition: React.FC<UserPositionProps> = ({ position, userMBTI, prefersReducedMotion = false }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.z = state.clock.elapsedTime;
+    if (meshRef.current && !prefersReducedMotion) {
+      meshRef.current.rotation.z = state.clock.elapsedTime * 0.6; // Slower rotation
     }
   });
 
   return (
     <group position={position}>
       <mesh ref={meshRef}>
-        <ringGeometry args={[0.2, 0.3, 8]} />
-        <meshStandardMaterial color="#ff6b6b" />
+        <ringGeometry args={[0.18, 0.25, 12]} /> {/* Slightly smaller, more segments */}
+        <meshStandardMaterial
+          color="#ef4444"
+          emissive="#ef4444"
+          emissiveIntensity={0.1}
+        />
       </mesh>
       {/* User label with billboard behavior */}
       <BillboardText
-        position={[0, -0.5, 0]}
+        position={[0, -0.4, 0]}
         text={userMBTI ? `YOU (${userMBTI})` : "YOU"}
-        fontSize={0.15}
+        fontSize={0.14}
         color="#ffffff"
-        backgroundColor="#ff6b6b"
+        backgroundColor="#ef4444"
         backgroundOpacity={0.9}
       />
     </group>
@@ -335,25 +330,24 @@ const UserPosition: React.FC<UserPositionProps> = ({ position, userMBTI }) => {
 const FactorLabels: React.FC = () => {
   const [hoveredFactor, setHoveredFactor] = useState<string | null>(null);
 
-  // Define positions for each factor label in 3D space
-  // Positioned to represent their influence on the decision space
+  // Simplified factor positions for better visibility and reduced clutter
   const factorPositions: Record<string, [number, number, number]> = {
-    data_quality: [4.2, 1.8, 0.5],        // High X (analytical), slightly positive Y and Z
-    roi_visibility: [4.2, -1.8, -0.5],    // High X (analytical), slightly negative Y and Z
-    autonomy_scope: [-1.8, 4.2, 0.5],     // High Y (autonomy), slightly negative X and positive Z
-    time_pressure: [1.8, -4.2, -0.5],     // Low Y (speed), slightly positive X and negative Z
-    social_complexity: [0.5, 0.8, 4.2],   // High Z (social), slightly positive X and Y
-    psychological_safety: [-0.5, 2.8, -3.5], // Negative Z (safety), positive Y, slightly negative X
+    data_quality: [2.5, 1.0, 0.3],        // Analytical factors - right side
+    roi_visibility: [2.5, -1.0, -0.3],    // Analytical factors - right side
+    autonomy_scope: [-1.0, 2.5, 0.3],     // Autonomy - top
+    time_pressure: [1.0, -2.5, -0.3],     // Speed - bottom
+    social_complexity: [0.3, 0.5, 2.5],   // Social - front
+    psychological_safety: [-0.3, 1.5, -2.0], // Safety - back
   };
 
-  // Color coding for different factor categories
+  // Simplified color scheme aligned with liquid glass aesthetic
   const factorColors: Record<string, { bg: string; text: string }> = {
     data_quality: { bg: "#3b82f6", text: "#ffffff" },      // Blue - Analytical
-    roi_visibility: { bg: "#1d4ed8", text: "#ffffff" },    // Dark Blue - Analytical
-    autonomy_scope: { bg: "#10b981", text: "#ffffff" },    // Green - Control
-    time_pressure: { bg: "#f59e0b", text: "#ffffff" },     // Amber - Urgency
-    social_complexity: { bg: "#ef4444", text: "#ffffff" }, // Red - Complexity
-    psychological_safety: { bg: "#8b5cf6", text: "#ffffff" }, // Purple - Safety
+    roi_visibility: { bg: "#1e40af", text: "#ffffff" },    // Dark Blue - Analytical
+    autonomy_scope: { bg: "#06b6d4", text: "#ffffff" },    // Cyan - Control
+    time_pressure: { bg: "#8b5cf6", text: "#ffffff" },     // Purple - Urgency
+    social_complexity: { bg: "#6366f1", text: "#ffffff" }, // Indigo - Complexity
+    psychological_safety: { bg: "#a855f7", text: "#ffffff" }, // Purple - Safety
   };
 
   const handleFactorHover = useCallback((factor: string, hovered: boolean) => {
@@ -370,8 +364,8 @@ const FactorLabels: React.FC = () => {
           <BillboardText
             key={key}
             position={factorPositions[key]}
-            text={info.label}
-            fontSize={isHovered ? 0.18 : 0.15}
+            text={info.label.replace(" Quality", "").replace(" Visibility", "")} // Simplified labels
+            fontSize={isHovered ? 0.16 : 0.14}
             color={colors.text}
             backgroundColor={colors.bg}
             backgroundOpacity={isHovered ? 0.95 : 0.85}
@@ -383,55 +377,35 @@ const FactorLabels: React.FC = () => {
   );
 };
 
-// Axis lines and labels component
+// Simplified axis labels component (removed axis lines for cleaner look)
 const AxisLabels: React.FC = () => {
   return (
     <>
-      {/* X-axis line */}
-      <mesh position={[0, -3, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.02, 0.02, 8]} />
-        <meshStandardMaterial color="#999" />
-      </mesh>
-
-      {/* Y-axis line */}
-      <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.02, 0.02, 8]} />
-        <meshStandardMaterial color="#999" />
-      </mesh>
-
-      {/* Z-axis line */}
-      <mesh position={[0, -3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.02, 0.02, 8]} />
-        <meshStandardMaterial color="#999" />
-      </mesh>
-
-      {/* X-axis label with billboard behavior */}
+      {/* Simplified axis labels with better positioning */}
       <BillboardText
-        position={[4, -3, 0]}
-        text="Data + ROI Focus →"
-        fontSize={0.22}
+        position={[2.8, -2.2, 0]}
+        text="Analytical →"
+        fontSize={0.16}
         color="#ffffff"
-        backgroundColor="#555555"
+        backgroundColor="#3b82f6"
         backgroundOpacity={0.8}
       />
 
-      {/* Y-axis label with billboard behavior */}
       <BillboardText
-        position={[-3.5, 3, 0]}
-        text="Autonomy vs Speed →"
-        fontSize={0.22}
+        position={[-2.5, 2.8, 0]}
+        text="Autonomy →"
+        fontSize={0.16}
         color="#ffffff"
-        backgroundColor="#555555"
+        backgroundColor="#06b6d4"
         backgroundOpacity={0.8}
       />
 
-      {/* Z-axis label with billboard behavior */}
       <BillboardText
-        position={[0, -3.5, 3]}
-        text="Social Complexity →"
-        fontSize={0.22}
+        position={[0, -2.8, 2.2]}
+        text="Social →"
+        fontSize={0.16}
         color="#ffffff"
-        backgroundColor="#555555"
+        backgroundColor="#6366f1"
         backgroundOpacity={0.8}
       />
     </>
@@ -447,6 +421,7 @@ interface Scene3DProps {
   hoveredType: string | null;
   setHoveredType: (type: string | null) => void;
   showFullNames: boolean;
+  prefersReducedMotion?: boolean;
 }
 
 const Scene3D: React.FC<Scene3DProps> = React.memo(({
@@ -457,6 +432,7 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
   hoveredType,
   setHoveredType,
   showFullNames,
+  prefersReducedMotion = false,
 }) => {
   const userPosition = useMemo(() => weightsTo3D(userInputs, true), [userInputs]);
 
@@ -465,53 +441,83 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
     setHoveredType(type);
   }, [setHoveredType]);
 
+  // Memoized MBTI points to prevent unnecessary re-renders
+  const mbtiPoints = useMemo(() => {
+    return archetypes.map((archetype) => {
+      const mbtiType = archetype.name.split(" - ")[0];
+      const position = weightsTo3D(archetype.weights, false);
+      const temperament = getTemperamentGroup(mbtiType);
+      const color = temperamentColors[temperament];
+
+      return {
+        key: mbtiType,
+        position,
+        color,
+        mbtiType,
+        description: mbtiDescriptions[mbtiType],
+      };
+    });
+  }, [archetypes, mbtiDescriptions]);
+
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <pointLight position={[10, 10, 10]} intensity={0.8} />
-      <pointLight position={[-10, -10, -10]} intensity={0.4} />
-      
-      {/* Grid helper */}
-      <gridHelper args={[10, 10]} position={[0, -3, 0]} />
-      
+      {/* Simplified lighting setup */}
+      <ambientLight intensity={0.7} />
+      <pointLight position={[8, 8, 8]} intensity={0.6} />
+      <pointLight position={[-4, -4, -4]} intensity={0.3} />
+
+      {/* Simplified grid helper */}
+      <gridHelper args={[6, 6]} position={[0, -2.5, 0]} />
+
       {/* Axis labels */}
       <AxisLabels />
 
       {/* Factor labels with billboard behavior */}
       <FactorLabels />
 
-      {/* MBTI points */}
-      {archetypes.map((archetype) => {
-        const mbtiType = archetype.name.split(" - ")[0]; // Extract MBTI code
-        const position = weightsTo3D(archetype.weights, false);
-        const temperament = getTemperamentGroup(mbtiType);
-        const color = temperamentColors[temperament];
+      {/* Optimized MBTI points */}
+      {mbtiPoints.map((point) => (
+        <MBTIPoint
+          key={point.key}
+          position={point.position}
+          color={point.color}
+          mbtiType={point.mbtiType}
+          description={point.description}
+          onHover={handleHover}
+          isHovered={hoveredType === point.mbtiType}
+          showFullNames={showFullNames}
+          prefersReducedMotion={prefersReducedMotion}
+        />
+      ))}
 
-        return (
-          <MBTIPoint
-            key={mbtiType}
-            position={position}
-            color={color}
-            mbtiType={mbtiType}
-            description={mbtiDescriptions[mbtiType]}
-            onHover={handleHover}
-            isHovered={hoveredType === mbtiType}
-            showFullNames={showFullNames}
-          />
-        );
-      })}
-      
       {/* User position */}
-      <UserPosition position={userPosition} userMBTI={userMBTI} />
-      
+      <UserPosition
+        position={userPosition}
+        userMBTI={userMBTI}
+        prefersReducedMotion={prefersReducedMotion}
+      />
+
+      {/* Optimized orbit controls with accessibility */}
       <OrbitControls
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-        minDistance={5}
-        maxDistance={20}
+        minDistance={4}
+        maxDistance={15}
         enableDamping={true}
-        dampingFactor={0.05}
+        dampingFactor={0.08}
+        rotateSpeed={prefersReducedMotion ? 0.2 : 0.5}
+        zoomSpeed={0.8}
+        panSpeed={0.8}
+        touches={{
+          ONE: THREE.TOUCH.ROTATE,
+          TWO: THREE.TOUCH.DOLLY_PAN
+        }}
+        mouseButtons={{
+          LEFT: THREE.MOUSE.ROTATE,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: THREE.MOUSE.PAN
+        }}
       />
     </>
   );
@@ -527,7 +533,7 @@ const Scene3D: React.FC<Scene3DProps> = React.memo(({
 
 Scene3D.displayName = 'Scene3D';
 
-// Main component
+// Main component with accessibility improvements
 const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   archetypes,
   mbtiDescriptions,
@@ -537,6 +543,36 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
 }) => {
   const [hoveredType, setHoveredType] = useState<string | null>(null);
   const [showFullNames, setShowFullNames] = useState<boolean>(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
+
+  // Enhanced accessibility checks
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Add keyboard navigation support
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab' || e.key === 'Enter' || e.key === ' ') {
+        // Allow keyboard navigation through the 3D scene
+        e.preventDefault();
+        if (e.key === 'Enter' || e.key === ' ') {
+          toggleDisplayMode();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleDisplayMode]);
 
   // Debounced hover handler to improve performance
   const debouncedSetHoveredType = useCallback((type: string | null) => {
@@ -549,27 +585,48 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   }, []);
 
   return (
-    <div className={`w-full h-[400px] sm:h-[500px] bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-2xl border border-white/30 rounded-3xl overflow-hidden relative shadow-2xl ${className}`}>
-      {/* Enhanced background layers */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-purple-500/5 to-cyan-400/5"></div>
-      <div className="absolute inset-0 bg-gradient-to-tl from-white/8 via-transparent to-white/12"></div>
+    <div
+      className={`w-full h-[400px] sm:h-[500px] bg-gradient-to-br from-white/18 via-white/12 to-white/8 backdrop-blur-2xl border border-white/40 rounded-3xl overflow-hidden relative shadow-liquid ${className}`}
+      role="img"
+      aria-label="Interactive 3D visualization of MBTI personality types and decision factors"
+      tabIndex={0}
+    >
+      {/* Liquid Glass Background Layers */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-300/8 via-purple-400/6 to-cyan-300/8"></div>
+      <div className="absolute inset-0 bg-gradient-to-tl from-white/10 via-transparent to-white/15"></div>
 
-      {/* Subtle noise texture */}
+      {/* Enhanced Glass Morphism Texture */}
       <div
-        className="absolute inset-0 opacity-[0.015] mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.02] mix-blend-overlay"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
 
       <Canvas
-        camera={{ position: [8, 8, 8], fov: 60 }}
+        camera={{ position: [6, 6, 6], fov: 65 }}
         style={{
-          background: "linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(226, 232, 240, 0.6) 100%)",
+          background: "linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(226, 232, 240, 0.8) 50%, rgba(219, 234, 254, 0.9) 100%)",
           borderRadius: "inherit"
         }}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: true
+        }}
+        dpr={[1, 2]}
+        performance={{ min: 0.5 }}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+              <p className="text-sm text-subtle-glass">Loading 3D visualization...</p>
+            </div>
+          </div>
+        }>
           <Scene3D
             archetypes={archetypes}
             mbtiDescriptions={mbtiDescriptions}
@@ -578,91 +635,111 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
             hoveredType={hoveredType}
             setHoveredType={debouncedSetHoveredType}
             showFullNames={showFullNames}
+            prefersReducedMotion={prefersReducedMotion}
           />
         </Suspense>
       </Canvas>
       
-      {/* Enhanced Legend */}
-      <div className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 bg-white/20 backdrop-blur-xl border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl max-w-xs">
-        <div className="flex items-center justify-between mb-2 sm:mb-3">
-          <h4 className="text-xs sm:text-sm font-semibold text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-            MBTI Temperaments
+      {/* Simplified Legend with Liquid Glass Styling */}
+      <div className="absolute bottom-4 left-4 bg-white/15 backdrop-blur-2xl border border-white/25 p-4 rounded-2xl shadow-xl max-w-xs">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-glass-effect">
+            MBTI Types
           </h4>
           <button
             onClick={toggleDisplayMode}
-            className="sm:hidden px-3 py-1.5 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl transition-all duration-300 shadow-lg hover:scale-105 transform-gpu"
+            className="sm:hidden px-2 py-1 text-xs bg-blue-500/80 hover:bg-blue-600/80 text-white rounded-lg transition-all duration-200"
           >
             {showFullNames ? "Codes" : "Names"}
           </button>
         </div>
-        <div className="space-y-1 sm:space-y-2">
+        <div className="space-y-2">
           {Object.entries(temperamentColors).map(([group, color]) => (
-            <div key={group} className="flex items-center gap-2 sm:gap-3 text-xs p-1.5 rounded-xl bg-white/20 backdrop-blur-sm border border-white/20 hover:bg-white/30 transition-all duration-200">
+            <div key={group} className="flex items-center gap-3 text-xs p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200">
               <div
-                className="w-3 h-3 sm:w-4 sm:h-4 rounded-full shadow-lg animate-pulse"
+                className="w-3 h-3 rounded-full shadow-sm"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-xs font-medium text-gray-700">
-                {group === "NT" && "Analysts (NT)"}
-                {group === "NF" && "Diplomats (NF)"}
-                {group === "SJ" && "Sentinels (SJ)"}
-                {group === "SP" && "Explorers (SP)"}
+              <span className="text-xs font-medium text-enhanced-contrast">
+                {group === "NT" && "Analysts"}
+                {group === "NF" && "Diplomats"}
+                {group === "SJ" && "Sentinels"}
+                {group === "SP" && "Explorers"}
               </span>
             </div>
           ))}
-          <div className="flex items-center gap-2 sm:gap-3 text-xs pt-2 border-t border-white/30 p-1.5 rounded-xl bg-white/30 backdrop-blur-sm">
-            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-red-500 shadow-lg animate-pulse" />
-            <span className="font-medium text-gray-700">Your Position</span>
+          <div className="flex items-center gap-3 text-xs pt-2 border-t border-white/20 p-2 rounded-lg bg-white/15">
+            <div className="w-3 h-3 rounded-full border-2 border-red-500" />
+            <span className="font-medium text-enhanced-contrast">Your Position</span>
           </div>
         </div>
       </div>
 
-      {/* Enhanced Controls Info - Hidden on mobile */}
-      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 bg-white/20 backdrop-blur-xl border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl hidden sm:block">
-        <h4 className="text-sm font-semibold mb-3 text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-          3D Controls
+      {/* Simplified Controls Info */}
+      <div className="absolute top-4 right-4 bg-white/15 backdrop-blur-2xl border border-white/25 p-4 rounded-2xl shadow-xl hidden sm:block">
+        <h4 className="text-sm font-semibold mb-3 text-glass-effect">
+          Controls
         </h4>
-        <div className="space-y-2 text-xs text-gray-700 mb-4">
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+        <div className="space-y-2 text-xs text-subtle-glass mb-4">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-white/10">
             <span>🖱️</span>
             <span>Drag to rotate</span>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-white/10">
             <span>🔍</span>
             <span>Scroll to zoom</span>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-white/10">
             <span>👆</span>
             <span>Hover for details</span>
           </div>
         </div>
         <button
           onClick={toggleDisplayMode}
-          className="w-full px-3 py-2 text-xs bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl transition-all duration-300 shadow-lg hover:scale-105 transform-gpu font-medium"
+          className="w-full px-3 py-2 text-xs bg-blue-500/80 hover:bg-blue-600/80 text-white rounded-lg transition-all duration-200 font-medium"
         >
           {showFullNames ? "Show Codes" : "Show Names"}
         </button>
       </div>
 
-      {/* Enhanced Axis Info */}
-      <div className="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 bg-white/20 backdrop-blur-xl border border-white/30 p-3 sm:p-4 rounded-2xl shadow-2xl max-w-xs">
-        <h4 className="text-xs sm:text-sm font-semibold mb-2 sm:mb-3 text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+      {/* Simplified Decision Factors Info */}
+      <div className="absolute bottom-4 right-4 bg-white/15 backdrop-blur-2xl border border-white/25 p-4 rounded-2xl shadow-xl max-w-xs">
+        <h4 className="text-sm font-semibold mb-3 text-glass-effect">
           Decision Factors
         </h4>
-        <div className="space-y-2 sm:space-y-3 text-xs text-gray-700">
-          <div className="p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
-            <strong className="text-red-600">X:</strong> Data + ROI
+        <div className="space-y-2 text-xs text-subtle-glass">
+          <div className="p-2 rounded-lg bg-white/10">
+            <strong className="text-blue-600">Analytical:</strong> Data + ROI
           </div>
-          <div className="p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
-            <strong className="text-green-600">Y:</strong> Autonomy - Speed
+          <div className="p-2 rounded-lg bg-white/10">
+            <strong className="text-cyan-600">Autonomy:</strong> Control vs Speed
           </div>
-          <div className="p-2 rounded-xl bg-white/30 backdrop-blur-sm border border-white/20">
-            <strong className="text-blue-600">Z:</strong> Social Complexity
+          <div className="p-2 rounded-lg bg-white/10">
+            <strong className="text-indigo-600">Social:</strong> Complexity
           </div>
-          <div className="text-xs text-blue-600 mt-3 pt-2 border-t border-white/30 p-2 rounded-xl bg-white/40 backdrop-blur-sm">
-            💡 All text labels always face you as you rotate the view
+          <div className="text-xs text-blue-600/80 mt-3 pt-2 border-t border-white/20 p-2 rounded-lg bg-white/15">
+            💡 Labels always face the camera
           </div>
         </div>
+      </div>
+
+      {/* Screen Reader Accessible Description */}
+      <div className="sr-only">
+        <h3>MBTI Decision Factors 3D Visualization</h3>
+        <p>
+          This interactive 3D visualization shows how different MBTI personality types
+          approach decision-making across six key factors: data quality, ROI visibility,
+          autonomy scope, time pressure, social complexity, and psychological safety.
+        </p>
+        <p>
+          Each colored sphere represents one of the 16 MBTI types, positioned based on
+          their decision-making preferences. Your current position is shown as a red ring.
+        </p>
+        <p>
+          Use mouse or touch to rotate the view, scroll to zoom, and hover over elements
+          for more details. Press Enter or Space to toggle between showing MBTI codes
+          and full type names.
+        </p>
       </div>
     </div>
   );

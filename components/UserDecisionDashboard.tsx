@@ -38,6 +38,7 @@ import {
 } from "react-icons/md";
 // Import Lucide icons for enhanced brain options
 import { Brain, Zap } from "lucide-react";
+import { useNeuralInteraction } from "@/lib/contexts/neural-animation-context";
 
 // Enhanced Brain Icon Component with multiple visual options
 interface EnhancedBrainIconProps {
@@ -2023,7 +2024,8 @@ export default function UserDecisionDashboard() {
     color: "#6b7280",
   });
 
-
+  // Neural animation interactions
+  const neuralInteraction = useNeuralInteraction();
 
   // Character cycling state - tracks current index for each MBTI type and franchise
   const [characterIndices, setCharacterIndices] = useState<Record<string, Record<string, number>>>(() => {
@@ -2110,6 +2112,9 @@ export default function UserDecisionDashboard() {
 
   // Trigger simulation by calculating scores and decisions
   const handleSimulate = () => {
+    // Trigger neural animation for form submission
+    neuralInteraction.onFormSubmit();
+
     // Calculate results for personality types
     const newResults = DecisionService.calculateResults(inputs);
 
@@ -2146,6 +2151,9 @@ export default function UserDecisionDashboard() {
   const applyPreset = (
     presetName: keyof typeof DecisionService.presetScenarios
   ) => {
+    // Trigger neural animation for navigation
+    neuralInteraction.onNavigation();
+
     setInputs(DecisionService.presetScenarios[presetName]);
     setActivePreset(presetName);
     setActiveTab("factors");
@@ -2206,11 +2214,13 @@ export default function UserDecisionDashboard() {
               {/* Brand Section */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
-                  <EnhancedBrainIcon
-                    variant="premium"
-                    size="2xl"
-                    className="flex-shrink-0"
-                  />
+                  <div onMouseEnter={neuralInteraction.onHover}>
+                    <EnhancedBrainIcon
+                      variant="premium"
+                      size="2xl"
+                      className="flex-shrink-0"
+                    />
+                  </div>
                   <h1 className="text-xl sm:text-2xl font-bold text-white">
                     MBTI Brain
                   </h1>
@@ -2253,7 +2263,10 @@ export default function UserDecisionDashboard() {
         <CardContent className="p-0 relative">
           <Tabs
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={(value) => {
+              neuralInteraction.onNavigation();
+              setActiveTab(value);
+            }}
             className="w-full"
           >
             {/* Navigation Tabs */}
@@ -2334,11 +2347,12 @@ export default function UserDecisionDashboard() {
                                     ? "border-[#007aff] bg-[#007aff]/5"
                                     : "border-gray-100"
                                 )}
-                                onClick={() =>
+                                onClick={() => {
+                                  neuralInteraction.onClick();
                                   applyPreset(
                                     scenario as keyof typeof DecisionService.presetScenarios
-                                  )
-                                }
+                                  );
+                                }}
                               >
                                 <CardContent className="p-4">
                                   <h3 className="font-semibold text-[#1d1d1f]">
@@ -2471,7 +2485,11 @@ export default function UserDecisionDashboard() {
 
                   <div className="flex justify-center sm:justify-end mt-6">
                     <Button
-                      onClick={handleSimulate}
+                      onClick={() => {
+                        neuralInteraction.onClick();
+                        handleSimulate();
+                      }}
+                      onMouseEnter={neuralInteraction.onHover}
                       variant="default"
                       size="lg"
                       className="w-full sm:w-auto"

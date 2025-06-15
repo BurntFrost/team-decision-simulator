@@ -482,6 +482,84 @@ button:active {
   }
 }
 
+/* Neural Network Background Keyframe Animations */
+@keyframes neuralNodePulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(147, 197, 253, 0.3), 0 0 16px rgba(196, 181, 253, 0.2);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+    box-shadow: 0 0 16px rgba(147, 197, 253, 0.6), 0 0 32px rgba(196, 181, 253, 0.4);
+  }
+}
+
+@keyframes neuralConnection {
+  0%, 100% {
+    opacity: 0.2;
+    stroke-dashoffset: 100;
+  }
+  50% {
+    opacity: 0.6;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes energyPulse {
+  0% {
+    opacity: 0;
+    transform: translateX(0) scale(0.5);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(10%) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(90%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.5);
+  }
+}
+
+@keyframes synapticBurst {
+  0%, 90%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+    filter: brightness(150%);
+  }
+  5%, 15% {
+    opacity: 1;
+    transform: scale(1.5);
+    filter: brightness(250%) drop-shadow(0 0 12px rgba(147, 197, 253, 0.8));
+  }
+}
+
+@keyframes neuralNetworkActive {
+  0%, 100% {
+    filter: brightness(120%) saturate(110%);
+  }
+  50% {
+    filter: brightness(140%) saturate(130%);
+  }
+}
+
+@keyframes neuralNetworkIntense {
+  0%, 100% {
+    filter: brightness(130%) saturate(120%) hue-rotate(0deg);
+  }
+  33% {
+    filter: brightness(160%) saturate(150%) hue-rotate(5deg);
+  }
+  66% {
+    filter: brightness(150%) saturate(140%) hue-rotate(-5deg);
+  }
+}
+
 /* Additional utility classes for enhanced effects */
 @layer utilities {
   .animate-liquid-flow {
@@ -539,5 +617,45 @@ button:active {
 
   .animate-brain-thought {
     animation: brainThought 1.8s ease-in-out infinite;
+  }
+
+  /* Neural Network Background Animation Classes */
+  .animate-neural-node {
+    animation: neuralNodePulse 2.5s ease-in-out infinite;
+  }
+
+  .animate-neural-node-delayed {
+    animation: neuralNodePulse 2.5s ease-in-out infinite;
+    animation-delay: 0.8s;
+  }
+
+  .animate-neural-node-slow {
+    animation: neuralNodePulse 3s ease-in-out infinite;
+    animation-delay: 1.6s;
+  }
+
+  .animate-neural-connection {
+    animation: neuralConnection 2s ease-in-out infinite;
+  }
+
+  .animate-energy-pulse {
+    animation: energyPulse 2.5s linear infinite;
+  }
+
+  .animate-energy-pulse-delayed {
+    animation: energyPulse 2.5s linear infinite;
+    animation-delay: 1.25s;
+  }
+
+  .animate-synaptic-burst {
+    animation: synapticBurst 3s ease-in-out infinite;
+  }
+
+  .animate-neural-network-active {
+    animation: neuralNetworkActive 2s ease-in-out infinite;
+  }
+
+  .animate-neural-network-intense {
+    animation: neuralNetworkIntense 1.5s ease-in-out infinite;
   }
 }

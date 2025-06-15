@@ -18,6 +18,12 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
   animated = true,
   particles = false,
 }) => {
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  // Prevent hydration mismatch by only rendering on client
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const gradientVariants = {
     primary: "from-blue-400/20 via-purple-500/15 to-indigo-600/20",
     secondary: "from-pink-400/20 via-rose-500/15 to-red-500/20", 
@@ -34,6 +40,11 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
   };
 
   const animationClass = animated ? "animate-pulse" : "";
+
+  // Don't render during SSR to prevent hydration mismatch
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className={cn("fixed inset-0 -z-10 overflow-hidden", className)}>
@@ -97,21 +108,29 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
       {/* Particle system overlay */}
       {particles && (
         <div className="absolute inset-0">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className={cn(
-                "absolute w-1 h-1 bg-white/20 rounded-full",
-                animated && "animate-pulse"
-              )}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
-              }}
-            />
-          ))}
+          {Array.from({ length: 20 }).map((_, i) => {
+            // Use deterministic positioning based on index to prevent hydration issues
+            const left = ((i * 37) % 100); // Pseudo-random but deterministic
+            const top = ((i * 73) % 100);
+            const delay = (i * 0.15) % 3;
+            const duration = 3 + ((i * 0.1) % 2);
+
+            return (
+              <div
+                key={`particle-${i}`}
+                className={cn(
+                  "absolute w-1 h-1 bg-white/20 rounded-full",
+                  animated && "animate-pulse"
+                )}
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                  animationDelay: `${delay}s`,
+                  animationDuration: `${duration}s`,
+                }}
+              />
+            );
+          })}
         </div>
       )}
       

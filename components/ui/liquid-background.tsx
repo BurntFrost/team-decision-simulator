@@ -23,7 +23,6 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
   interactionIntensity = "medium",
 }) => {
   const [isMounted, setIsMounted] = React.useState(false);
-  const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = React.useState(false);
 
   // Prevent hydration mismatch by only rendering on client
@@ -35,8 +34,7 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
   React.useEffect(() => {
     if (!isMounted) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    const handleMouseMove = () => {
       setIsInteracting(true);
     };
 
@@ -75,54 +73,48 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
 
   // Generate neural network nodes with deterministic positioning
   const neuralNodes = React.useMemo(() => {
-    if (!neuralNetwork) return [];
+    if (!neuralNetwork || !isMounted) return [];
 
-    const nodeCount = 12;
+    const nodeCount = 8; // Reduced for better performance
     return Array.from({ length: nodeCount }, (_, i) => {
       const angle = (i / nodeCount) * 2 * Math.PI;
-      const radius = 30 + (i % 3) * 20; // Varying distances from center
+      const radius = 25 + (i % 2) * 15; // Simplified radius calculation
       const x = 50 + Math.cos(angle) * radius;
       const y = 50 + Math.sin(angle) * radius;
 
       return {
         id: i,
-        x: Math.max(10, Math.min(90, x)), // Keep within bounds
-        y: Math.max(10, Math.min(90, y)),
-        size: 2 + (i % 3), // Varying sizes
-        delay: i * 0.2,
+        x: Math.max(15, Math.min(85, x)), // Keep within bounds
+        y: Math.max(15, Math.min(85, y)),
+        size: 2 + (i % 2), // Simplified size variation
+        delay: i * 0.25,
         pulseSpeed: 2 + (i % 2),
       };
     });
-  }, [neuralNetwork]);
+  }, [neuralNetwork, isMounted]);
 
   // Generate connections between nearby nodes
   const neuralConnections = React.useMemo(() => {
-    if (!neuralNetwork || neuralNodes.length === 0) return [];
+    if (!neuralNetwork || !isMounted || neuralNodes.length === 0) return [];
 
     const connections = [];
+    // Simplified connection logic - only connect adjacent nodes
     for (let i = 0; i < neuralNodes.length; i++) {
-      for (let j = i + 1; j < neuralNodes.length; j++) {
-        const node1 = neuralNodes[i];
-        const node2 = neuralNodes[j];
-        const distance = Math.sqrt(
-          Math.pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2)
-        );
+      const nextIndex = (i + 1) % neuralNodes.length;
+      const node1 = neuralNodes[i];
+      const node2 = neuralNodes[nextIndex];
 
-        // Only connect nearby nodes
-        if (distance < 35) {
-          connections.push({
-            id: `${i}-${j}`,
-            x1: node1.x,
-            y1: node1.y,
-            x2: node2.x,
-            y2: node2.y,
-            delay: (i + j) * 0.1,
-          });
-        }
-      }
+      connections.push({
+        id: `${i}-${nextIndex}`,
+        x1: node1.x,
+        y1: node1.y,
+        x2: node2.x,
+        y2: node2.y,
+        delay: i * 0.15,
+      });
     }
     return connections;
-  }, [neuralNetwork, neuralNodes]);
+  }, [neuralNetwork, isMounted, neuralNodes]);
 
   // Don't render during SSR to prevent hydration mismatch
   if (!isMounted) {
@@ -140,63 +132,81 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
         )}
       />
       
-      {/* Animated liquid blobs */}
+      {/* Liquid Glass Gradient Layers */}
       <div className="absolute inset-0 force-gpu-layer">
-        {/* Large blob 1 */}
+        {/* Primary liquid glass layer - top right */}
         <div
           className={cn(
-            "absolute -top-40 -right-40 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl gpu-accelerated smooth-60fps",
-            "bg-gradient-to-br from-blue-400/30 to-purple-600/30",
-            animated && "animate-pulse floating",
-            isInteracting && "animate-liquid-flow"
+            "absolute -top-20 -right-20 w-[120vw] h-[80vh] gpu-accelerated smooth-60fps",
+            "bg-gradient-to-bl from-blue-400/15 via-purple-500/12 to-transparent",
+            "backdrop-blur-3xl border-l border-b border-white/10",
+            "transform rotate-12 origin-top-right",
+            animated && "animate-liquid-glass-flow",
+            isInteracting && "scale-105 opacity-90"
           )}
           style={{
-            transform: isInteracting ? `scale(${1 + interactionMultiplier[interactionIntensity] * 0.1})` : undefined,
-            transition: 'transform 0.3s ease-out',
+            transform: isInteracting
+              ? `rotate(${12 + interactionMultiplier[interactionIntensity] * 2}deg) scale(${1.05 + interactionMultiplier[interactionIntensity] * 0.05})`
+              : 'rotate(12deg)',
+            transition: 'transform 0.6s ease-out',
             willChange: 'transform',
+            borderRadius: '40% 60% 70% 30% / 40% 50% 60% 50%',
           }}
         />
 
-        {/* Large blob 2 */}
+        {/* Secondary liquid glass layer - bottom left */}
         <div
           className={cn(
-            "absolute -bottom-40 -left-40 w-96 h-96 rounded-full mix-blend-multiply filter blur-xl",
-            "bg-gradient-to-tr from-pink-400/30 to-blue-500/30",
-            animated && "animate-pulse floating-delayed",
-            isInteracting && "animate-liquid-flow"
+            "absolute -bottom-20 -left-20 w-[100vw] h-[70vh] gpu-accelerated smooth-60fps",
+            "bg-gradient-to-tr from-purple-400/12 via-blue-500/10 to-transparent",
+            "backdrop-blur-2xl border-r border-t border-white/8",
+            "transform -rotate-8 origin-bottom-left",
+            animated && "animate-liquid-glass-flow-reverse",
+            isInteracting && "scale-105 opacity-85"
           )}
           style={{
-            transform: isInteracting ? `scale(${1 + interactionMultiplier[interactionIntensity] * 0.08})` : undefined,
-            transition: 'transform 0.3s ease-out',
-            animationDelay: '1s',
+            transform: isInteracting
+              ? `rotate(${-8 - interactionMultiplier[interactionIntensity] * 1.5}deg) scale(${1.05 + interactionMultiplier[interactionIntensity] * 0.03})`
+              : 'rotate(-8deg)',
+            transition: 'transform 0.6s ease-out',
+            animationDelay: '1.5s',
+            willChange: 'transform',
+            borderRadius: '60% 40% 30% 70% / 50% 60% 40% 50%',
           }}
         />
 
-        {/* Medium blob 1 */}
+        {/* Tertiary accent layer - center */}
         <div
           className={cn(
-            "absolute top-1/4 left-1/4 w-64 h-64 rounded-full mix-blend-multiply filter blur-lg",
-            "bg-gradient-to-bl from-indigo-400/25 to-cyan-500/25",
-            animated && "liquid-morph floating"
+            "absolute top-1/4 left-1/3 w-[60vw] h-[50vh] gpu-accelerated smooth-60fps",
+            "bg-gradient-to-br from-cyan-400/8 via-indigo-500/6 to-transparent",
+            "backdrop-blur-xl border border-white/5",
+            "transform rotate-3 origin-center",
+            animated && "animate-liquid-glass-pulse",
+            isInteracting && "scale-110 opacity-80"
           )}
+          style={{
+            transform: isInteracting
+              ? `rotate(${3 + interactionMultiplier[interactionIntensity]}deg) scale(${1.1 + interactionMultiplier[interactionIntensity] * 0.02})`
+              : 'rotate(3deg)',
+            transition: 'transform 0.4s ease-out',
+            animationDelay: '0.8s',
+            willChange: 'transform',
+            borderRadius: '50% 50% 80% 20% / 60% 40% 60% 40%',
+          }}
         />
 
-        {/* Medium blob 2 */}
+        {/* Subtle overlay gradients for depth */}
         <div
           className={cn(
-            "absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full mix-blend-multiply filter blur-lg",
-            "bg-gradient-to-tl from-purple-400/25 to-pink-500/25",
-            animated && "liquid-morph floating-delayed"
+            "absolute inset-0 bg-gradient-to-br from-white/3 via-transparent to-blue-500/2",
+            "backdrop-blur-sm",
+            animated && "animate-subtle-shift"
           )}
-        />
-
-        {/* Small accent blobs */}
-        <div
-          className={cn(
-            "absolute top-1/2 left-1/2 w-32 h-32 rounded-full mix-blend-multiply filter blur-md",
-            "bg-gradient-to-r from-yellow-400/20 to-orange-500/20 transform -translate-x-1/2 -translate-y-1/2",
-            animated && "pulse-glow floating"
-          )}
+          style={{
+            mixBlendMode: 'overlay',
+            willChange: 'opacity',
+          }}
         />
       </div>
 

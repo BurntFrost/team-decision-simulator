@@ -548,6 +548,56 @@ button:active {
   }
 }
 
+@keyframes liquidGlassFlow {
+  0%, 100% {
+    transform: rotate(12deg) scale(1);
+    opacity: 0.15;
+  }
+  33% {
+    transform: rotate(14deg) scale(1.02);
+    opacity: 0.18;
+  }
+  66% {
+    transform: rotate(10deg) scale(0.98);
+    opacity: 0.12;
+  }
+}
+
+@keyframes liquidGlassFlowReverse {
+  0%, 100% {
+    transform: rotate(-8deg) scale(1);
+    opacity: 0.12;
+  }
+  33% {
+    transform: rotate(-10deg) scale(1.01);
+    opacity: 0.15;
+  }
+  66% {
+    transform: rotate(-6deg) scale(0.99);
+    opacity: 0.10;
+  }
+}
+
+@keyframes liquidGlassPulse {
+  0%, 100% {
+    transform: rotate(3deg) scale(1);
+    opacity: 0.08;
+  }
+  50% {
+    transform: rotate(5deg) scale(1.05);
+    opacity: 0.12;
+  }
+}
+
+@keyframes subtleShift {
+  0%, 100% {
+    opacity: 0.03;
+  }
+  50% {
+    opacity: 0.06;
+  }
+}
+
 
 
 
@@ -653,6 +703,22 @@ button:active {
 
   .animate-viscous-wave {
     animation: viscousWave 4s ease-in-out infinite;
+  }
+
+  .animate-liquid-glass-flow {
+    animation: liquidGlassFlow 8s ease-in-out infinite;
+  }
+
+  .animate-liquid-glass-flow-reverse {
+    animation: liquidGlassFlowReverse 10s ease-in-out infinite;
+  }
+
+  .animate-liquid-glass-pulse {
+    animation: liquidGlassPulse 6s ease-in-out infinite;
+  }
+
+  .animate-subtle-shift {
+    animation: subtleShift 12s ease-in-out infinite;
   }
 
   .backdrop-blur-2xl {
@@ -826,28 +892,62 @@ button:active {
     animation: liquidFlow 3s linear infinite;
   }
 
-  /* Performance Optimizations */
+  /* Enhanced Performance Optimizations */
   .gpu-accelerated {
     transform: translateZ(0);
-    will-change: transform;
+    will-change: transform, opacity;
     backface-visibility: hidden;
     perspective: 1000px;
+    contain: layout style paint;
+    isolation: isolate;
   }
 
   .optimize-animations {
     animation-fill-mode: both;
     animation-play-state: running;
+    contain: layout style paint;
   }
 
   .smooth-60fps {
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-duration: calc(1s / 60 * var(--frame-count, 60));
   }
 
   /* Force GPU layers for better performance */
   .force-gpu-layer {
     transform: translate3d(0, 0, 0);
     will-change: transform, opacity;
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  /* Enhanced touch responsiveness */
+  .touch-responsive {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Optimized hover states */
+  .hover-optimized {
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, opacity, filter;
+  }
+
+  .hover-optimized:hover {
+    transform: translateZ(0) scale(1.02);
+  }
+
+  /* Liquid glass performance optimizations */
+  .liquid-glass-optimized {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    contain: layout style paint;
+    isolation: isolate;
+    will-change: backdrop-filter, transform;
   }
 
   /* Optimized blur effects */
@@ -866,7 +966,11 @@ button:active {
     .animate-viscous-wave,
     .animate-glass-breathing,
     .animate-neural-pulse,
-    .animate-connection-flow {
+    .animate-connection-flow,
+    .animate-liquid-glass-flow,
+    .animate-liquid-glass-flow-reverse,
+    .animate-liquid-glass-pulse,
+    .animate-subtle-shift {
       animation: none !important;
     }
 

@@ -209,7 +209,7 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
         >
           {/* Liquid glass container */}
-          <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl group-hover:shadow-4xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-1">
+          <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl group-hover:shadow-4xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-1 gpu-accelerated liquid-glass-optimized touch-responsive hover-optimized">
             {/* Liquid morphing background */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 via-purple-500/30 to-cyan-400/30 rounded-2xl blur-sm opacity-60 group-hover:opacity-90 transition-opacity duration-500 animate-liquid-flow"></div>
 
@@ -218,21 +218,15 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
 
             {/* Brain icon */}
             <Brain
-              className={`${baseClasses} text-white relative z-10 drop-shadow-2xl group-hover:scale-105 group-hover:rotate-1`}
+              className={`${baseClasses} text-white relative z-10 drop-shadow-2xl group-hover:scale-105 group-hover:rotate-1 gpu-accelerated smooth-60fps`}
               style={{
                 filter: `brightness(${1 + (isHovered ? 0.3 : 0)}) saturate(${1 + (isHovered ? 0.2 : 0)})`,
                 transform: `scale(${pulseIntensity})`,
+                willChange: 'transform, filter',
               }}
             />
 
-            {/* Neural activity indicators */}
-            {neuralActivity && (
-              <>
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-400 rounded-full animate-neural-pulse"></div>
-                <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-neural-pulse animation-delay-150"></div>
-                <div className="absolute top-1 -left-1 w-1 h-1 bg-cyan-400 rounded-full animate-neural-pulse animation-delay-300"></div>
-              </>
-            )}
+
           </div>
         </div>
       );
@@ -2384,7 +2378,7 @@ export default function UserDecisionDashboard() {
         shimmer={true}
         borderGlow={true}
         animated={true}
-        className="bg-white/8 border-white/25 overflow-hidden gpu-accelerated"
+        className="bg-white/8 border-white/25 overflow-hidden gpu-accelerated liquid-glass-optimized touch-responsive"
       >
         <div className="absolute inset-0 bg-grid opacity-5"></div>
 
@@ -2457,10 +2451,10 @@ export default function UserDecisionDashboard() {
           >
             {/* Navigation Tabs */}
             <div className="bg-white/12 backdrop-blur-xl border-b border-white/20 px-4 py-4">
-              <TabsList className="grid w-full grid-cols-4 mb-0 p-1.5 h-auto overflow-hidden">
+              <TabsList className="grid w-full grid-cols-4 mb-0 p-1.5 h-auto overflow-hidden gpu-accelerated touch-responsive">
                 <TabsTrigger
                   value="scenarios"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <MdOutlineAssessment className="h-4 w-4" />
@@ -2469,7 +2463,7 @@ export default function UserDecisionDashboard() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="factors"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <MdFactCheck className="h-4 w-4" />
@@ -2478,7 +2472,7 @@ export default function UserDecisionDashboard() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="results"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <IoMdAnalytics className="h-4 w-4" />
@@ -2487,7 +2481,7 @@ export default function UserDecisionDashboard() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="personalities"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <MdPsychology className="h-4 w-4" />
@@ -2682,7 +2676,7 @@ export default function UserDecisionDashboard() {
                       }}
                       variant="liquid"
                       size="lg"
-                      className="w-full sm:w-auto hover-liquid"
+                      className="w-full sm:w-auto hover-liquid gpu-accelerated touch-responsive hover-optimized"
                     >
                       Run Simulation
                     </Button>

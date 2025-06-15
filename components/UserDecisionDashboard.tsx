@@ -1419,9 +1419,9 @@ const SliderInput: React.FC<SliderInputProps> = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {/* Enhanced visual feedback */}
+          {/* Subtle focus indicator - liquid glass style */}
           {isFocused && (
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-500/20 to-cyan-400/20 rounded-lg blur-sm animate-pulse pointer-events-none"></div>
+            <div className="absolute inset-0 border-2 border-blue-400/40 rounded-lg pointer-events-none transition-all duration-300"></div>
           )}
         </div>
 

@@ -266,7 +266,7 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
       <BillboardText
         position={[0, 0.45, 0]}
         text={showFullNames ? description.name.replace(" - ", "\n") : mbtiType}
-        fontSize={showFullNames ? 0.15 : 0.28}
+        fontSize={showFullNames ? 0.12 : 0.20}
         color="#ffffff"
         backgroundColor={color}
         backgroundOpacity={0.85}

@@ -28,8 +28,8 @@ interface NeuralAnimationProviderProps {
 
 export const NeuralAnimationProvider: React.FC<NeuralAnimationProviderProps> = ({
   children,
-  idleTimeout = 3000,
-  burstDuration = 2000,
+  idleTimeout = 2000, // Reduced from 3000 to 2000 for more responsive interactions
+  burstDuration = 3000, // Enhanced from 2000 to 3000 for longer dramatic effects
 }) => {
   const [state, setState] = React.useState<NeuralAnimationState>({
     intensity: "idle",
@@ -46,21 +46,21 @@ export const NeuralAnimationProvider: React.FC<NeuralAnimationProviderProps> = (
     
     setState(prev => {
       const newCount = prev.interactionCount + 1;
-      let newIntensity: AnimationIntensity = "active";
-      
-      // Determine intensity based on interaction type and frequency
+      let newIntensity: AnimationIntensity = "intense"; // Enhanced default from "active" to "intense"
+
+      // Enhanced intensity based on interaction type and frequency - 3x more dramatic
       switch (type) {
         case "click":
-          newIntensity = newCount > 3 ? "burst" : "intense";
+          newIntensity = "burst"; // Enhanced: always burst for clicks for maximum impact
           break;
         case "form":
-          newIntensity = "burst";
+          newIntensity = "burst"; // Already at maximum
           break;
         case "navigation":
-          newIntensity = "intense";
+          newIntensity = "burst"; // Enhanced from "intense" to "burst"
           break;
         case "hover":
-          newIntensity = "active";
+          newIntensity = "intense"; // Enhanced from "active" to "intense"
           break;
       }
       
@@ -180,30 +180,36 @@ export const useNeuralAnimationClasses = () => {
   const getIntensityClass = React.useCallback(() => {
     switch (state.intensity) {
       case "idle":
-        return "opacity-30";
+        return "opacity-80 animate-neural-network-active"; // Maximum visibility even at idle
       case "active":
-        return "opacity-50 animate-neural-network-active";
+        return "opacity-90 animate-neural-network-active"; // High visibility for active state
       case "intense":
-        return "opacity-70 animate-neural-network-active";
+        return "opacity-100 animate-neural-network-intense"; // Full intensity
       case "burst":
-        return "opacity-90 animate-neural-network-intense";
+        return "opacity-100 animate-neural-network-burst"; // Maximum burst animation
       default:
-        return "opacity-30";
+        return "opacity-80 animate-neural-network-active";
     }
   }, [state.intensity]);
 
   const getNodeAnimationClass = React.useCallback((index: number) => {
-    const baseClass = "animate-neural-node";
+    // Use intense variants for enhanced visibility based on intensity level
+    const useIntense = state.intensity === "intense" || state.intensity === "burst";
+
+    const baseClass = useIntense ? "animate-neural-node-intense" : "animate-neural-node";
     let delayClass = "";
+
     if (index % 3 === 0) {
-      delayClass = "animate-neural-node-delayed";
+      delayClass = useIntense ? "animate-neural-node-delayed-intense" : "animate-neural-node-delayed";
     } else if (index % 3 === 1) {
-      delayClass = "animate-neural-node-slow";
+      delayClass = useIntense ? "animate-neural-node-slow-intense" : "animate-neural-node-slow";
     }
 
-    const intensityClass = state.intensity === "burst" ? "animate-synaptic-burst" : "";
+    // Add burst effect for maximum intensity
+    const burstClass = state.intensity === "burst" ?
+      (useIntense ? "animate-synaptic-burst-intense" : "animate-synaptic-burst") : "";
 
-    return `${baseClass} ${delayClass} ${intensityClass}`.trim();
+    return `${baseClass} ${delayClass} ${burstClass}`.trim();
   }, [state.intensity]);
 
   return {

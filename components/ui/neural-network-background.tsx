@@ -40,8 +40,8 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
   animationClasses?: ReturnType<typeof useNeuralAnimationClasses>
 }> = ({
   className,
-  nodeCount = 25,
-  connectionDensity = 0.3,
+  nodeCount = 35, // Enhanced from 25 to 35 for more visual density
+  connectionDensity = 0.5, // Enhanced from 0.3 to 0.5 for more connections
   animated = true,
   useContext = true,
   animationClasses,
@@ -73,9 +73,9 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
         id: `node-${i}`,
         x: seedX,
         y: seedY,
-        size: 2 + seedSize,
+        size: 4 + seedSize, // Enhanced from 3 to 4 for maximum visibility
         delay: seedDelay,
-        intensity: 0.3 + (seedIntensity / 100),
+        intensity: 0.8 + (seedIntensity / 100), // Enhanced from 0.6 to 0.8 for maximum intensity
       });
     }
 
@@ -108,16 +108,16 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
         // Use deterministic connection logic based on node indices
         const connectionSeed = ((i * 31 + j * 47) % 100) / 100;
 
-        // Only connect nearby nodes based on density
-        if (distance < 30 && connectionSeed < connectionDensity) {
-          const strengthSeed = ((i * 19 + j * 29) % 60) / 100;
+        // Enhanced connection range and strength for maximum visual impact
+        if (distance < 40 && connectionSeed < connectionDensity) { // Enhanced from 30 to 40 for longer connections
+          const strengthSeed = ((i * 19 + j * 29) % 40) / 100; // Reduced randomness for stronger base
           const delaySeed = ((i * 11 + j * 13) % 200) / 100;
 
           newConnections.push({
             id: `connection-${i}-${j}`,
             from: nodeA,
             to: nodeB,
-            strength: 0.2 + strengthSeed,
+            strength: 0.8 + strengthSeed, // Enhanced from 0.6 to 0.8 for maximum visibility
             delay: delaySeed,
           });
           connectionCount++;
@@ -169,7 +169,7 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
       ref={containerRef}
       className={cn(
         "fixed inset-0 -z-20 overflow-hidden pointer-events-none",
-        "motion-reduce:opacity-30 motion-reduce:animate-none",
+        // Removed accessibility constraints for maximum visual impact
         getIntensityClass(),
         className
       )}
@@ -182,70 +182,122 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
-          {/* Gradient definitions for nodes */}
+          {/* Maximum impact gradient definitions for nodes */}
           <radialGradient id="nodeGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(147, 197, 253, 0.8)" />
-            <stop offset="70%" stopColor="rgba(196, 181, 253, 0.6)" />
-            <stop offset="100%" stopColor="rgba(147, 197, 253, 0.2)" />
+            <stop offset="0%" stopColor="rgba(147, 197, 253, 1)" />
+            <stop offset="30%" stopColor="rgba(196, 181, 253, 1)" />
+            <stop offset="70%" stopColor="rgba(59, 130, 246, 0.9)" />
+            <stop offset="100%" stopColor="rgba(147, 197, 253, 0.8)" />
           </radialGradient>
-          
-          {/* Gradient for connections */}
+
+          {/* Maximum impact gradient for connections */}
           <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(147, 197, 253, 0.1)" />
-            <stop offset="50%" stopColor="rgba(196, 181, 253, 0.4)" />
-            <stop offset="100%" stopColor="rgba(147, 197, 253, 0.1)" />
+            <stop offset="0%" stopColor="rgba(147, 197, 253, 0.6)" />
+            <stop offset="25%" stopColor="rgba(196, 181, 253, 0.9)" />
+            <stop offset="50%" stopColor="rgba(59, 130, 246, 1)" />
+            <stop offset="75%" stopColor="rgba(196, 181, 253, 0.9)" />
+            <stop offset="100%" stopColor="rgba(147, 197, 253, 0.6)" />
           </linearGradient>
 
-          {/* Filter for glow effect */}
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge> 
+          {/* Maximum impact glow filter */}
+          <filter id="glow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="10" result="coloredBlur"/>
+            <feColorMatrix in="coloredBlur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 2 0"/>
+            <feMerge>
               <feMergeNode in="coloredBlur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+
+          {/* Ultra-intense glow filter for burst effects */}
+          <filter id="glowIntense" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="20" result="coloredBlur"/>
+            <feColorMatrix in="coloredBlur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 3 0"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+
+          {/* Animated gradient for dynamic effects */}
+          <radialGradient id="nodeGradientAnimated" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="rgba(147, 197, 253, 1)">
+              <animate attributeName="stop-color" values="rgba(147, 197, 253, 1);rgba(196, 181, 253, 1);rgba(59, 130, 246, 1);rgba(147, 197, 253, 1)" dur="2s" repeatCount="indefinite"/>
+            </stop>
+            <stop offset="50%" stopColor="rgba(196, 181, 253, 1)">
+              <animate attributeName="stop-color" values="rgba(196, 181, 253, 1);rgba(59, 130, 246, 1);rgba(147, 197, 253, 1);rgba(196, 181, 253, 1)" dur="2s" repeatCount="indefinite"/>
+            </stop>
+            <stop offset="100%" stopColor="rgba(59, 130, 246, 0.8)">
+              <animate attributeName="stop-color" values="rgba(59, 130, 246, 0.8);rgba(147, 197, 253, 0.8);rgba(196, 181, 253, 0.8);rgba(59, 130, 246, 0.8)" dur="2s" repeatCount="indefinite"/>
+            </stop>
+          </radialGradient>
         </defs>
 
         {/* Render connections */}
         {connections.map((connection) => (
           <g key={connection.id}>
-            {/* Connection line */}
+            {/* Enhanced connection line - 3x more visible */}
             <line
               x1={connection.from.x}
               y1={connection.from.y}
               x2={connection.to.x}
               y2={connection.to.y}
               stroke="url(#connectionGradient)"
-              strokeWidth="0.1"
+              strokeWidth="0.3" // Enhanced from 0.1 to 0.3 for 3x thickness
               strokeDasharray="2 1"
-              className={animated ? "animate-neural-connection" : ""}
+              className={animated ? (animationClasses?.intensity === "intense" || animationClasses?.intensity === "burst" ? "animate-neural-connection-intense" : "animate-neural-connection") : ""}
               style={{
                 animationDelay: `${connection.delay}s`,
                 opacity: connection.strength,
               }}
             />
             
-            {/* Energy pulse along connection */}
+            {/* Maximum impact energy pulse along connection */}
             {animated && (
-              <circle
-                r="0.3"
-                fill="rgba(147, 197, 253, 0.8)"
-                filter="url(#glow)"
-                className="animate-energy-pulse"
-                style={{
-                  animationDelay: `${connection.delay}s`,
-                }}
-              >
-                <animateMotion
-                  dur="2.5s"
-                  repeatCount="indefinite"
-                  begin={`${connection.delay}s`}
+              <>
+                {/* Primary energy pulse */}
+                <circle
+                  r="1.5" // Enhanced from 0.9 to 1.5 for maximum size
+                  fill="url(#nodeGradientAnimated)" // Use animated gradient for dynamic colors
+                  filter={animationClasses?.intensity === "burst" ? "url(#glowIntense)" : "url(#glow)"}
+                  className={animationClasses?.intensity === "intense" || animationClasses?.intensity === "burst" ? "animate-energy-pulse-intense" : "animate-energy-pulse"}
+                  style={{
+                    animationDelay: `${connection.delay}s`,
+                  }}
                 >
-                  <mpath>
-                    <path d={`M ${connection.from.x} ${connection.from.y} L ${connection.to.x} ${connection.to.y}`} />
-                  </mpath>
-                </animateMotion>
-              </circle>
+                  <animateMotion
+                    dur="2s" // Faster for more dynamic effect
+                    repeatCount="indefinite"
+                    begin={`${connection.delay}s`}
+                  >
+                    <mpath>
+                      <path d={`M ${connection.from.x} ${connection.from.y} L ${connection.to.x} ${connection.to.y}`} />
+                    </mpath>
+                  </animateMotion>
+                </circle>
+
+                {/* Secondary trailing pulse for enhanced effect */}
+                <circle
+                  r="0.8"
+                  fill="rgba(196, 181, 253, 0.8)"
+                  filter="url(#glow)"
+                  className="animate-energy-pulse"
+                  style={{
+                    animationDelay: `${connection.delay + 0.5}s`,
+                  }}
+                >
+                  <animateMotion
+                    dur="2s"
+                    repeatCount="indefinite"
+                    begin={`${connection.delay + 0.5}s`}
+                  >
+                    <mpath>
+                      <path d={`M ${connection.from.x} ${connection.from.y} L ${connection.to.x} ${connection.to.y}`} />
+                    </mpath>
+                  </animateMotion>
+                </circle>
+              </>
             )}
           </g>
         ))}
@@ -253,25 +305,49 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
         {/* Render nodes */}
         {nodes.map((node, index) => (
           <g key={node.id}>
-            {/* Node glow */}
+            {/* Maximum impact outer glow ring */}
             <circle
               cx={node.x}
               cy={node.y}
-              r={node.size * 1.5}
-              fill="rgba(147, 197, 253, 0.1)"
-              className={animated ? "animate-synaptic-burst" : ""}
+              r={node.size * 4} // Enhanced from 2.5 to 4 for maximum glow radius
+              fill="rgba(147, 197, 253, 0.2)"
+              className={animated ? (animationClasses?.intensity === "intense" || animationClasses?.intensity === "burst" ? "animate-synaptic-burst-intense" : "animate-synaptic-burst") : ""}
               style={{
                 animationDelay: `${node.delay}s`,
               }}
             />
-            
-            {/* Main node */}
+
+            {/* Middle glow ring */}
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r={node.size * 2.5}
+              fill="rgba(196, 181, 253, 0.4)"
+              className={animated ? (animationClasses?.intensity === "intense" || animationClasses?.intensity === "burst" ? "animate-synaptic-burst-intense" : "animate-synaptic-burst") : ""}
+              style={{
+                animationDelay: `${node.delay + 0.2}s`,
+              }}
+            />
+
+            {/* Inner glow ring */}
+            <circle
+              cx={node.x}
+              cy={node.y}
+              r={node.size * 1.5}
+              fill="rgba(59, 130, 246, 0.6)"
+              className={animated ? (animationClasses?.intensity === "intense" || animationClasses?.intensity === "burst" ? "animate-synaptic-burst-intense" : "animate-synaptic-burst") : ""}
+              style={{
+                animationDelay: `${node.delay + 0.4}s`,
+              }}
+            />
+
+            {/* Maximum impact main node */}
             <circle
               cx={node.x}
               cy={node.y}
               r={node.size}
-              fill="url(#nodeGradient)"
-              filter="url(#glow)"
+              fill="url(#nodeGradientAnimated)" // Use animated gradient
+              filter={animationClasses?.intensity === "burst" ? "url(#glowIntense)" : "url(#glow)"}
               className={getNodeAnimationClass(node, index)}
               style={{
                 animationDelay: `${node.delay}s`,
@@ -282,9 +358,15 @@ const NeuralNetworkCore: React.FC<NeuralNetworkBackgroundProps & {
         ))}
       </svg>
 
-      {/* Subtle overlay for depth */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-500/5 to-purple-500/5 mix-blend-overlay"
+      {/* Maximum impact multi-layered overlay for depth */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/25 to-indigo-500/20 mix-blend-overlay animate-pulse"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-tl from-cyan-500/15 via-transparent to-violet-500/15 mix-blend-screen"
+      />
+      <div
+        className="absolute inset-0 bg-radial-gradient from-transparent via-blue-400/10 to-transparent mix-blend-color-dodge"
       />
     </div>
   );

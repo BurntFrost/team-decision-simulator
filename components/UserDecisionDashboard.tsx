@@ -2457,7 +2457,7 @@ export default function UserDecisionDashboard() {
       {/* Enhanced Neural Network Background */}
       <LiquidBackground
         variant="primary"
-        intensity={shouldReduceEffects ? "low" : "medium"}
+        intensity={shouldReduceEffects ? "subtle" : "medium"}
         animated={!shouldReduceAnimations}
         particles={!shouldReduceEffects}
         neuralNetwork={true}

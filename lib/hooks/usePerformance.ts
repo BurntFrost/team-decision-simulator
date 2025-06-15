@@ -20,7 +20,7 @@ export function usePerformanceMonitor(enabled: boolean = false) {
 
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
-  const animationIdRef = useRef<number>();
+  const animationIdRef = useRef<number | undefined>(undefined);
 
   const measurePerformance = useCallback(() => {
     const currentTime = performance.now();
@@ -114,7 +114,7 @@ export function useOptimizedIntersection(
   options?: IntersectionObserverInit
 ) {
   const elementRef = useRef<HTMLElement>(null);
-  const observerRef = useRef<IntersectionObserver>();
+  const observerRef = useRef<IntersectionObserver | undefined>(undefined);
 
   useEffect(() => {
     const element = elementRef.current;

@@ -19,7 +19,7 @@ const SliderInput: React.FC<SliderInputProps> = memo(({ id, label, value, onChan
   const throttledOnChange = useThrottle(onChange, 50);
 
   // Optimized slider change handler
-  const handleSliderChange = useCallback((_, v: number | number[]) => {
+  const handleSliderChange = useCallback((_event: Event, v: number | number[]) => {
     const newValue = (Array.isArray(v) ? v[0] : v).toString();
     throttledOnChange(newValue);
   }, [throttledOnChange]);

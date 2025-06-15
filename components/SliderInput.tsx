@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { memo, useCallback } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useThrottle } from "@/lib/hooks/useDebounce";
 import * as DecisionService from "@/lib/decisionMatrixService";
 
 export interface SliderInputProps {
@@ -13,7 +14,17 @@ export interface SliderInputProps {
   info: DecisionService.FactorInfo;
 }
 
-const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, info }) => (
+const SliderInput: React.FC<SliderInputProps> = memo(({ id, label, value, onChange, info }) => {
+  // Throttled onChange to prevent excessive updates while maintaining responsiveness
+  const throttledOnChange = useThrottle(onChange, 50);
+
+  // Optimized slider change handler
+  const handleSliderChange = useCallback((_, v: number | number[]) => {
+    const newValue = (Array.isArray(v) ? v[0] : v).toString();
+    throttledOnChange(newValue);
+  }, [throttledOnChange]);
+
+  return (
   <div className="flex flex-col">
     <div className="flex justify-between items-center mb-2">
       <label htmlFor={id} className="font-medium text-sm sm:text-md text-[#1d1d1f] leading-tight">
@@ -51,9 +62,7 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
         max={1}
         step={0.05}
         value={value}
-        onChange={(_, v) =>
-          onChange((Array.isArray(v) ? v[0] : v).toString())
-        }
+        onChange={handleSliderChange}
         aria-label={info.label}
         aria-describedby={`${id}-info`}
         className="flex-grow"
@@ -63,6 +72,7 @@ const SliderInput: React.FC<SliderInputProps> = ({ id, label, value, onChange, i
       </span>
     </div>
   </div>
-);
+  );
+});
 
 export default SliderInput;

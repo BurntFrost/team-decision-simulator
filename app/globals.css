@@ -454,6 +454,70 @@ button:active {
   }
 }
 
+@keyframes purpleBrainGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4)) drop-shadow(0 0 16px rgba(139, 92, 246, 0.2));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(139, 92, 246, 0.8)) drop-shadow(0 0 32px rgba(139, 92, 246, 0.4));
+    transform: scale(1.05);
+  }
+}
+
+@keyframes purpleStrokePulse {
+  0%, 100% {
+    stroke: rgba(139, 92, 246, 0.6);
+    stroke-width: 1.5;
+    opacity: 0.7;
+  }
+  50% {
+    stroke: rgba(139, 92, 246, 1);
+    stroke-width: 2;
+    opacity: 1;
+  }
+}
+
+@keyframes purpleNeuralActivity {
+  0% {
+    stroke-dasharray: 0 100;
+    stroke: rgba(139, 92, 246, 0.4);
+  }
+  25% {
+    stroke-dasharray: 25 75;
+    stroke: rgba(139, 92, 246, 0.8);
+  }
+  50% {
+    stroke-dasharray: 50 50;
+    stroke: rgba(139, 92, 246, 1);
+  }
+  75% {
+    stroke-dasharray: 75 25;
+    stroke: rgba(139, 92, 246, 0.8);
+  }
+  100% {
+    stroke-dasharray: 100 0;
+    stroke: rgba(139, 92, 246, 0.4);
+  }
+}
+
+@keyframes purpleRipple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+    background: rgba(139, 92, 246, 0.6);
+  }
+  50% {
+    opacity: 0.4;
+    background: rgba(139, 92, 246, 0.3);
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+    background: rgba(139, 92, 246, 0.1);
+  }
+}
+
 @keyframes glassBreathing {
   0%, 100% {
     backdrop-filter: blur(16px);
@@ -677,6 +741,22 @@ button:active {
 
   .animate-connection-flow {
     animation: connectionFlow 3s ease-in-out infinite;
+  }
+
+  .animate-purple-brain-glow {
+    animation: purpleBrainGlow 2.5s ease-in-out infinite;
+  }
+
+  .animate-purple-stroke-pulse {
+    animation: purpleStrokePulse 2s ease-in-out infinite;
+  }
+
+  .animate-purple-neural-activity {
+    animation: purpleNeuralActivity 3s ease-in-out infinite;
+  }
+
+  .animate-purple-ripple {
+    animation: purpleRipple 0.8s ease-out;
   }
 
   .animate-glass-breathing {
@@ -1021,6 +1101,57 @@ button:active {
     border: 0;
   }
 
+  /* Performance-optimized animations */
+  .animate-fast {
+    animation-duration: 0.15s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-smooth {
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .animate-bounce-subtle {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Optimized transform animations */
+  .transform-optimized {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Scroll performance optimizations */
+  .scroll-optimized {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    contain: layout style paint;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Interaction performance */
+  .interaction-optimized {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  .interaction-optimized:active {
+    transform: scale(0.98) translateZ(0);
+  }
+
   /* Reduced motion fallbacks */
   @media (prefers-reduced-motion: reduce) {
     * {
@@ -1033,6 +1164,12 @@ button:active {
     .force-gpu-layer {
       will-change: auto !important;
       transform: none !important;
+    }
+
+    .animate-fast,
+    .animate-smooth,
+    .animate-bounce-subtle {
+      animation: none !important;
     }
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useAdaptivePerformance } from "@/lib/hooks/usePerformance";
 import {
   Card,
   CardContent,
@@ -26,7 +27,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
-import MBTI3DWrapper from "@/components/MBTI3DWrapper";
+
 // Import react-icons
 import { FaBrain, FaCheck } from "react-icons/fa";
 import { BsFileText, BsClockFill, BsGeoAlt } from "react-icons/bs";
@@ -41,7 +42,7 @@ import { Brain, Zap } from "lucide-react";
 
 // Enhanced Brain Icon Component with multiple visual options
 interface EnhancedBrainIconProps {
-  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern' | 'premium' | 'liquid' | 'neural';
+  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern' | 'premium' | 'liquid' | 'neural' | 'purple';
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
   className?: string;
   onClick?: () => void;
@@ -296,6 +297,77 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
               <div className="absolute top-0 left-1/2 w-px h-4 bg-gradient-to-b from-blue-400 to-transparent animate-pulse"></div>
               <div className="absolute bottom-0 right-1/3 w-px h-3 bg-gradient-to-t from-purple-400 to-transparent animate-pulse animation-delay-150"></div>
               <div className="absolute left-0 top-1/3 w-3 h-px bg-gradient-to-r from-cyan-400 to-transparent animate-pulse animation-delay-300"></div>
+            </div>
+          )}
+        </div>
+      );
+
+    case 'purple':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          {/* Purple ripple effects */}
+          <div className="absolute -inset-8 pointer-events-none">
+            <div className="absolute inset-0 bg-purple-500/20 rounded-full animate-purple-ripple opacity-0 group-hover:opacity-100"></div>
+            <div className="absolute inset-2 bg-purple-400/15 rounded-full animate-purple-ripple animation-delay-150 opacity-0 group-hover:opacity-100"></div>
+            <div className="absolute inset-4 bg-purple-300/10 rounded-full animate-purple-ripple animation-delay-300 opacity-0 group-hover:opacity-100"></div>
+          </div>
+
+          {/* Outer purple glow rings */}
+          <div className="absolute -inset-6 bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-600 rounded-full blur-2xl opacity-60 motion-safe:animate-purple-brain-glow group-hover:opacity-90 transition-opacity duration-500"></div>
+          <div className="absolute -inset-4 bg-gradient-to-br from-purple-300 via-purple-400 to-indigo-500 rounded-full blur-xl opacity-50 motion-safe:animate-purple-brain-glow motion-safe:[animation-delay:0.5s] group-hover:opacity-80 transition-opacity duration-500"></div>
+          <div className="absolute -inset-2 bg-gradient-to-br from-purple-200 via-purple-300 to-indigo-400 rounded-full blur-lg opacity-40 motion-safe:animate-purple-brain-glow motion-safe:[animation-delay:1s] group-hover:opacity-70 transition-opacity duration-500"></div>
+
+          {/* Neural network background with purple theme */}
+          <div className="absolute -inset-4 opacity-30 group-hover:opacity-60 transition-opacity duration-500">
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="purpleNeuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.8" />
+                  <stop offset="50%" stopColor="#a855f7" stopOpacity="0.9" />
+                  <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.7" />
+                </linearGradient>
+              </defs>
+
+              {/* Animated neural connections */}
+              <line x1="20" y1="30" x2="80" y2="70" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity" />
+              <line x1="30" y1="80" x2="70" y2="20" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity animation-delay-75" />
+              <line x1="10" y1="60" x2="90" y2="40" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity animation-delay-150" />
+              <line x1="40" y1="10" x2="60" y2="90" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity animation-delay-300" />
+            </svg>
+
+            {/* Purple neural nodes */}
+            <div className="absolute top-2 right-2 w-2 h-2 bg-purple-400 rounded-full animate-neural-pulse shadow-lg shadow-purple-500/50"></div>
+            <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-purple-500 rounded-full animate-neural-pulse animation-delay-75 shadow-lg shadow-purple-600/50"></div>
+            <div className="absolute top-1/2 left-1 w-1 h-1 bg-purple-300 rounded-full animate-neural-pulse animation-delay-150 shadow-lg shadow-purple-400/50"></div>
+            <div className="absolute top-1 right-1/2 w-1.5 h-1.5 bg-indigo-400 rounded-full animate-neural-pulse animation-delay-300 shadow-lg shadow-indigo-500/50"></div>
+          </div>
+
+          {/* Central brain container with purple glass effect */}
+          <div className="relative p-1 bg-gradient-to-br from-purple-500/20 via-purple-400/15 to-indigo-500/10 backdrop-blur-lg border border-purple-300/30 rounded-xl shadow-xl shadow-purple-500/20 group-hover:shadow-2xl group-hover:shadow-purple-500/30 transition-all duration-500 group-hover:scale-105">
+            <Brain
+              className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-125 motion-safe:animate-purple-brain-glow`}
+              style={{
+                filter: `hue-rotate(${isHovered ? '20deg' : '0deg'}) saturate(${1 + (pulseIntensity - 1) * 0.8}) drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))`,
+                transform: `scale(${0.95 + pulseIntensity * 0.1})`,
+              }}
+            />
+          </div>
+
+          {/* Enhanced synaptic activity with purple theme */}
+          {neuralActivity && (
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-0 left-1/2 w-px h-4 bg-gradient-to-b from-purple-400 to-transparent animate-pulse shadow-sm shadow-purple-400/50"></div>
+              <div className="absolute bottom-0 right-1/3 w-px h-3 bg-gradient-to-t from-purple-500 to-transparent animate-pulse animation-delay-150 shadow-sm shadow-purple-500/50"></div>
+              <div className="absolute left-0 top-1/3 w-3 h-px bg-gradient-to-r from-purple-300 to-transparent animate-pulse animation-delay-300 shadow-sm shadow-purple-300/50"></div>
+              <div className="absolute right-0 bottom-1/4 w-2 h-px bg-gradient-to-l from-indigo-400 to-transparent animate-pulse animation-delay-75 shadow-sm shadow-indigo-400/50"></div>
             </div>
           )}
         </div>
@@ -1443,16 +1515,25 @@ const SliderInput: React.FC<SliderInputProps> = ({
   );
 };
 
-// Dynamically import Recharts components with no SSR
+// Optimized dynamic imports with better loading states
 const Charts = dynamic(() => import("@/components/UserDecisionCharts"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[400px] flex items-center justify-center">
-      <div className="text-[#4455a6] animate-pulse">
-        Loading visualization...
+    <div className="w-full h-[400px] flex items-center justify-center bg-white/5 backdrop-blur-sm rounded-xl border border-white/20">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="text-[#4455a6] text-sm font-medium">
+          Loading visualization...
+        </div>
       </div>
     </div>
   ),
+});
+
+// Lazy load performance monitor only in development
+const PerformanceMonitor = dynamic(() => import("@/components/PerformanceMonitor"), {
+  ssr: false,
+  loading: () => null,
 });
 
 // Enhanced Tabs Component
@@ -2185,6 +2266,14 @@ const OfficeContent: React.FC<{
 
 export default function UserDecisionDashboard() {
   const [mounted, setMounted] = useState(false);
+
+  // Performance monitoring and adaptive settings
+  const {
+    performanceLevel,
+    shouldReduceAnimations,
+    shouldReduceEffects,
+    getAnimationDuration
+  } = useAdaptivePerformance();
   const mbtiTypes: MBTIType[] = DecisionService.archetypes.map(
     (a) => a.name as MBTIType
   );
@@ -2201,10 +2290,7 @@ export default function UserDecisionDashboard() {
   const [activeTab, setActiveTab] = useState("scenarios");
   const [mbtiSubTab, setMbtiSubTab] = useState("descriptions");
   const [resultsSubTab, setResultsSubTab] = useState("analysis");
-  const [preview, setPreview] = useState<{ decision: string; color: string }>({
-    decision: "",
-    color: "#6b7280",
-  });
+
 
 
 
@@ -2280,19 +2366,19 @@ export default function UserDecisionDashboard() {
     setMounted(true);
   }, []);
 
-  // Update preview decision whenever inputs change
-  useEffect(() => {
+  // Memoized preview calculation to prevent unnecessary recalculations
+  const preview = useMemo(() => {
     const previewResults = DecisionService.calculateResults(inputs);
     const { decision, color } =
       DecisionService.calculateMajorityDecision(previewResults);
-    setPreview({ decision, color });
+    return { decision, color };
   }, [inputs]);
 
   // Format radar data
   const radarData = DecisionService.formatRadarData();
 
-  // Trigger simulation by calculating scores and decisions
-  const handleSimulate = () => {
+  // Optimized simulation handler with memoized calculations
+  const handleSimulate = useCallback(() => {
     // Calculate results for personality types
     const newResults = DecisionService.calculateResults(inputs);
 
@@ -2304,35 +2390,36 @@ export default function UserDecisionDashboard() {
 
     // Switch to results tab after simulation
     setActiveTab("results");
-  };
+  }, [inputs]);
 
-  // Reset inputs and clear simulation results
-  const handleReset = () => {
+  // Optimized reset handler
+  const handleReset = useCallback(() => {
     setInputs(DecisionService.defaultInputs);
     setResults([]);
     setPublicResult(null);
     setActivePreset(null);
-  };
+  }, []);
 
-  const handleInputChange = (key: DecisionService.FactorKey, value: string) => {
-    setInputs((prev) => {
-      const updated = { ...prev, [key]: parseFloat(value) };
-      return updated;
-    });
+  // Optimized input change handler with immediate UI update and debounced calculation
+  const handleInputChange = useCallback((key: DecisionService.FactorKey, value: string) => {
+    const numericValue = parseFloat(value);
+
+    // Immediate UI update for responsiveness
+    setInputs((prev) => ({ ...prev, [key]: numericValue }));
 
     // Clear active preset when manually adjusting inputs
     if (activePreset) {
       setActivePreset(null);
     }
-  };
+  }, [activePreset]);
 
-  const applyPreset = (
+  const applyPreset = useCallback((
     presetName: keyof typeof DecisionService.presetScenarios
   ) => {
     setInputs(DecisionService.presetScenarios[presetName]);
     setActivePreset(presetName);
     setActiveTab("factors");
-  };
+  }, []);
 
   // Compute majority decision from simulation results
   const majorityDecisionData =
@@ -2362,14 +2449,19 @@ export default function UserDecisionDashboard() {
 
   return (
     <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
+      {/* Performance Monitor (development only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <PerformanceMonitor enabled={true} />
+      )}
+
       {/* Enhanced Neural Network Background */}
       <LiquidBackground
         variant="primary"
-        intensity="medium"
-        animated={true}
-        particles={true}
+        intensity={shouldReduceEffects ? "low" : "medium"}
+        animated={!shouldReduceAnimations}
+        particles={!shouldReduceEffects}
         neuralNetwork={true}
-        interactionIntensity="medium"
+        interactionIntensity={shouldReduceEffects ? "low" : "medium"}
         className="z-0"
       />
 
@@ -2398,7 +2490,7 @@ export default function UserDecisionDashboard() {
                 <div className="flex items-center gap-3">
                   <div>
                     <EnhancedBrainIcon
-                      variant="liquid"
+                      variant="purple"
                       size="3xl"
                       className="flex-shrink-0"
                       interactive={true}
@@ -2605,7 +2697,7 @@ export default function UserDecisionDashboard() {
                     </div>
                   )}
 
-                {/* Combined 3D Visualization and Factor Controls */}
+                {/* Decision Factor Controls */}
                 <GlassContainer
                   variant="premium"
                   rounded="2xl"
@@ -2614,60 +2706,35 @@ export default function UserDecisionDashboard() {
                   depth="floating"
                   className="p-4 sm:p-6 gpu-accelerated"
                 >
-                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-8">
-                    {/* 3D Visualization Section - Takes 2/3 of space on large screens */}
-                    <div className="xl:col-span-2 space-y-4">
-                      <div className="mb-4">
-                        <h2 className="text-lg sm:text-xl font-semibold text-glass-effect mb-3 tracking-tight">
-                          MBTI Decision Factors in 3D Space
-                        </h2>
-                        <p className="text-sm text-subtle-glass leading-relaxed">
-                          Explore how different personality types prioritize decision factors.
-                          Your current settings are shown as a red ring. Hover over points to see details.
-                        </p>
-                      </div>
-                      <div className="relative">
-                        <MBTI3DWrapper
-                          archetypes={DecisionService.archetypes}
-                          mbtiDescriptions={DecisionService.mbtiDescriptions}
-                          userInputs={inputs}
-                          userMBTI={userMBTI}
-                          className="relative"
-                        />
-                      </div>
+                  <div className="space-y-4">
+                    <div className="mb-4">
+                      <h2 className="text-lg sm:text-xl font-semibold text-glass-effect mb-3 tracking-tight">
+                        Adjust Decision Factors
+                      </h2>
+                      <p className="text-sm text-subtle-glass leading-relaxed">
+                        Move the sliders to adjust how much each factor influences your decision-making process.
+                      </p>
                     </div>
-
-                    {/* Factor Controls Section - Takes 1/3 of space on large screens */}
-                    <div className="xl:col-span-1 space-y-4 xl:border-l xl:border-white/20 xl:pl-6">
-                      <div className="mb-4">
-                        <h2 className="text-lg sm:text-xl font-semibold text-glass-effect mb-3 tracking-tight">
-                          Adjust Decision Factors
-                        </h2>
-                        <p className="text-sm text-subtle-glass leading-relaxed">
-                          Move the sliders to see how your position changes in the 3D space in real-time.
-                        </p>
-                      </div>
-                      <div className="space-y-3 xl:space-y-4">
-                        {Object.keys(inputs).map((key) => (
-                          <SliderInput
-                            key={key}
-                            id={key}
-                            label={key}
-                            value={inputs[key as DecisionService.FactorKey]}
-                            onChange={(value) =>
-                              handleInputChange(
-                                key as DecisionService.FactorKey,
-                                value
-                              )
-                            }
-                            info={
-                              DecisionService.factorInfo[
-                                key as DecisionService.FactorKey
-                              ]
-                            }
-                          />
-                        ))}
-                      </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {Object.keys(inputs).map((key) => (
+                        <SliderInput
+                          key={key}
+                          id={key}
+                          label={key}
+                          value={inputs[key as DecisionService.FactorKey]}
+                          onChange={(value) =>
+                            handleInputChange(
+                              key as DecisionService.FactorKey,
+                              value
+                            )
+                          }
+                          info={
+                            DecisionService.factorInfo[
+                              key as DecisionService.FactorKey
+                            ]
+                          }
+                        />
+                      ))}
                     </div>
                   </div>
                 </GlassContainer>

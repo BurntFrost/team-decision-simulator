@@ -1,0 +1,136 @@
+"use client";
+
+import * as React from "react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { cn } from "@/lib/utils";
+
+// Lazy loading wrapper for tab content
+interface LazyTabContentProps {
+  value: string;
+  activeTab: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+const LazyTabContent: React.FC<LazyTabContentProps> = React.memo(({ 
+  value, 
+  activeTab, 
+  children, 
+  className 
+}) => {
+  const [hasBeenActive, setHasBeenActive] = React.useState(false);
+  const isActive = activeTab === value;
+
+  React.useEffect(() => {
+    if (isActive && !hasBeenActive) {
+      setHasBeenActive(true);
+    }
+  }, [isActive, hasBeenActive]);
+
+  // Only render content if it has been active at least once
+  if (!hasBeenActive) {
+    return (
+      <TabsPrimitive.Content
+        data-slot="tabs-content"
+        value={value}
+        className={cn("flex-1 outline-none", className)}
+      >
+        <div className="flex items-center justify-center h-32">
+          <div className="text-gray-500 animate-pulse">Loading...</div>
+        </div>
+      </TabsPrimitive.Content>
+    );
+  }
+
+  return (
+    <TabsPrimitive.Content
+      data-slot="tabs-content"
+      value={value}
+      className={cn(
+        "flex-1 outline-none",
+        "data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95",
+        "data-[state=inactive]:animate-out data-[state=inactive]:fade-out-0 data-[state=inactive]:zoom-out-95",
+        "transition-all duration-200 ease-out",
+        className
+      )}
+    >
+      {children}
+    </TabsPrimitive.Content>
+  );
+});
+
+LazyTabContent.displayName = "LazyTabContent";
+
+// Optimized Tabs Root
+function OptimizedTabs({
+  className,
+  onValueChange,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Root>) {
+  const [activeTab, setActiveTab] = React.useState(props.defaultValue || "");
+
+  const handleValueChange = React.useCallback((value: string) => {
+    setActiveTab(value);
+    onValueChange?.(value);
+  }, [onValueChange]);
+
+  return (
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      className={cn("flex flex-col gap-2", className)}
+      onValueChange={handleValueChange}
+      {...props}
+    />
+  );
+}
+
+// Optimized Tabs List with GPU acceleration
+function OptimizedTabsList({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.List>) {
+  return (
+    <TabsPrimitive.List
+      data-slot="tabs-list"
+      className={cn(
+        "glass rounded-2xl p-1.5 flex w-full items-center justify-start overflow-x-auto gap-1 md:inline-flex md:w-fit md:p-2 md:gap-2 lg:gap-3 lg:p-2.5",
+        "bg-white/5 backdrop-blur-xl border border-white/20 shadow-lg",
+        "gpu-accelerated touch-responsive",
+        "scrollbar-hide", // Hide scrollbar for cleaner look
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+// Optimized Tabs Trigger with enhanced performance
+function OptimizedTabsTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+  return (
+    <TabsPrimitive.Trigger
+      data-slot="tabs-trigger"
+      className={cn(
+        "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-medium whitespace-nowrap transition-all duration-200 disabled:pointer-events-none disabled:opacity-50",
+        "text-gray-600 hover:text-gray-800 hover:bg-white/10",
+        "data-[state=active]:bg-white/20 data-[state=active]:text-gray-900 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:border data-[state=active]:border-white/30",
+        "focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:outline-none",
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "md:min-h-[44px] md:px-5 md:py-2 lg:px-7",
+        "gpu-accelerated hover-optimized touch-responsive",
+        "active:scale-95 transform-gpu", // Add tactile feedback
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export { 
+  OptimizedTabs as Tabs, 
+  OptimizedTabsList as TabsList, 
+  OptimizedTabsTrigger as TabsTrigger, 
+  LazyTabContent as TabsContent 
+};

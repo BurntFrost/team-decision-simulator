@@ -13,7 +13,6 @@ A sophisticated decision-making simulation tool that helps teams understand how 
   - **Social Complexity**: Number and alignment of stakeholders involved
   - **Psychological Safety**: Trust environment for expressing concerns and ideas
 - **Advanced Visual Analytics**: Multiple sophisticated visualization tools:
-  - **3D MBTI Visualization**: Interactive Three.js-powered 3D personality mapping
   - **Radar Charts**: Multi-dimensional factor comparison across personality types
   - **Scatter Plots**: Decisiveness vs confidence quadrant analysis
   - **Heat Maps**: Personality response patterns and correlations
@@ -67,7 +66,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - **Frontend**: Next.js 15 with App Router, React 19, TypeScript 5
 - **Styling**: Tailwind CSS 4 with Radix UI component library
-- **3D Graphics**: Three.js with React Three Fiber and Drei for interactive visualizations
 - **Charts**: Recharts for comprehensive data visualization
 - **UI Components**: Radix UI primitives (Select, Tabs, Tooltip, Popover, Slider)
 - **Icons**: Lucide React and React Icons for comprehensive icon coverage
@@ -124,8 +122,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 │   │   ├── tabs.tsx              # Tab navigation components
 │   │   └── tooltip.tsx           # Tooltip components
 │   ├── IOSStatusBar.tsx          # iOS-style status bar component
-│   ├── MBTI3DVisualization.tsx   # Three.js 3D personality visualization
-│   ├── MBTI3DWrapper.tsx         # Wrapper for 3D component with dynamic loading
 │   ├── SliderInput.tsx           # Custom slider input with labels
 │   ├── Stepper.tsx               # Step-by-step progress component
 │   ├── StyledTabs.tsx            # Custom styled tab components
@@ -185,7 +181,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 5. **Decision Engine**: Core algorithms calculate weighted scores for each personality type
 6. **Result Processing**: Decision categories assigned based on score thresholds
 7. **Visualization Pipeline**: Multiple chart components render interactive simulation results
-8. **3D Rendering**: Three.js engine creates immersive personality space visualizations
 
 ## Development Commands
 

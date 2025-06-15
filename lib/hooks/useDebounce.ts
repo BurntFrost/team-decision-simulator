@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 
 /**
  * Custom hook for debouncing function calls
@@ -56,4 +56,42 @@ export function useThrottle<T extends (...args: any[]) => void>(
     }) as T,
     [callback, delay]
   );
+}
+
+/**
+ * Enhanced hook for responsive input handling with immediate UI updates
+ * and debounced processing for expensive operations
+ */
+export function useResponsiveInput<T>(
+  initialValue: T,
+  onDebouncedChange: (value: T) => void,
+  delay: number = 150
+): [T, (value: T) => void] {
+  const [value, setValue] = useState<T>(initialValue);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleChange = useCallback((newValue: T) => {
+    // Immediate UI update for responsiveness
+    setValue(newValue);
+
+    // Debounced processing
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      onDebouncedChange(newValue);
+    }, delay);
+  }, [onDebouncedChange, delay]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  return [value, handleChange];
 }

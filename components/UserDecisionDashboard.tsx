@@ -2380,7 +2380,7 @@ export default function UserDecisionDashboard() {
       <GlassContainer
         variant="premium"
         rounded="3xl"
-        shadow="4xl"
+        shadow="3xl"
         shimmer={true}
         borderGlow={true}
         animated={true}

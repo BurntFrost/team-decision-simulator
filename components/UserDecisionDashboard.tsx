@@ -38,7 +38,6 @@ import {
 } from "react-icons/md";
 // Import Lucide icons for enhanced brain options
 import { Brain, Zap } from "lucide-react";
-import { useNeuralInteraction } from "@/lib/contexts/neural-animation-context";
 
 // Enhanced Brain Icon Component with multiple visual options
 interface EnhancedBrainIconProps {
@@ -166,19 +165,10 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           {/* Inner bright glow */}
           <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-100 to-purple-100 rounded-full blur-md opacity-40 motion-safe:animate-pulse motion-safe:[animation-duration:1.8s] motion-safe:[animation-delay:1.5s] group-hover:opacity-60 transition-opacity duration-500"></div>
 
-          {/* Brain icon with synchronized internal neural activity */}
+          {/* Brain icon */}
           <div className="relative z-10">
-            {/* Primary brain icon with main neural pulse */}
-            <Brain className={`${baseClasses} text-white drop-shadow-2xl group-hover:scale-110 group-hover:rotate-2 transition-all duration-300 motion-safe:animate-neural-pulse filter brightness-125`} />
-
-            {/* Secondary brain layer with neural flickering (synaptic activity) */}
-            <Brain className={`${baseClasses} text-blue-200 absolute inset-0 drop-shadow-lg motion-safe:animate-neural-flicker motion-safe:[animation-delay:0.5s] filter brightness-150 opacity-60`} />
-
-            {/* Third brain layer with synaptic firing pattern */}
-            <Brain className={`${baseClasses} text-purple-200 absolute inset-0 drop-shadow-md motion-safe:animate-synaptic-fire motion-safe:[animation-delay:1s] filter brightness-200 opacity-40`} />
-
-            {/* Fourth brain layer for complex thought patterns */}
-            <Brain className={`${baseClasses} text-white absolute inset-0 motion-safe:animate-brain-thought motion-safe:[animation-delay:1.5s] filter brightness-175 opacity-30`} />
+            {/* Primary brain icon */}
+            <Brain className={`${baseClasses} text-white drop-shadow-2xl group-hover:scale-110 group-hover:rotate-2 transition-all duration-300 filter brightness-125`} />
           </div>
 
           {/* Enhanced sparkle effects on hover */}
@@ -2024,8 +2014,7 @@ export default function UserDecisionDashboard() {
     color: "#6b7280",
   });
 
-  // Neural animation interactions
-  const neuralInteraction = useNeuralInteraction();
+
 
   // Character cycling state - tracks current index for each MBTI type and franchise
   const [characterIndices, setCharacterIndices] = useState<Record<string, Record<string, number>>>(() => {
@@ -2112,9 +2101,6 @@ export default function UserDecisionDashboard() {
 
   // Trigger simulation by calculating scores and decisions
   const handleSimulate = () => {
-    // Trigger neural animation for form submission
-    neuralInteraction.onFormSubmit();
-
     // Calculate results for personality types
     const newResults = DecisionService.calculateResults(inputs);
 
@@ -2151,9 +2137,6 @@ export default function UserDecisionDashboard() {
   const applyPreset = (
     presetName: keyof typeof DecisionService.presetScenarios
   ) => {
-    // Trigger neural animation for navigation
-    neuralInteraction.onNavigation();
-
     setInputs(DecisionService.presetScenarios[presetName]);
     setActivePreset(presetName);
     setActiveTab("factors");
@@ -2214,7 +2197,7 @@ export default function UserDecisionDashboard() {
               {/* Brand Section */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
-                  <div onMouseEnter={neuralInteraction.onHover}>
+                  <div>
                     <EnhancedBrainIcon
                       variant="premium"
                       size="2xl"
@@ -2264,7 +2247,6 @@ export default function UserDecisionDashboard() {
           <Tabs
             value={activeTab}
             onValueChange={(value) => {
-              neuralInteraction.onNavigation();
               setActiveTab(value);
             }}
             className="w-full"
@@ -2348,7 +2330,6 @@ export default function UserDecisionDashboard() {
                                     : "border-gray-100"
                                 )}
                                 onClick={() => {
-                                  neuralInteraction.onClick();
                                   applyPreset(
                                     scenario as keyof typeof DecisionService.presetScenarios
                                   );
@@ -2486,10 +2467,8 @@ export default function UserDecisionDashboard() {
                   <div className="flex justify-center sm:justify-end mt-6">
                     <Button
                       onClick={() => {
-                        neuralInteraction.onClick();
                         handleSimulate();
                       }}
-                      onMouseEnter={neuralInteraction.onHover}
                       variant="default"
                       size="lg"
                       className="w-full sm:w-auto"

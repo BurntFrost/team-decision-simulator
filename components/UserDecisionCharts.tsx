@@ -864,7 +864,7 @@ const UserDecisionCharts: React.FC<Props> = ({
     setIsMounted(true);
     const updateDimensions = () => {
       setDimensions({
-        width: window.innerWidth < 768 ? 400 : 800,
+        width: window.innerWidth,
         height: window.innerWidth < 768 ? 400 : 800,
       });
     };
@@ -952,6 +952,18 @@ const UserDecisionCharts: React.FC<Props> = ({
     // Check if the link is connected to the hovered MBTI type
     return sourceNode.name === hoveredType || targetNode.name === hoveredType;
   };
+
+  // Show loading state until component is mounted
+  if (!isMounted) {
+    return (
+      <div className="w-full h-[400px] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4455a6] mx-auto mb-4"></div>
+          <p className="text-[#4455a6] font-medium">Loading Charts...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Tabs
@@ -1053,17 +1065,17 @@ const UserDecisionCharts: React.FC<Props> = ({
         <div className="relative">
           <ResponsiveContainer
             width="100%"
-            height={window.innerWidth < 768 ? 250 : 350}
+            height={isMounted && dimensions.width < 768 ? 250 : 350}
           >
             <BarChart
               data={results}
               margin={{
                 top: 20,
-                right: window.innerWidth < 768 ? 20 : 180,
+                right: isMounted && dimensions.width < 768 ? 20 : 180,
                 left: 20,
                 bottom: 70,
               }}
-              barCategoryGap={window.innerWidth < 768 ? 15 : 30}
+              barCategoryGap={isMounted && dimensions.width < 768 ? 15 : 30}
             >
               <defs>
                 <linearGradient
@@ -1153,13 +1165,13 @@ const UserDecisionCharts: React.FC<Props> = ({
                 tick={{ fill: "#4455a6", fontWeight: 500 }}
                 onMouseEnter={(e) => handleMouseEnter(e.value)}
                 onMouseLeave={handleMouseLeave}
-                height={window.innerWidth < 768 ? 50 : 70}
+                height={isMounted && dimensions.width < 768 ? 50 : 70}
                 tickLine={false}
                 axisLine={{ stroke: "#94a3b8", strokeOpacity: 0.3 }}
                 interval={0}
-                angle={window.innerWidth < 768 ? -90 : -45}
+                angle={isMounted && dimensions.width < 768 ? -90 : -45}
                 textAnchor="end"
-                fontSize={window.innerWidth < 768 ? 10 : 12}
+                fontSize={isMounted && dimensions.width < 768 ? 10 : 12}
               />
               <YAxis
                 domain={[0, 1]}
@@ -1386,7 +1398,7 @@ const UserDecisionCharts: React.FC<Props> = ({
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <ResponsiveContainer
             width="100%"
-            height={isClient && window.innerWidth < 768 ? 300 : 400}
+            height={isMounted && dimensions.width < 768 ? 300 : 400}
           >
             <RadarChart data={enhancedRadarData} margin={{ top: 20, right: 80, bottom: 20, left: 80 }}>
               <defs>
@@ -1601,7 +1613,7 @@ const UserDecisionCharts: React.FC<Props> = ({
         </div>
         <ResponsiveContainer
           width="100%"
-          height={isClient && window.innerWidth < 768 ? 250 : 350}
+          height={isMounted && dimensions.width < 768 ? 250 : 350}
         >
           <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
@@ -2109,7 +2121,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
               <ResponsiveContainer
                 width="100%"
-                height={window.innerWidth < 768 ? 250 : 250}
+                height={isMounted && dimensions.width < 768 ? 250 : 250}
               >
                 <BarChart
                   data={Object.entries(publicResult.probabilities).map(

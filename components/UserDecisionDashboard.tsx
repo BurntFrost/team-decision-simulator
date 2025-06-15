@@ -41,8 +41,8 @@ import { Brain, Zap } from "lucide-react";
 
 // Enhanced Brain Icon Component with multiple visual options
 interface EnhancedBrainIconProps {
-  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern' | 'premium';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   className?: string;
   onClick?: () => void;
 }
@@ -57,7 +57,8 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
     sm: 'h-5 w-5',
     md: 'h-6 w-6',
     lg: 'h-8 w-8',
-    xl: 'h-10 w-10'
+    xl: 'h-10 w-10',
+    '2xl': 'h-12 w-12'
   };
 
   const baseClasses = `${sizeClasses[size]} transition-all duration-300 ${className}`;
@@ -140,6 +141,48 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
             <Brain className={`${baseClasses} text-white group-hover:scale-105`} />
           </div>
           <Zap className="absolute -top-1 -right-1 h-3 w-3 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+      );
+
+    case 'premium':
+      return (
+        <div
+          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          onClick={handleClick}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+        >
+          {/* Outermost glow ring - largest and most intense */}
+          <div className="absolute -inset-4 bg-gradient-to-br from-blue-400 via-purple-500 to-indigo-600 rounded-full blur-2xl opacity-80 motion-safe:animate-pulse motion-safe:[animation-duration:2.5s] group-hover:opacity-100 transition-opacity duration-500"></div>
+
+          {/* Outer glow ring - enhanced intensity */}
+          <div className="absolute -inset-2 bg-gradient-to-br from-blue-300 via-purple-400 to-indigo-500 rounded-full blur-xl opacity-70 motion-safe:animate-pulse motion-safe:[animation-duration:3s] motion-safe:[animation-delay:0.5s] group-hover:opacity-90 transition-opacity duration-500"></div>
+
+          {/* Middle glow ring - more prominent */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-200 via-purple-300 to-indigo-400 rounded-full blur-lg opacity-60 motion-safe:animate-pulse motion-safe:[animation-duration:2s] motion-safe:[animation-delay:1s] group-hover:opacity-80 transition-opacity duration-500"></div>
+
+          {/* Inner bright glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white via-blue-100 to-purple-100 rounded-full blur-md opacity-40 motion-safe:animate-pulse motion-safe:[animation-duration:1.8s] motion-safe:[animation-delay:1.5s] group-hover:opacity-60 transition-opacity duration-500"></div>
+
+          {/* Brain icon with synchronized internal neural activity */}
+          <div className="relative z-10">
+            {/* Primary brain icon with main neural pulse */}
+            <Brain className={`${baseClasses} text-white drop-shadow-2xl group-hover:scale-110 group-hover:rotate-2 transition-all duration-300 motion-safe:animate-neural-pulse filter brightness-125`} />
+
+            {/* Secondary brain layer with neural flickering (synaptic activity) */}
+            <Brain className={`${baseClasses} text-blue-200 absolute inset-0 drop-shadow-lg motion-safe:animate-neural-flicker motion-safe:[animation-delay:0.5s] filter brightness-150 opacity-60`} />
+
+            {/* Third brain layer with synaptic firing pattern */}
+            <Brain className={`${baseClasses} text-purple-200 absolute inset-0 drop-shadow-md motion-safe:animate-synaptic-fire motion-safe:[animation-delay:1s] filter brightness-200 opacity-40`} />
+
+            {/* Fourth brain layer for complex thought patterns */}
+            <Brain className={`${baseClasses} text-white absolute inset-0 motion-safe:animate-brain-thought motion-safe:[animation-delay:1.5s] filter brightness-175 opacity-30`} />
+          </div>
+
+          {/* Enhanced sparkle effects on hover */}
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 motion-safe:group-hover:animate-ping transition-opacity duration-300"></div>
+          <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-blue-200 rounded-full opacity-0 group-hover:opacity-80 motion-safe:group-hover:animate-ping motion-safe:[animation-delay:0.3s] transition-opacity duration-300"></div>
         </div>
       );
 
@@ -2164,8 +2207,8 @@ export default function UserDecisionDashboard() {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
                   <EnhancedBrainIcon
-                    variant="gradient"
-                    size="lg"
+                    variant="premium"
+                    size="2xl"
                     className="flex-shrink-0"
                   />
                   <h1 className="text-xl sm:text-2xl font-bold text-white">

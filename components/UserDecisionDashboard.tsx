@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -27,7 +27,6 @@ import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
 import MBTI3DWrapper from "@/components/MBTI3DWrapper";
-import { useDebounce } from "@/lib/hooks/useDebounce";
 // Import react-icons
 import { FaBrain, FaCheck } from "react-icons/fa";
 import { BsFileText, BsClockFill, BsGeoAlt } from "react-icons/bs";
@@ -1039,10 +1038,14 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
   const [isExpanded, setIsExpanded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Debounced hover handlers to improve performance
-  const debouncedSetHovered = useDebounce((hovered: boolean) => {
-    setIsHovered(hovered);
-  }, 100);
+  // Direct hover handlers without debouncing to prevent flickering
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
 
   // Handle card click to shuffle all characters
   const handleCardClick = (e: React.MouseEvent) => {
@@ -1057,14 +1060,14 @@ const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.me
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-3xl transition-all duration-700 ease-out cursor-pointer transform-gpu",
-        isHovered ? "scale-[1.03] -translate-y-2 shadow-4xl" : "shadow-2xl",
+        "group relative overflow-hidden rounded-3xl transition-all duration-300 ease-out cursor-pointer transform-gpu",
+        isHovered ? "scale-[1.02] -translate-y-1 shadow-4xl" : "shadow-2xl",
         isUserType
           ? "ring-2 ring-[#007aff] ring-offset-4 ring-offset-white/50"
           : ""
       )}
-      onMouseEnter={() => debouncedSetHovered(true)}
-      onMouseLeave={() => debouncedSetHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onClick={handleCardClick}
       title="Click to shuffle character examples"
     >

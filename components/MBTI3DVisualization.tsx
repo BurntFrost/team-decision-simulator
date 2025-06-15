@@ -2,7 +2,7 @@
 
 import React, { Suspense, useMemo, useState, useRef, useCallback } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { OrbitControls, Text, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { ArchetypeProfile, MBTIDescription, Weights } from "@/lib/decisionMatrixService";
 import { factorInfo } from "@/models/decision/constants";
@@ -189,6 +189,7 @@ const MBTIPoint: React.FC<MBTIPointProps> = React.memo(({
   onHover,
   isHovered,
   showFullNames,
+  prefersReducedMotion = false,
 }) => {
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -558,6 +559,11 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  // Toggle display mode
+  const toggleDisplayMode = useCallback(() => {
+    setShowFullNames(prev => !prev);
+  }, []);
+
   // Add keyboard navigation support
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -577,11 +583,6 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
   // Debounced hover handler to improve performance
   const debouncedSetHoveredType = useCallback((type: string | null) => {
     setHoveredType(type);
-  }, []);
-
-  // Toggle display mode
-  const toggleDisplayMode = useCallback(() => {
-    setShowFullNames(prev => !prev);
   }, []);
 
   return (

@@ -75,4 +75,6 @@ const SliderInput: React.FC<SliderInputProps> = memo(({ id, label, value, onChan
   );
 });
 
+SliderInput.displayName = 'SliderInput';
+
 export default SliderInput;

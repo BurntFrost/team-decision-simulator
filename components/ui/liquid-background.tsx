@@ -51,8 +51,8 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
     };
   }, [isMounted]);
   const gradientVariants = {
-    primary: "from-blue-400/20 via-purple-500/15 to-indigo-600/20",
-    secondary: "from-pink-400/20 via-rose-500/15 to-red-500/20", 
+    primary: "from-blue-300/12 via-blue-400/8 to-cyan-300/10",
+    secondary: "from-pink-400/20 via-rose-500/15 to-red-500/20",
     accent: "from-cyan-400/20 via-blue-500/15 to-teal-600/20",
     warm: "from-orange-400/20 via-pink-500/15 to-yellow-500/20",
     cool: "from-green-400/20 via-blue-500/15 to-purple-600/20",
@@ -138,7 +138,7 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
         <div
           className={cn(
             "absolute -top-20 -right-20 w-[120vw] h-[80vh] gpu-accelerated smooth-60fps",
-            "bg-gradient-to-bl from-blue-400/15 via-purple-500/12 to-transparent",
+            "bg-gradient-to-bl from-blue-300/10 via-cyan-200/6 to-transparent",
             "backdrop-blur-3xl border-l border-b border-white/10",
             "transform rotate-12 origin-top-right",
             animated && "animate-liquid-glass-flow",
@@ -158,7 +158,7 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
         <div
           className={cn(
             "absolute -bottom-20 -left-20 w-[100vw] h-[70vh] gpu-accelerated smooth-60fps",
-            "bg-gradient-to-tr from-purple-400/12 via-blue-500/10 to-transparent",
+            "bg-gradient-to-tr from-blue-200/8 via-blue-300/6 to-transparent",
             "backdrop-blur-2xl border-r border-t border-white/8",
             "transform -rotate-8 origin-bottom-left",
             animated && "animate-liquid-glass-flow-reverse",
@@ -179,7 +179,7 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
         <div
           className={cn(
             "absolute top-1/4 left-1/3 w-[60vw] h-[50vh] gpu-accelerated smooth-60fps",
-            "bg-gradient-to-br from-cyan-400/8 via-indigo-500/6 to-transparent",
+            "bg-gradient-to-br from-cyan-300/6 via-blue-200/4 to-transparent",
             "backdrop-blur-xl border border-white/5",
             "transform rotate-3 origin-center",
             animated && "animate-liquid-glass-pulse",
@@ -240,9 +240,9 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
             {/* Gradient definition for neural connections */}
             <defs>
               <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.6" />
-                <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
+                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4" />
+                <stop offset="50%" stopColor="#60a5fa" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.4" />
               </linearGradient>
             </defs>
           </svg>
@@ -252,7 +252,7 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
             <div
               key={node.id}
               className={cn(
-                "absolute rounded-full bg-gradient-to-r from-blue-400/60 to-purple-500/60 gpu-accelerated",
+                "absolute rounded-full bg-gradient-to-r from-blue-300/40 to-blue-400/45 gpu-accelerated",
                 "border border-white/30 backdrop-blur-sm optimized-blur",
                 animated && "animate-pulse smooth-60fps",
                 isInteracting && "scale-125 shadow-lg shadow-blue-500/25"
@@ -298,7 +298,7 @@ const LiquidBackground: React.FC<LiquidBackgroundProps> = ({
               <div
                 key={particleId}
                 className={cn(
-                  "absolute rounded-full bg-gradient-to-r from-blue-400/30 to-purple-500/30",
+                  "absolute rounded-full bg-gradient-to-r from-blue-300/25 to-cyan-300/25",
                   "border border-white/20 backdrop-blur-sm",
                   animated && "animate-pulse",
                   isInteracting && "scale-150 opacity-80"

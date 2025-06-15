@@ -211,7 +211,7 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           {/* Liquid glass container */}
           <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl group-hover:shadow-4xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-1 gpu-accelerated liquid-glass-optimized touch-responsive hover-optimized">
             {/* Liquid morphing background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 via-purple-500/30 to-cyan-400/30 rounded-2xl blur-sm opacity-60 group-hover:opacity-90 transition-opacity duration-500 animate-liquid-flow"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-300/25 via-cyan-300/25 to-blue-400/25 rounded-2xl blur-sm opacity-50 group-hover:opacity-80 transition-opacity duration-500 animate-liquid-flow"></div>
 
             {/* Shimmer effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 animate-glass-shimmer rounded-2xl"></div>

@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-blue-500 via-blue-600 to-purple-600 text-white shadow-lg hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 rounded-2xl backdrop-blur-sm border border-white/30 before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:via-transparent before:to-white/20 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500",
+          "bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-600 text-white shadow-lg hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 rounded-2xl backdrop-blur-sm border border-white/30 before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:via-transparent before:to-white/20 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500",
         destructive:
           "bg-gradient-to-r from-red-500 via-red-600 to-pink-600 text-white shadow-lg hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 rounded-2xl backdrop-blur-sm border border-white/30 before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:via-transparent before:to-white/20 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500",
         outline:
@@ -23,7 +23,7 @@ const buttonVariants = cva(
         glass:
           "bg-white/15 backdrop-blur-xl text-white border border-white/40 hover:bg-white/25 hover:scale-[1.03] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 rounded-2xl shadow-xl hover:shadow-2xl before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:via-transparent before:to-white/10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500",
         liquid:
-          "bg-gradient-to-br from-blue-400/80 via-purple-500/80 to-cyan-400/80 backdrop-blur-xl text-white border border-white/50 hover:from-blue-500/90 hover:via-purple-600/90 hover:to-cyan-500/90 hover:scale-[1.05] hover:-translate-y-1 active:scale-[0.95] active:translate-y-0 rounded-3xl shadow-2xl hover:shadow-4xl animate-glass-breathing before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/30 before:via-transparent before:to-white/30 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-700 after:absolute after:inset-0 after:bg-gradient-to-br after:from-transparent after:via-white/10 after:to-transparent after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-500",
+          "bg-gradient-to-br from-blue-400/80 via-cyan-400/80 to-blue-500/80 backdrop-blur-xl text-white border border-white/50 hover:from-blue-500/90 hover:via-cyan-500/90 hover:to-blue-600/90 hover:scale-[1.05] hover:-translate-y-1 active:scale-[0.95] active:translate-y-0 rounded-3xl shadow-2xl hover:shadow-4xl animate-glass-breathing before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/30 before:via-transparent before:to-white/30 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-700 after:absolute after:inset-0 after:bg-gradient-to-br after:from-transparent after:via-white/10 after:to-transparent after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-500",
       },
       size: {
         default: "h-12 px-6 py-3 has-[>svg]:px-4 text-sm font-medium",

@@ -51,7 +51,7 @@ function Card({
 
       {/* Interactive glow effect */}
       {isHovered && variant === "interactive" && (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-500/10 to-cyan-400/10 pointer-events-none transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-300/8 via-cyan-300/8 to-blue-400/8 pointer-events-none transition-opacity duration-300" />
       )}
 
       {/* Multiple border highlights for depth */}

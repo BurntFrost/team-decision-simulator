@@ -130,7 +130,7 @@ const GlassContainer = React.forwardRef<HTMLDivElement, GlassContainerProps>(
 
         {/* Border glow effect */}
         {borderGlow && (
-          <div className="absolute inset-0 rounded-inherit bg-gradient-to-r from-blue-400/20 via-purple-500/20 to-cyan-400/20 blur-sm opacity-50 pointer-events-none" />
+          <div className="absolute inset-0 rounded-inherit bg-gradient-to-r from-blue-300/15 via-cyan-300/12 to-blue-200/15 blur-sm opacity-40 pointer-events-none" />
         )}
 
         {/* Main content */}

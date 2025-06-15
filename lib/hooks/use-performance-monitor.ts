@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 interface PerformanceMetrics {
   fps: number;
@@ -24,7 +24,7 @@ const DEFAULT_CONFIG: PerformanceConfig = {
 };
 
 export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) => {
-  const finalConfig = { ...DEFAULT_CONFIG, ...config };
+  const finalConfig = useMemo(() => ({ ...DEFAULT_CONFIG, ...config }), [config]);
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     fps: 60,
     frameTime: 16.67,
@@ -34,13 +34,11 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
 
   const frameCountRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
-  const animationIdRef = useRef<number>();
-  const measurementTimerRef = useRef<NodeJS.Timeout>();
+  const animationIdRef = useRef<number | undefined>(undefined);
+  const measurementTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const measureFrame = useCallback(() => {
-    const currentTime = performance.now();
     frameCountRef.current++;
-
     animationIdRef.current = requestAnimationFrame(measureFrame);
   }, []);
 
@@ -143,7 +141,7 @@ export const usePerformanceMonitor = (config: Partial<PerformanceConfig> = {}) =
 // Throttled animation frame hook for performance-conscious animations
 export const useThrottledAnimationFrame = (callback: (deltaTime: number) => void, fps: number = 60) => {
   const callbackRef = useRef(callback);
-  const frameIdRef = useRef<number>();
+  const frameIdRef = useRef<number | undefined>(undefined);
   const lastTimeRef = useRef(0);
   const intervalRef = useRef(1000 / fps);
 

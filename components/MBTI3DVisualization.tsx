@@ -621,12 +621,10 @@ const MBTI3DVisualization: React.FC<MBTI3DVisualizationProps> = React.memo(({
         performance={{ min: 0.5 }}
       >
         <Suspense fallback={
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-              <p className="text-sm text-subtle-glass">Loading 3D visualization...</p>
-            </div>
-          </div>
+          <mesh position={[0, 0, 0]}>
+            <boxGeometry args={[0.5, 0.5, 0.5]} />
+            <meshBasicMaterial color="#3b82f6" opacity={0.6} transparent />
+          </mesh>
         }>
           <Scene3D
             archetypes={archetypes}

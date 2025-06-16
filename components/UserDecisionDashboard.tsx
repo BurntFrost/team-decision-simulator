@@ -1499,11 +1499,7 @@ const Charts = dynamic(() => import("@/components/UserDecisionCharts"), {
   ),
 });
 
-// Lazy load performance monitor only in development
-const PerformanceMonitor = dynamic(() => import("@/components/PerformanceMonitor"), {
-  ssr: false,
-  loading: () => null,
-});
+
 
 // Enhanced Tabs Component
 export const StyledTabs: React.FC<{ children: React.ReactNode }> = ({
@@ -2482,10 +2478,7 @@ export default function UserDecisionDashboard() {
 
   return (
     <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
-      {/* Performance Monitor (development only) */}
-      {process.env.NODE_ENV === 'development' && (
-        <PerformanceMonitor enabled={true} />
-      )}
+
 
       {/* Enhanced Neural Network Background */}
       <LiquidBackground
@@ -2740,13 +2733,22 @@ export default function UserDecisionDashboard() {
                   className="p-4 sm:p-6 gpu-accelerated"
                 >
                   <div className="space-y-4">
-                    <div className="mb-4">
-                      <h2 className="text-lg sm:text-xl font-semibold text-glass-effect mb-3 tracking-tight">
-                        Adjust Decision Factors
-                      </h2>
-                      <p className="text-sm text-subtle-glass leading-relaxed">
-                        Move the sliders to adjust how much each factor influences your decision-making process.
-                      </p>
+                    <div className="mb-6 space-y-4">
+                      <div className="text-center space-y-3">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-liquid-gradient tracking-tight leading-tight">
+                          Adjust Decision Factors
+                        </h2>
+                        <p className="text-enhanced-contrast max-w-2xl mx-auto leading-relaxed">
+                          Fine-tune the six key factors that influence decision-making. Each slider represents a different cognitive dimension that affects how personalities approach complex choices.
+                        </p>
+                      </div>
+
+                      {/* Enhanced visual separator */}
+                      <div className="flex items-center justify-center space-x-4 py-2">
+                        <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent flex-1 max-w-20"></div>
+                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 animate-pulse"></div>
+                        <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent flex-1 max-w-20"></div>
+                      </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {Object.keys(inputs).map((key) => (
@@ -2772,17 +2774,26 @@ export default function UserDecisionDashboard() {
                   </div>
                 </GlassContainer>
 
-                  <div className="flex justify-center sm:justify-end mt-6">
-                    <Button
-                      onClick={() => {
-                        handleSimulate();
-                      }}
-                      variant="liquid"
-                      size="lg"
-                      className="w-full sm:w-auto hover-liquid gpu-accelerated touch-responsive hover-optimized"
-                    >
-                      Run Simulation
-                    </Button>
+                  <div className="flex justify-center mt-8">
+                    <div className="relative group">
+                      {/* Enhanced glow effect */}
+                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-700 animate-pulse"></div>
+
+                      <Button
+                        onClick={() => {
+                          handleSimulate();
+                        }}
+                        variant="liquid"
+                        size="xl"
+                        className="relative w-full sm:w-auto min-w-[200px] hover-liquid gpu-accelerated touch-responsive hover-optimized font-bold text-lg shadow-liquid"
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse"></span>
+                          Run Simulation
+                          <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse animation-delay-300"></span>
+                        </span>
+                      </Button>
+                    </div>
                   </div>
                 </TabsContent>
 
@@ -2799,10 +2810,16 @@ export default function UserDecisionDashboard() {
                         <TabsTrigger value="houses" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Houses</TabsTrigger>
                       </TabsList>
                       <TabsContent value="analysis" className="space-y-6">
-                      <div className="bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white p-4 sm:p-6 rounded-2xl shadow-lg">
-                        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-white drop-shadow-lg tracking-tight">
-                          Decision Analysis
-                        </h2>
+                      <div className="bg-gradient-to-br from-blue-500/90 via-purple-600/90 to-cyan-500/90 backdrop-blur-xl text-white p-6 sm:p-8 rounded-3xl shadow-liquid border border-white/20 relative overflow-hidden">
+                        {/* Enhanced background effects */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 pointer-events-none"></div>
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-white/20 to-transparent rounded-full blur-2xl"></div>
+
+                        <div className="relative z-10">
+                          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-white drop-shadow-lg tracking-tight leading-tight">
+                            Decision Analysis
+                          </h2>
+                        </div>
                           {userResult && (
                             <div className="mb-4 text-sm">
                               <span>Your ({userMBTI}) decision:</span>
@@ -2971,15 +2988,28 @@ export default function UserDecisionDashboard() {
                   <div className="absolute bottom-20 left-20 w-[150px] h-[150px] bg-gradient-to-tr from-indigo-500 to-cyan-500 rounded-full blur-2xl"></div>
                 </div>
 
-                {/* Section Header */}
-                <div className="text-center space-y-3 relative z-10">
-                  <h2 className="text-2xl font-bold text-liquid-gradient drop-shadow-lg tracking-tight">
-                    MBTI Personality Types
-                  </h2>
-                  <p className="text-enhanced-contrast max-w-2xl mx-auto leading-relaxed">
-                    Explore the 16 personality types and their unique decision-making approaches.
-                    Each type brings distinct cognitive preferences and scientific insights to complex decisions.
-                  </p>
+                {/* Enhanced Section Header */}
+                <div className="text-center space-y-6 relative z-10">
+                  <div className="space-y-4">
+                    <h2 className="text-3xl sm:text-4xl font-bold text-liquid-gradient drop-shadow-lg tracking-tight leading-tight">
+                      MBTI Personality Types
+                    </h2>
+                    <p className="text-enhanced-contrast max-w-3xl mx-auto leading-relaxed text-lg">
+                      Explore the 16 personality types and their unique decision-making approaches.
+                      Each type brings distinct cognitive preferences and scientific insights to complex decisions.
+                    </p>
+                  </div>
+
+                  {/* Enhanced visual separator */}
+                  <div className="flex items-center justify-center space-x-6 py-4">
+                    <div className="h-px bg-gradient-to-r from-transparent via-blue-300/40 to-transparent flex-1 max-w-32"></div>
+                    <div className="flex space-x-2">
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 animate-pulse"></div>
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 animate-pulse animation-delay-150"></div>
+                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-400 animate-pulse animation-delay-300"></div>
+                    </div>
+                    <div className="h-px bg-gradient-to-r from-transparent via-purple-300/40 to-transparent flex-1 max-w-32"></div>
+                  </div>
                 </div>
 
                   <div className="space-y-6">

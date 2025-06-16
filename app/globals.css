@@ -1284,6 +1284,124 @@ button:active {
       color: #000;
     }
   }
+
+  /* Enhanced Mobile Responsiveness */
+  @media (max-width: 640px) {
+    .liquid-glass-optimized {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .shadow-liquid {
+      box-shadow: 0 8px 25px -5px rgba(59, 130, 246, 0.08),
+                  0 16px 32px -8px rgba(139, 92, 246, 0.08);
+    }
+
+    .text-liquid-gradient {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+    }
+
+    /* Optimized touch targets */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Reduced motion on mobile for better performance */
+    .animate-liquid-morph,
+    .animate-organic-float {
+      animation-duration: 8s;
+    }
+  }
+
+  /* Tablet optimizations */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .shadow-liquid {
+      box-shadow: 0 12px 30px -8px rgba(59, 130, 246, 0.12),
+                  0 24px 48px -12px rgba(139, 92, 246, 0.12);
+    }
+  }
+
+  /* Large screen enhancements */
+  @media (min-width: 1440px) {
+    .shadow-liquid {
+      box-shadow: 0 16px 40px -8px rgba(59, 130, 246, 0.15),
+                  0 32px 64px -16px rgba(139, 92, 246, 0.15),
+                  0 48px 96px -24px rgba(6, 182, 212, 0.1);
+    }
+
+    .text-liquid-gradient {
+      font-size: clamp(2rem, 3vw, 3rem);
+    }
+  }
+
+  /* Ultra-wide screen optimizations */
+  @media (min-width: 1920px) {
+    .container-ultra-wide {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Enhanced Accessibility */
+  .focus-ring-liquid {
+    outline: 3px solid rgba(59, 130, 246, 0.6);
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+
+  .focus-ring-liquid:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.8);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
+  }
+
+  /* High contrast focus states */
+  @media (prefers-contrast: high) {
+    .focus-ring-liquid:focus-visible {
+      outline: 4px solid #000;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  /* Keyboard navigation enhancements */
+  .keyboard-nav:focus-visible {
+    transform: scale(1.02);
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Screen reader improvements */
+  .sr-only-enhanced {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: rgba(59, 130, 246, 0.95);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 1000;
+    transition: top 0.3s ease;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+  }
 }
 
 

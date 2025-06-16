@@ -3,7 +3,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends React.ComponentProps<"div"> {
-  variant?: "default" | "glass" | "floating" | "premium" | "interactive";
+  variant?: "default" | "glass" | "floating" | "premium" | "interactive" | "liquid" | "elevated";
   animated?: boolean;
   shimmer?: boolean;
 }
@@ -23,6 +23,8 @@ function Card({
     floating: "bg-white/10 backdrop-blur-xl border border-white/25 shadow-2xl hover:shadow-4xl transform-gpu hover:-translate-y-1 hover:scale-[1.02]",
     premium: "bg-gradient-to-br from-white/15 via-white/10 to-white/8 backdrop-blur-2xl border border-white/40 shadow-3xl",
     interactive: "bg-white/8 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-white/15 hover:border-white/35 hover:shadow-4xl cursor-pointer transform-gpu hover:-translate-y-0.5 hover:scale-[1.01] active:scale-[0.99] active:translate-y-0",
+    liquid: "bg-gradient-to-br from-white/20 via-white/12 to-white/20 backdrop-blur-3xl border border-white/40 shadow-liquid hover:shadow-5xl transform-gpu hover:-translate-y-1 hover:scale-[1.02] transition-all duration-700 gpu-accelerated smooth-60fps",
+    elevated: "bg-gradient-to-br from-white/25 via-white/15 to-white/25 backdrop-blur-xl border border-white/50 shadow-4xl hover:shadow-5xl hover:scale-[1.01] hover:-translate-y-1 transition-all duration-500 gpu-accelerated smooth-60fps"
   };
 
   return (

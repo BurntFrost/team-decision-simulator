@@ -739,30 +739,7 @@ const franchiseCategories = [
   "DC"
 ];
 
-// Memoized helper function to get current character for display
-const getCurrentCharacterForFranchise = useCallback((
-  mbtiType: string,
-  franchise: string,
-  characterIndices: Record<string, Record<string, number>>
-): { name: string; franchise: string } => {
-  const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
-  if (pool.length === 0) return { name: "Unknown", franchise };
 
-  const currentIndex = characterIndices[mbtiType]?.[franchise] || 0;
-  const characterName = pool[currentIndex % pool.length];
-
-  return { name: characterName, franchise };
-}, []);
-
-// Memoized helper function to get all current characters for an MBTI type
-const getCurrentCharactersForMBTI = useCallback((
-  mbtiType: string,
-  characterIndices: Record<string, Record<string, number>>
-): Array<{ name: string; franchise: string }> => {
-  return franchiseCategories.map(franchise =>
-    getCurrentCharacterForFranchise(mbtiType, franchise, characterIndices)
-  );
-}, [getCurrentCharacterForFranchise]);
 
 // Office Departments mapping for MBTI types
 const officeDepartmentsByMBTI: Record<
@@ -1072,33 +1049,7 @@ const mbtiImageSeeds: Record<string, string> = {
   ESFP: "performer",
 };
 
-// Memoized MBTI image generation
-const getMBTIImage = useMemo(() => {
-  const imageCache: Record<string, string> = {};
-  return (mbtiType: string): string => {
-    if (!imageCache[mbtiType]) {
-      const seed = mbtiImageSeeds[mbtiType] || mbtiType.toLowerCase();
-      imageCache[mbtiType] = `https://picsum.photos/seed/${seed}/100/100`;
-    }
-    return imageCache[mbtiType];
-  };
-}, []);
 
-// Helper function to get franchise colors
-const getFranchiseColors = (franchise: string): { backgroundColor: string; color: string } => {
-  switch (franchise) {
-    case "The Office":
-      return { backgroundColor: "#e3f2fd", color: "#1976d2" };
-    case "Harry Potter":
-      return { backgroundColor: "#f3e5f5", color: "#7b1fa2" };
-    case "Marvel":
-      return { backgroundColor: "#ffebee", color: "#c62828" };
-    case "DC":
-      return { backgroundColor: "#e8f5e8", color: "#2e7d32" };
-    default:
-      return { backgroundColor: "#f5f5f5", color: "#666666" };
-  }
-};
 
 // Enhanced Personality Card Component with Liquid Glass Design
 interface EnhancedPersonalityCardProps {
@@ -2388,6 +2339,59 @@ export default function UserDecisionDashboard() {
     });
     return map;
   }, [mbtiTypes]);
+
+  // Memoized helper function to get current character for display
+  const getCurrentCharacterForFranchise = useCallback((
+    mbtiType: string,
+    franchise: string,
+    characterIndices: Record<string, Record<string, number>>
+  ): { name: string; franchise: string } => {
+    const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
+    if (pool.length === 0) return { name: "Unknown", franchise };
+
+    const currentIndex = characterIndices[mbtiType]?.[franchise] || 0;
+    const characterName = pool[currentIndex % pool.length];
+
+    return { name: characterName, franchise };
+  }, []);
+
+  // Memoized helper function to get all current characters for an MBTI type
+  const getCurrentCharactersForMBTI = useCallback((
+    mbtiType: string,
+    characterIndices: Record<string, Record<string, number>>
+  ): Array<{ name: string; franchise: string }> => {
+    return franchiseCategories.map(franchise =>
+      getCurrentCharacterForFranchise(mbtiType, franchise, characterIndices)
+    );
+  }, [getCurrentCharacterForFranchise]);
+
+  // Memoized MBTI image generation
+  const getMBTIImage = useMemo(() => {
+    const imageCache: Record<string, string> = {};
+    return (mbtiType: string): string => {
+      if (!imageCache[mbtiType]) {
+        const seed = mbtiImageSeeds[mbtiType] || mbtiType.toLowerCase();
+        imageCache[mbtiType] = `https://picsum.photos/seed/${seed}/100/100`;
+      }
+      return imageCache[mbtiType];
+    };
+  }, []);
+
+  // Memoized helper function to get franchise colors
+  const getFranchiseColors = useCallback((franchise: string): { backgroundColor: string; color: string } => {
+    switch (franchise) {
+      case "The Office":
+        return { backgroundColor: "#e3f2fd", color: "#1976d2" };
+      case "Harry Potter":
+        return { backgroundColor: "#f3e5f5", color: "#7b1fa2" };
+      case "Marvel":
+        return { backgroundColor: "#ffebee", color: "#c62828" };
+      case "DC":
+        return { backgroundColor: "#e8f5e8", color: "#2e7d32" };
+      default:
+        return { backgroundColor: "#f5f5f5", color: "#666666" };
+    }
+  }, []);
 
 
 

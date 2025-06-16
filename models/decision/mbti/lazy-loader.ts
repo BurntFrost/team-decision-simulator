@@ -1,5 +1,5 @@
 import { BaseMBTIType } from "./base";
-import { MBTIType } from "../types";
+import { MBTIType } from "./index";
 
 // Lazy loading map for MBTI types to reduce initial bundle size
 const lazyMBTITypes: Record<MBTIType, () => Promise<{ default: new () => BaseMBTIType }>> = {

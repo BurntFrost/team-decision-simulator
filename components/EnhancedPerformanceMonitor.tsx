@@ -53,49 +53,6 @@ export const EnhancedPerformanceMonitor: React.FC<EnhancedPerformanceMonitorProp
   // Use existing performance monitor hook
   const baseMetrics = usePerformanceMonitor(enabled);
 
-  // Enhanced metrics collection
-  const measurePerformance = useCallback(() => {
-    if (!enabled) return;
-
-    const currentTime = performance.now();
-    frameCountRef.current++;
-
-    // Calculate FPS every second
-    if (currentTime - lastTimeRef.current >= 1000) {
-      const fps = Math.round((frameCountRef.current * 1000) / (currentTime - lastTimeRef.current));
-      
-      // Get memory usage if available
-      const memory = (performance as any).memory;
-      const memoryUsage = memory ? Math.round(memory.usedJSHeapSize / 1024 / 1024) : 0;
-
-      // Measure bundle size (approximate)
-      const bundleSize = memory ? Math.round(memory.totalJSHeapSize / 1024 / 1024) : 0;
-
-      // Measure Types tab specific metrics
-      const typesTabMetrics = measureTypesTabMetrics();
-
-      const newMetrics: PerformanceMetrics = {
-        fps,
-        memoryUsage,
-        renderTime: Math.round(currentTime - lastTimeRef.current),
-        interactionLatency: interactionStartRef.current > 0 
-          ? Math.round(currentTime - interactionStartRef.current) 
-          : 0,
-        bundleSize,
-        typesTabMetrics,
-      };
-
-      setMetrics(newMetrics);
-      checkPerformanceIssues(newMetrics);
-
-      frameCountRef.current = 0;
-      lastTimeRef.current = currentTime;
-      interactionStartRef.current = 0;
-    }
-
-    requestAnimationFrame(measurePerformance);
-  }, [enabled]);
-
   // Measure Types tab specific metrics
   const measureTypesTabMetrics = useCallback(() => {
     const personalityCards = document.querySelectorAll('[data-personality-card]');
@@ -140,6 +97,49 @@ export const EnhancedPerformanceMonitor: React.FC<EnhancedPerformanceMonitorProp
       onPerformanceIssue(issues.join(', '), metrics);
     }
   }, [onPerformanceIssue]);
+
+  // Enhanced metrics collection
+  const measurePerformance = useCallback(() => {
+    if (!enabled) return;
+
+    const currentTime = performance.now();
+    frameCountRef.current++;
+
+    // Calculate FPS every second
+    if (currentTime - lastTimeRef.current >= 1000) {
+      const fps = Math.round((frameCountRef.current * 1000) / (currentTime - lastTimeRef.current));
+      
+      // Get memory usage if available
+      const memory = (performance as any).memory;
+      const memoryUsage = memory ? Math.round(memory.usedJSHeapSize / 1024 / 1024) : 0;
+
+      // Measure bundle size (approximate)
+      const bundleSize = memory ? Math.round(memory.totalJSHeapSize / 1024 / 1024) : 0;
+
+      // Measure Types tab specific metrics
+      const typesTabMetrics = measureTypesTabMetrics();
+
+      const newMetrics: PerformanceMetrics = {
+        fps,
+        memoryUsage,
+        renderTime: Math.round(currentTime - lastTimeRef.current),
+        interactionLatency: interactionStartRef.current > 0 
+          ? Math.round(currentTime - interactionStartRef.current) 
+          : 0,
+        bundleSize,
+        typesTabMetrics,
+      };
+
+      setMetrics(newMetrics);
+      checkPerformanceIssues(newMetrics);
+
+      frameCountRef.current = 0;
+      lastTimeRef.current = currentTime;
+      interactionStartRef.current = 0;
+    }
+
+    requestAnimationFrame(measurePerformance);
+  }, [enabled, checkPerformanceIssues, measureTypesTabMetrics]);
 
   // Track interaction start times
   useEffect(() => {

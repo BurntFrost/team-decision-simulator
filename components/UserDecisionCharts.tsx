@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
   BarChart,
   Bar,
@@ -875,13 +875,14 @@ const UserDecisionCharts: React.FC<Props> = ({
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  const handleMouseEnter = (type: string) => {
+  // Memoized event handlers to prevent unnecessary re-renders
+  const handleMouseEnter = useCallback((type: string) => {
     setHoveredType(type);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setHoveredType(null);
-  };
+  }, []);
 
 
 
@@ -894,55 +895,59 @@ const UserDecisionCharts: React.FC<Props> = ({
     }
   }, [selectedFactor]);
 
-  // Generate data for visualizations
-  const quadrantData = generateQuadrantData(results);
-  const decisionFlowData = generateDecisionFlowData(
+  // Memoized data generation for visualizations to prevent expensive recalculations
+  const quadrantData = useMemo(() => generateQuadrantData(results), [results]);
+
+  const decisionFlowData = useMemo(() => generateDecisionFlowData(
     archetypes,
     results,
     mbtiDescriptions,
     inputs
-  );
-  const heatMapData = generateHeatMapData(archetypes, inputs);
-  const enhancedRadarData = publicWeights
+  ), [archetypes, results, mbtiDescriptions, inputs]);
+
+  const heatMapData = useMemo(() => generateHeatMapData(archetypes, inputs), [archetypes, inputs]);
+
+  const enhancedRadarData = useMemo(() => publicWeights
     ? addPublicDataToRadar(radarData, publicWeights)
-    : radarData;
+    : radarData, [radarData, publicWeights]);
 
-  // Find most similar MBTI type to public opinion
-  const similarMBTIType = publicWeights
+  // Memoized similar MBTI type calculation
+  const similarMBTIType = useMemo(() => publicWeights
     ? findMostSimilarMBTIType(publicWeights, archetypes, mbtiDescriptions)
-    : { type: "", similarity: 0, description: "", color: "" };
+    : { type: "", similarity: 0, description: "", color: "" }, [publicWeights, archetypes, mbtiDescriptions]);
 
-  // Add public opinion to quadrant data if available
-  const enhancedQuadrantData = [...quadrantData];
-  if (publicResult) {
-    // Calculate decisiveness based on probabilities
-    const proceedProb = publicResult.probabilities["Proceed Strategically"];
-    const decisiveness = 30 + proceedProb * 70; // Scale from 30-100
+  // Memoized enhanced quadrant data with public opinion
+  const enhancedQuadrantData = useMemo(() => {
+    const data = [...quadrantData];
+    if (publicResult) {
+      // Calculate decisiveness based on probabilities
+      const proceedProb = publicResult.probabilities["Proceed Strategically"];
+      const decisiveness = 30 + proceedProb * 70; // Scale from 30-100
 
-    enhancedQuadrantData.push({
-      name: "Public",
-      decisiveness,
-      confidence: publicResult.score * 100,
-      decision: publicResult.mostLikely,
-      color: publicResult.color,
-      size: 1000, // Make public opinion marker larger
-    });
-  }
+      data.push({
+        name: "Public",
+        decisiveness,
+        confidence: publicResult.score * 100,
+        decision: publicResult.mostLikely,
+        color: publicResult.color,
+        size: 1000, // Make public opinion marker larger
+      });
+    }
+    return data;
+  }, [quadrantData, publicResult]);
 
-
-
-  // Extract factor names for heat map
-  const factorNames = inputs
+  // Memoized factor names for heat map
+  const factorNames = useMemo(() => inputs
     ? Object.keys(inputs).map((key) =>
         key
           .split("_")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ")
       )
-    : [];
+    : [], [inputs]);
 
-  // Helper function to determine if a link should be highlighted
-  const shouldHighlightLink = (link: SankeyLink) => {
+  // Memoized helper function to determine if a link should be highlighted
+  const shouldHighlightLink = useCallback((link: SankeyLink) => {
     if (!hoveredType) return true;
 
     // Get the source and target node indices
@@ -951,7 +956,7 @@ const UserDecisionCharts: React.FC<Props> = ({
 
     // Check if the link is connected to the hovered MBTI type
     return sourceNode.name === hoveredType || targetNode.name === hoveredType;
-  };
+  }, [hoveredType, decisionFlowData.nodes]);
 
   // Show loading state until component is mounted
   if (!isMounted) {

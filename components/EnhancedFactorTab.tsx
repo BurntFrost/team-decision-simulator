@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { FactorKey } from '@/models/decision/types';
 import { factorInfo } from '@/models/decision/constants';
 
@@ -27,22 +27,8 @@ const EnhancedFactorTab: React.FC<Props> = ({
 }) => {
   const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return (
-      <div className="w-full h-[300px] flex items-center justify-center text-[#4455a6]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4455a6] mx-auto mb-2"></div>
-          <p className="text-sm">Loading enhanced factor analysis...</p>
-        </div>
-      </div>
-    );
-  }
-  // Factor categories for better organization
-  const factorCategories = {
+  // Memoized factor categories for better organization
+  const factorCategories = useMemo(() => ({
     cognitive: [
       { key: 'data_quality', displayName: 'Data Quality' },
       { key: 'roi_visibility', displayName: 'Roi Visibility' }
@@ -55,15 +41,20 @@ const EnhancedFactorTab: React.FC<Props> = ({
       { key: 'social_complexity', displayName: 'Social Complexity' },
       { key: 'psychological_safety', displayName: 'Psychological Safety' }
     ]
-  };
+  }), []);
 
-  const renderFactorCard = (factorKey: string, displayName: string, categoryColor: string, categoryIcon: string) => {
+  // Memoized function to get top personalities for a factor
+  const getTopPersonalities = useCallback((displayName: string) => {
+    const sortedData = [...heatMapData].sort((a, b) => Math.abs((b[displayName] as number)) - Math.abs((a[displayName] as number)));
+    return sortedData.slice(0, 3);
+  }, [heatMapData]);
+
+  const renderFactorCard = useCallback((factorKey: string, displayName: string, categoryColor: string, categoryIcon: string) => {
     const factorData = factorInfo[factorKey as FactorKey];
     const currentValue = inputs[factorKey as FactorKey];
-    
+
     // Get top 3 personalities most influenced by this factor
-    const sortedData = [...heatMapData].sort((a, b) => Math.abs((b[displayName] as number)) - Math.abs((a[displayName] as number)));
-    const topPersonalities = sortedData.slice(0, 3);
+    const topPersonalities = getTopPersonalities(displayName);
 
     return (
       <div key={factorKey} className="p-4 bg-gray-50 rounded-lg">
@@ -136,7 +127,22 @@ const EnhancedFactorTab: React.FC<Props> = ({
         </div>
       </div>
     );
-  };
+  }, [inputs, getTopPersonalities, mbtiDescriptions, handleMouseEnter, handleMouseLeave]);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="w-full h-[300px] flex items-center justify-center text-[#4455a6]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4455a6] mx-auto mb-2"></div>
+          <p className="text-sm">Loading enhanced factor analysis...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

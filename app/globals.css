@@ -1037,6 +1037,100 @@ button:active {
     transform: translateZ(0);
   }
 
+  /* High-quality purple glow effects for brain icons */
+  .purple-glow-primary {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, rgba(168, 85, 247, 0.3) 50%, rgba(124, 58, 237, 0.2) 100%);
+    filter: blur(20px);
+    transform: translateZ(0);
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .purple-glow-secondary {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(168, 85, 247, 0.15) 70%, transparent 100%);
+    filter: blur(12px);
+    transform: translateZ(0);
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  /* Smooth anti-aliased blur for high-DPI displays */
+  .smooth-blur {
+    filter: blur(16px);
+    transform: translateZ(0) scale(1.001);
+    will-change: filter, transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* GPU-accelerated glow animation */
+  .animate-smooth-glow {
+    animation: smoothGlow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes smoothGlow {
+    0%, 100% {
+      opacity: 0.6;
+      transform: translateZ(0) scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: translateZ(0) scale(1.05);
+    }
+  }
+
+  /* High-DPI display optimizations */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .purple-glow-primary {
+      filter: blur(18px);
+    }
+
+    .purple-glow-secondary {
+      filter: blur(10px);
+    }
+
+    .smooth-blur {
+      filter: blur(14px);
+    }
+  }
+
+  /* Reduced motion accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-smooth-glow {
+      animation: none;
+    }
+
+    .purple-glow-primary,
+    .purple-glow-secondary {
+      opacity: 0.6 !important;
+    }
+  }
+
+  /* Performance optimization for older devices */
+  @media (max-width: 768px) {
+    .purple-glow-primary {
+      filter: blur(16px);
+    }
+
+    .purple-glow-secondary {
+      filter: blur(8px);
+    }
+  }
+
+  /* Subtle hover scale effects */
+  .group-hover\:scale-102:hover {
+    transform: scale(1.02);
+  }
+
+  .group-hover\:scale-103:hover {
+    transform: scale(1.03);
+  }
+
   /* Responsive Animation Controls */
   @media (prefers-reduced-motion: reduce) {
     .animate-liquid-morph,

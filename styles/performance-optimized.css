@@ -1,0 +1,198 @@
+/* Performance-optimized CSS for MBTI Types page */
+
+/* GPU acceleration for better performance */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.hover-optimized {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.touch-responsive {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Optimized liquid glass effects */
+.liquid-glass-optimized {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .gpu-accelerated,
+  .hover-optimized {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .animate-pulse {
+    animation: none !important;
+  }
+}
+
+/* Performance-optimized hover states */
+.personality-card {
+  transform: translateZ(0);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.personality-card:hover {
+  transform: translateZ(0) scale(1.01) translateY(-2px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Optimized character button animations */
+.character-button {
+  transform: translateZ(0);
+  transition: transform 0.1s ease-out, background-color 0.1s ease-out;
+}
+
+.character-button:hover {
+  transform: translateZ(0) scale(1.01);
+}
+
+.character-button:active {
+  transform: translateZ(0) scale(0.98);
+}
+
+/* Optimized loading animations */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(255, 255, 255, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Optimized scroll performance */
+.scroll-optimized {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Container queries for responsive design */
+@container (max-width: 768px) {
+  .personality-card {
+    transform: none;
+  }
+  
+  .personality-card:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .liquid-glass-optimized {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .liquid-glass-optimized {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Performance monitoring styles */
+.performance-monitor {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+/* Optimized grid layouts */
+.personality-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  container-type: inline-size;
+}
+
+@media (min-width: 1024px) {
+  .personality-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Intersection observer loading states */
+.card-loading {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 200px;
+  border-radius: 24px;
+}
+
+/* Optimized focus states for accessibility */
+.focus-optimized:focus-visible {
+  outline: 2px solid #007aff;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Memory-efficient animations */
+.efficient-pulse {
+  animation: efficient-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes efficient-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Optimized backdrop blur for better performance */
+.backdrop-blur-optimized {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Prevent layout shifts */
+.prevent-layout-shift {
+  contain: layout style paint;
+}
+
+/* Optimized transform layers */
+.transform-layer {
+  transform: translateZ(0);
+  isolation: isolate;
+}
+
+/* Performance-first utility classes */
+.will-change-transform { will-change: transform; }
+.will-change-opacity { will-change: opacity; }
+.will-change-auto { will-change: auto; }
+
+/* Cleanup will-change after animations */
+.animation-complete {
+  will-change: auto;
+}

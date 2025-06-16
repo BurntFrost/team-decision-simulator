@@ -36,7 +36,7 @@ export type MBTIType =
   | "ESFP";
 
 export class MBTIFactory {
-  private static types: Record<MBTIType, new () => BaseMBTIType> = {
+  private static readonly types: Record<MBTIType, new () => BaseMBTIType> = {
     INTJ,
     INTP,
     ENTJ,
@@ -55,6 +55,11 @@ export class MBTIFactory {
     ESFP,
   };
 
+  // Cache for expensive computations
+  private static _archetypeProfiles: ArchetypeProfile[] | null = null;
+  private static _descriptions: Record<string, MBTIDescription> | null = null;
+  private static _allTypes: MBTIType[] | null = null;
+
   static create(type: MBTIType): BaseMBTIType {
     const TypeClass = this.types[type];
     if (!TypeClass) {
@@ -64,24 +69,34 @@ export class MBTIFactory {
   }
 
   static getAllTypes(): MBTIType[] {
-    return Object.keys(this.types) as MBTIType[];
+    this._allTypes ??= Object.keys(this.types) as MBTIType[];
+    return this._allTypes;
   }
 
   static getArchetypeProfiles(): ArchetypeProfile[] {
-    return this.getAllTypes().map((type) => {
+    this._archetypeProfiles ??= this.getAllTypes().map((type) => {
       const instance = this.create(type);
       return {
         name: instance.getName(),
         weights: instance.getWeights(),
       };
     });
+    return this._archetypeProfiles;
   }
 
   static getDescriptions(): Record<string, MBTIDescription> {
-    return this.getAllTypes().reduce((acc, type) => {
+    this._descriptions ??= this.getAllTypes().reduce((acc, type) => {
       const instance = this.create(type);
       acc[type] = instance.getDescription();
       return acc;
     }, {} as Record<string, MBTIDescription>);
+    return this._descriptions;
+  }
+
+  // Method to clear cache if needed (for testing or dynamic updates)
+  static clearCache(): void {
+    this._archetypeProfiles = null;
+    this._descriptions = null;
+    this._allTypes = null;
   }
 }

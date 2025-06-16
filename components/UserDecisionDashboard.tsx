@@ -127,8 +127,8 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           tabIndex={onClick ? 0 : undefined}
           aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
         >
-          <div className="absolute inset-0 bg-white rounded-full blur-md opacity-30 group-hover:opacity-60 transition-opacity duration-300 animate-pulse"></div>
-          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-2xl group-hover:scale-105`} />
+          <div className="absolute inset-0 bg-white rounded-full smooth-blur opacity-30 group-hover:opacity-35 transition-opacity duration-300 animate-pulse gpu-accelerated"></div>
+          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-2xl gpu-accelerated`} />
         </div>
       );
 
@@ -143,7 +143,7 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
         >
           <div className="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
           <div className="absolute inset-0 bg-white/10 rounded-full animate-ping animation-delay-75"></div>
-          <Brain className={`${baseClasses} text-white relative z-10 group-hover:scale-110 drop-shadow-lg`} />
+          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-lg`} />
         </div>
       );
 
@@ -156,9 +156,9 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           tabIndex={onClick ? 0 : undefined}
           aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg blur-sm opacity-50 group-hover:opacity-75 transition-all duration-300"></div>
-          <div className="relative z-10 p-1 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 group-hover:bg-white/20 transition-all duration-300">
-            <Brain className={`${baseClasses} text-white group-hover:scale-105`} />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg smooth-blur opacity-50 group-hover:opacity-55 transition-all duration-300 gpu-accelerated"></div>
+          <div className="relative z-10 p-1 bg-white/10 optimized-blur rounded-lg border border-white/20 group-hover:bg-white/12 transition-all duration-300 gpu-accelerated">
+            <Brain className={`${baseClasses} text-white gpu-accelerated`} />
           </div>
           <Zap className="absolute -top-1 -right-1 h-3 w-3 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
@@ -209,18 +209,18 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
         >
           {/* Liquid glass container */}
-          <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl group-hover:shadow-4xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-1 gpu-accelerated liquid-glass-optimized touch-responsive hover-optimized">
+          <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl transition-all duration-700 gpu-accelerated liquid-glass-optimized touch-responsive hover-optimized">
             {/* Liquid morphing background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-300/25 via-cyan-300/25 to-blue-400/25 rounded-2xl blur-sm opacity-50 group-hover:opacity-80 transition-opacity duration-500 animate-liquid-flow"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-300/25 via-cyan-300/25 to-blue-400/25 rounded-2xl blur-sm opacity-50 group-hover:opacity-55 transition-opacity duration-500 animate-liquid-flow"></div>
 
             {/* Shimmer effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 animate-glass-shimmer rounded-2xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-700 animate-glass-shimmer rounded-2xl"></div>
 
             {/* Brain icon */}
             <Brain
-              className={`${baseClasses} text-white relative z-10 drop-shadow-2xl group-hover:scale-105 group-hover:rotate-1 gpu-accelerated smooth-60fps`}
+              className={`${baseClasses} text-white relative z-10 drop-shadow-2xl gpu-accelerated smooth-60fps`}
               style={{
-                filter: `brightness(${1 + (isHovered ? 0.3 : 0)}) saturate(${1 + (isHovered ? 0.2 : 0)})`,
+                filter: `brightness(${1 + (isHovered ? 0.05 : 0)}) saturate(${1 + (isHovered ? 0.05 : 0)})`,
                 transform: `scale(${pulseIntensity})`,
                 willChange: 'transform, filter',
               }}
@@ -243,7 +243,7 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
         >
           {/* Neural network background */}
-          <div className="absolute -inset-6 opacity-40 group-hover:opacity-70 transition-opacity duration-500">
+          <div className="absolute -inset-6 opacity-40 group-hover:opacity-45 transition-opacity duration-500">
             {/* Neural connections */}
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
               <defs>
@@ -281,9 +281,9 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           </div>
 
           {/* Central brain container */}
-          <div className="relative p-1 bg-gradient-to-br from-white/15 via-white/10 to-white/8 backdrop-blur-lg border border-white/25 rounded-xl shadow-xl group-hover:shadow-2xl transition-all duration-500 group-hover:scale-105">
+          <div className="relative p-1 bg-gradient-to-br from-white/15 via-white/10 to-white/8 backdrop-blur-lg border border-white/25 rounded-xl shadow-xl transition-all duration-500">
             <Brain
-              className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-125`}
+              className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-105`}
               style={{
                 filter: `hue-rotate(${isHovered ? '10deg' : '0deg'}) saturate(${1 + (pulseIntensity - 1) * 0.5})`,
                 transform: `scale(${0.95 + pulseIntensity * 0.05})`,
@@ -315,18 +315,17 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
         >
           {/* Purple ripple effects */}
           <div className="absolute -inset-8 pointer-events-none">
-            <div className="absolute inset-0 bg-purple-500/20 rounded-full animate-purple-ripple opacity-0 group-hover:opacity-100"></div>
-            <div className="absolute inset-2 bg-purple-400/15 rounded-full animate-purple-ripple animation-delay-150 opacity-0 group-hover:opacity-100"></div>
-            <div className="absolute inset-4 bg-purple-300/10 rounded-full animate-purple-ripple animation-delay-300 opacity-0 group-hover:opacity-100"></div>
+            <div className="absolute inset-0 bg-purple-500/20 rounded-full animate-purple-ripple opacity-0 group-hover:opacity-20"></div>
+            <div className="absolute inset-2 bg-purple-400/15 rounded-full animate-purple-ripple animation-delay-150 opacity-0 group-hover:opacity-15"></div>
+            <div className="absolute inset-4 bg-purple-300/10 rounded-full animate-purple-ripple animation-delay-300 opacity-0 group-hover:opacity-10"></div>
           </div>
 
-          {/* Outer purple glow rings */}
-          <div className="absolute -inset-6 bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-600 rounded-full blur-2xl opacity-60 motion-safe:animate-purple-brain-glow group-hover:opacity-90 transition-opacity duration-500"></div>
-          <div className="absolute -inset-4 bg-gradient-to-br from-purple-300 via-purple-400 to-indigo-500 rounded-full blur-xl opacity-50 motion-safe:animate-purple-brain-glow motion-safe:[animation-delay:0.5s] group-hover:opacity-80 transition-opacity duration-500"></div>
-          <div className="absolute -inset-2 bg-gradient-to-br from-purple-200 via-purple-300 to-indigo-400 rounded-full blur-lg opacity-40 motion-safe:animate-purple-brain-glow motion-safe:[animation-delay:1s] group-hover:opacity-70 transition-opacity duration-500"></div>
+          {/* Optimized purple glow rings */}
+          <div className="absolute -inset-6 rounded-full purple-glow-primary motion-safe:animate-smooth-glow group-hover:opacity-65 transition-opacity duration-500"></div>
+          <div className="absolute -inset-3 rounded-full purple-glow-secondary motion-safe:animate-smooth-glow motion-safe:[animation-delay:0.8s] group-hover:opacity-55 transition-opacity duration-500"></div>
 
           {/* Neural network background with purple theme */}
-          <div className="absolute -inset-4 opacity-30 group-hover:opacity-60 transition-opacity duration-500">
+          <div className="absolute -inset-4 opacity-30 group-hover:opacity-35 transition-opacity duration-500">
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
               <defs>
                 <linearGradient id="purpleNeuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -351,12 +350,24 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           </div>
 
           {/* Central brain container with purple glass effect */}
-          <div className="relative p-1 bg-gradient-to-br from-purple-500/20 via-purple-400/15 to-indigo-500/10 backdrop-blur-lg border border-purple-300/30 rounded-xl shadow-xl shadow-purple-500/20 group-hover:shadow-2xl group-hover:shadow-purple-500/30 transition-all duration-500 group-hover:scale-105">
+          <div className="relative p-1 bg-gradient-to-br from-purple-500/20 via-purple-400/15 to-indigo-500/10 optimized-blur border border-purple-300/30 rounded-xl shadow-xl shadow-purple-500/20 group-hover:shadow-xl group-hover:shadow-purple-500/22 transition-all duration-500 gpu-accelerated">
             <Brain
-              className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-125 motion-safe:animate-purple-brain-glow`}
+              className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-105`}
               style={{
-                filter: `hue-rotate(${isHovered ? '20deg' : '0deg'}) saturate(${1 + (pulseIntensity - 1) * 0.8}) drop-shadow(0 0 8px rgba(139, 92, 246, 0.6))`,
-                transform: `scale(${0.95 + pulseIntensity * 0.1})`,
+                filter: isHovered
+                  ? `hue-rotate(5deg) saturate(${1 + (pulseIntensity - 1) * 0.3})`
+                  : `saturate(${1 + (pulseIntensity - 1) * 0.3})`,
+                transform: `translateZ(0) scale(${0.95 + pulseIntensity * 0.03})`,
+                willChange: 'transform, filter',
+              }}
+            />
+            {/* Separate drop shadow element for better performance */}
+            <div
+              className="absolute inset-0 pointer-events-none rounded-xl"
+              style={{
+                boxShadow: '0 0 4px rgba(139, 92, 246, 0.3), 0 0 8px rgba(139, 92, 246, 0.15)',
+                opacity: pulseIntensity * 0.4,
+                transform: 'translateZ(0)',
               }}
             />
           </div>
@@ -728,8 +739,8 @@ const franchiseCategories = [
   "DC"
 ];
 
-// Helper function to get current character for display
-const getCurrentCharacterForFranchise = (
+// Memoized helper function to get current character for display
+const getCurrentCharacterForFranchise = useCallback((
   mbtiType: string,
   franchise: string,
   characterIndices: Record<string, Record<string, number>>
@@ -741,17 +752,17 @@ const getCurrentCharacterForFranchise = (
   const characterName = pool[currentIndex % pool.length];
 
   return { name: characterName, franchise };
-};
+}, []);
 
-// Helper function to get all current characters for an MBTI type
-const getCurrentCharactersForMBTI = (
+// Memoized helper function to get all current characters for an MBTI type
+const getCurrentCharactersForMBTI = useCallback((
   mbtiType: string,
   characterIndices: Record<string, Record<string, number>>
 ): Array<{ name: string; franchise: string }> => {
   return franchiseCategories.map(franchise =>
     getCurrentCharacterForFranchise(mbtiType, franchise, characterIndices)
   );
-};
+}, [getCurrentCharacterForFranchise]);
 
 // Office Departments mapping for MBTI types
 const officeDepartmentsByMBTI: Record<
@@ -1061,10 +1072,17 @@ const mbtiImageSeeds: Record<string, string> = {
   ESFP: "performer",
 };
 
-const getMBTIImage = (mbtiType: string): string => {
-  const seed = mbtiImageSeeds[mbtiType] || mbtiType.toLowerCase();
-  return `https://picsum.photos/seed/${seed}/100/100`;
-};
+// Memoized MBTI image generation
+const getMBTIImage = useMemo(() => {
+  const imageCache: Record<string, string> = {};
+  return (mbtiType: string): string => {
+    if (!imageCache[mbtiType]) {
+      const seed = mbtiImageSeeds[mbtiType] || mbtiType.toLowerCase();
+      imageCache[mbtiType] = `https://picsum.photos/seed/${seed}/100/100`;
+    }
+    return imageCache[mbtiType];
+  };
+}, []);
 
 // Helper function to get franchise colors
 const getFranchiseColors = (franchise: string): { backgroundColor: string; color: string } => {
@@ -2306,14 +2324,17 @@ export default function UserDecisionDashboard() {
     return initialIndices;
   });
 
-  // Function to cycle to next character in a franchise for a specific MBTI type
-  const cycleCharacter = (mbtiType: string, franchise: string) => {
+  // Optimized function to cycle to next character in a franchise for a specific MBTI type
+  const cycleCharacter = useCallback((mbtiType: string, franchise: string) => {
     setCharacterIndices(prev => {
       const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
       if (pool.length <= 1) return prev; // No cycling needed if only one character
 
       const currentIndex = prev[mbtiType]?.[franchise] || 0;
       const nextIndex = (currentIndex + 1) % pool.length;
+
+      // Only update if there's actually a change
+      if (prev[mbtiType]?.[franchise] === nextIndex) return prev;
 
       return {
         ...prev,
@@ -2323,33 +2344,41 @@ export default function UserDecisionDashboard() {
         }
       };
     });
-  };
+  }, []);
 
-  // Function to shuffle all characters for a specific MBTI type
-  const shuffleAllCharacters = (mbtiType: string) => {
+  // Optimized function to shuffle all characters for a specific MBTI type
+  const shuffleAllCharacters = useCallback((mbtiType: string) => {
     setCharacterIndices(prev => {
-      const newIndices = { ...prev[mbtiType] };
+      const currentIndices = prev[mbtiType] || {};
+      const newIndices: Record<string, number> = {};
+      let hasChanges = false;
 
       // Shuffle each franchise's character index
       franchiseCategories.forEach(franchise => {
         const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
         if (pool.length > 1) {
           // Generate a random index different from the current one
-          const currentIndex = prev[mbtiType]?.[franchise] || 0;
+          const currentIndex = currentIndices[franchise] || 0;
           let newIndex;
           do {
             newIndex = Math.floor(Math.random() * pool.length);
           } while (newIndex === currentIndex && pool.length > 1);
           newIndices[franchise] = newIndex;
+          if (newIndex !== currentIndex) hasChanges = true;
+        } else {
+          newIndices[franchise] = currentIndices[franchise] || 0;
         }
       });
+
+      // Only update state if there are actual changes
+      if (!hasChanges) return prev;
 
       return {
         ...prev,
         [mbtiType]: newIndices
       };
     });
-  };
+  }, []);
 
   // Random famous person for each MBTI type, generated once per mount
   const famousPeopleMap = useMemo(() => {
@@ -2951,26 +2980,28 @@ export default function UserDecisionDashboard() {
 
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
-                          const characterExamples = getCurrentCharactersForMBTI(type, characterIndices);
-                          const img = getMBTIImage(type);
-                          const isUserType = type === userMBTI;
+                        {useMemo(() =>
+                          Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
+                            const characterExamples = getCurrentCharactersForMBTI(type, characterIndices);
+                            const img = getMBTIImage(type);
+                            const isUserType = type === userMBTI;
 
-                          return (
-                            <EnhancedPersonalityCard
-                              key={type}
-                              type={type}
-                              info={info}
-                              img={img}
-                              isUserType={isUserType}
-                              characterExamples={characterExamples}
-                              characterPoolsByMBTI={characterPoolsByMBTI}
-                              cycleCharacter={cycleCharacter}
-                              shuffleAllCharacters={shuffleAllCharacters}
-                              getFranchiseColors={getFranchiseColors}
-                            />
-                          );
-                        })}
+                            return (
+                              <EnhancedPersonalityCard
+                                key={type}
+                                type={type}
+                                info={info}
+                                img={img}
+                                isUserType={isUserType}
+                                characterExamples={characterExamples}
+                                characterPoolsByMBTI={characterPoolsByMBTI}
+                                cycleCharacter={cycleCharacter}
+                                shuffleAllCharacters={shuffleAllCharacters}
+                                getFranchiseColors={getFranchiseColors}
+                              />
+                            );
+                          }), [characterIndices, userMBTI, getCurrentCharactersForMBTI, getMBTIImage, cycleCharacter, shuffleAllCharacters, getFranchiseColors]
+                        )}
                     </div>
                   </div>
                 </TabsContent>

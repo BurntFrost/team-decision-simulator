@@ -4,11 +4,6 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useAdaptivePerformance } from "@/lib/hooks/usePerformance";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
@@ -1093,7 +1088,7 @@ type SliderInputProps = {
   info: DecisionService.FactorInfo;
 };
 
-// Clean Slider Input Component
+// Clean Slider Input Component — shows inline context so users understand each factor
 const SliderInput: React.FC<SliderInputProps> = ({
   id,
   label,
@@ -1101,49 +1096,29 @@ const SliderInput: React.FC<SliderInputProps> = ({
   onChange,
   info,
 }) => {
+  const pct = (value * 100).toFixed(0);
+  // Pick the contextual description that matches the current side of the slider
+  const contextLabel = value >= 0.5 ? info.highDesc : info.lowDesc;
+
   return (
     <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
-      <div className="flex items-center justify-between mb-3">
+      {/* Label row */}
+      <div className="flex items-center justify-between mb-1">
         <label
           htmlFor={id}
-          className="text-sm font-medium text-gray-800"
+          className="text-sm font-medium text-gray-900"
         >
           {info.label}
         </label>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-indigo-600 w-10 text-right tabular-nums">
-            {(value * 100).toFixed(0)}%
-          </span>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                aria-label={`More information about ${info.label}`}
-                className="text-gray-400 hover:text-gray-600 w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors text-xs"
-              >
-                ⓘ
-              </button>
-            </PopoverTrigger>
-            <PopoverContent
-              id={`${id}-info`}
-              className="max-w-xs rounded-xl p-4"
-            >
-              <p className="font-medium text-gray-900 text-sm mb-2">
-                {info.description}
-              </p>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <span className="font-medium text-gray-700">Low:</span>{" "}
-                  <span className="text-gray-600">{info.lowDesc}</span>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-2">
-                  <span className="font-medium text-gray-700">High:</span>{" "}
-                  <span className="text-gray-600">{info.highDesc}</span>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+        <span className="text-sm font-semibold text-indigo-600 tabular-nums">
+          {pct}%
+        </span>
       </div>
+
+      {/* Live context — shows what the current value means */}
+      <p className="text-xs text-gray-500 mb-3 leading-relaxed">
+        {contextLabel}
+      </p>
 
       <Slider
         id={id}
@@ -1155,8 +1130,14 @@ const SliderInput: React.FC<SliderInputProps> = ({
           onChange((Array.isArray(v) ? v[0] : v).toString())
         }
         aria-label={info.label}
-        aria-describedby={`${id}-info`}
+        aria-describedby={`${id}-desc`}
       />
+
+      {/* Endpoint labels */}
+      <div className="flex justify-between mt-1.5 text-[11px] text-gray-400" id={`${id}-desc`}>
+        <span>Low</span>
+        <span>High</span>
+      </div>
     </div>
   );
 };
@@ -2139,78 +2120,80 @@ export default function UserDecisionDashboard() {
 
               {/* Factors Tab */}
               <TabsContent value="factors" className="space-y-5">
-                {activePreset && (
-                  <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <FaCheck className="h-3.5 w-3.5 text-indigo-600" />
-                        <span className="text-sm font-medium text-indigo-900">
-                          Preset: {activePreset}
-                        </span>
-                      </div>
-                      <p className="text-xs text-indigo-700/70 mt-0.5 ml-5">
-                        Adjust any slider to customize.
-                      </p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs border-indigo-300 text-indigo-700 hover:bg-indigo-100 rounded-lg h-8 px-3"
-                      onClick={handleReset}
-                    >
-                      Reset
-                    </Button>
-                  </div>
-                )}
-
-                {preview.decision && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Likely outcome:</span>
-                    <span
-                      className="text-sm font-medium px-3 py-1 rounded-full text-white"
-                      style={{ backgroundColor: preview.color }}
-                    >
-                      {preview.decision}
-                    </span>
-                  </div>
-                )}
-
-                <div>
-                  <h2 className="text-base font-semibold text-gray-900 mb-0.5">
-                    Decision Factors
+                {/* Intro / scenario context */}
+                <div className="space-y-1">
+                  <h2 className="text-base font-semibold text-gray-900">
+                    Describe the situation
                   </h2>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Adjust six cognitive dimensions that shape how personality types approach decisions.
+                  <p className="text-sm text-gray-500">
+                    Use the sliders to describe the conditions around your decision.
+                    Each personality type weighs these factors differently.
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.keys(inputs).map((key) => (
-                      <SliderInput
-                        key={key}
-                        id={key}
-                        label={key}
-                        value={inputs[key as DecisionService.FactorKey]}
-                        onChange={(value) =>
-                          handleInputChange(
-                            key as DecisionService.FactorKey,
-                            value
-                          )
-                        }
-                        info={
-                          DecisionService.factorInfo[
-                            key as DecisionService.FactorKey
-                          ]
-                        }
-                      />
-                    ))}
-                  </div>
                 </div>
 
-                <div className="flex justify-center pt-2">
+                {/* Active preset chip + reset */}
+                {activePreset && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-3 py-1">
+                      <FaCheck className="h-3 w-3" />
+                      {activePreset}
+                    </span>
+                    <button
+                      onClick={handleReset}
+                      className="text-xs text-gray-500 hover:text-gray-700 underline underline-offset-2"
+                    >
+                      Reset to defaults
+                    </button>
+                  </div>
+                )}
+
+                {/* Sliders */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {Object.keys(inputs).map((key) => (
+                    <SliderInput
+                      key={key}
+                      id={key}
+                      label={key}
+                      value={inputs[key as DecisionService.FactorKey]}
+                      onChange={(value) =>
+                        handleInputChange(
+                          key as DecisionService.FactorKey,
+                          value
+                        )
+                      }
+                      info={
+                        DecisionService.factorInfo[
+                          key as DecisionService.FactorKey
+                        ]
+                      }
+                    />
+                  ))}
+                </div>
+
+                {/* Live preview + CTA */}
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  {/* Live prediction */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Live prediction</p>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: preview.color }}
+                      />
+                      <span className="text-sm font-semibold text-gray-900 truncate">
+                        {preview.decision || "Adjust sliders to see a prediction"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      This is the most likely response across all 16 types.
+                    </p>
+                  </div>
+
                   <Button
                     onClick={handleSimulate}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-10 rounded-xl font-medium text-sm shadow-sm transition-colors"
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 h-10 rounded-xl font-medium text-sm shadow-sm transition-colors whitespace-nowrap flex-shrink-0"
                   >
-                    Run Simulation
+                    See all 16 results &rarr;
                   </Button>
                 </div>
               </TabsContent>

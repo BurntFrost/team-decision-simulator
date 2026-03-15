@@ -2,10 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useAdaptivePerformance } from "@/lib/hooks/usePerformance";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -22,28 +19,36 @@ import {
 } from "@/components/ui/select";
 import { GlassContainer } from "@/components/ui/glass-container";
 import { LiquidBackground } from "@/components/ui/liquid-background";
+import { PerformanceOptimizedTypesTab } from "@/components/PerformanceOptimizedTypesTab";
+import { EnhancedPerformanceMonitor } from "@/components/EnhancedPerformanceMonitor";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import * as DecisionService from "@/lib/decisionMatrixService";
 import { Slider } from "@/components/ui/slider";
+import { famousPeopleByMBTI, officeCharactersByMBTI, harryPotterCharactersByMBTI, characterPoolsByMBTI, franchiseCategories, harryPotterHousesByMBTI, hogwartsHouseInfo, officeDepartmentsByMBTI, officeDepartmentInfo, getHarryPotterHouse, groupResultsByHogwartsHouses } from "@/lib/mbtiData";
 
 // Import react-icons
 import { FaBrain, FaCheck } from "react-icons/fa";
 import { BsFileText, BsClockFill, BsGeoAlt } from "react-icons/bs";
 import { IoMdAnalytics } from "react-icons/io";
-import {
-  MdOutlineAssessment,
-  MdFactCheck,
-  MdPsychology,
-} from "react-icons/md";
+import { MdOutlineAssessment, MdFactCheck, MdPsychology } from "react-icons/md";
 // Import Lucide icons for enhanced brain options
 import { Brain, Zap } from "lucide-react";
 
 // Enhanced Brain Icon Component with multiple visual options
 interface EnhancedBrainIconProps {
-  variant?: 'gradient' | 'animated' | 'glow' | 'pulse' | 'modern' | 'premium' | 'liquid' | 'neural' | 'purple';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
+  variant?:
+    | "gradient"
+    | "animated"
+    | "glow"
+    | "pulse"
+    | "modern"
+    | "premium"
+    | "liquid"
+    | "neural"
+    | "purple";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
   className?: string;
   onClick?: () => void;
   interactive?: boolean;
@@ -51,23 +56,23 @@ interface EnhancedBrainIconProps {
 }
 
 const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
-  variant = 'gradient',
-  size = 'md',
-  className = '',
+  variant = "gradient",
+  size = "md",
+  className = "",
   onClick,
   interactive = false,
-  neuralActivity = false
+  neuralActivity = false,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const [pulseIntensity, setPulseIntensity] = React.useState(1);
 
   const sizeClasses = {
-    sm: 'h-5 w-5',
-    md: 'h-6 w-6',
-    lg: 'h-8 w-8',
-    xl: 'h-10 w-10',
-    '2xl': 'h-12 w-12',
-    '3xl': 'h-16 w-16'
+    sm: "h-5 w-5",
+    md: "h-6 w-6",
+    lg: "h-8 w-8",
+    xl: "h-10 w-10",
+    "2xl": "h-12 w-12",
+    "3xl": "h-16 w-16",
   };
 
   const baseClasses = `${sizeClasses[size]} transition-all duration-500 ease-out transform-gpu ${className}`;
@@ -90,71 +95,79 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
   };
 
   switch (variant) {
-    case 'gradient':
+    case "gradient":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
-          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:scale-110 group-hover:rotate-3`} />
+          <Brain
+            className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:scale-110 group-hover:rotate-3`}
+          />
         </div>
       );
 
-    case 'animated':
+    case "animated":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
-          <Brain className={`${baseClasses} text-white animate-pulse group-hover:animate-bounce drop-shadow-lg`} />
+          <Brain
+            className={`${baseClasses} text-white animate-pulse group-hover:animate-bounce drop-shadow-lg`}
+          />
           <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping group-hover:bg-blue-400"></div>
         </div>
       );
 
-    case 'glow':
+    case "glow":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           <div className="absolute inset-0 bg-white rounded-full smooth-blur opacity-30 group-hover:opacity-35 transition-opacity duration-300 animate-pulse gpu-accelerated"></div>
-          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-2xl gpu-accelerated`} />
+          <Brain
+            className={`${baseClasses} text-white relative z-10 drop-shadow-2xl gpu-accelerated`}
+          />
         </div>
       );
 
-    case 'pulse':
+    case "pulse":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           <div className="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
           <div className="absolute inset-0 bg-white/10 rounded-full animate-ping animation-delay-75"></div>
-          <Brain className={`${baseClasses} text-white relative z-10 drop-shadow-lg`} />
+          <Brain
+            className={`${baseClasses} text-white relative z-10 drop-shadow-lg`}
+          />
         </div>
       );
 
-    case 'modern':
+    case "modern":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-lg smooth-blur opacity-50 group-hover:opacity-55 transition-all duration-300 gpu-accelerated"></div>
           <div className="relative z-10 p-1 bg-white/10 optimized-blur rounded-lg border border-white/20 group-hover:bg-white/12 transition-all duration-300 gpu-accelerated">
@@ -164,14 +177,14 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
         </div>
       );
 
-    case 'premium':
+    case "premium":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           {/* Outermost glow ring - largest and most intense */}
           <div className="absolute -inset-4 bg-gradient-to-br from-blue-400 via-purple-500 to-indigo-600 rounded-full blur-2xl opacity-80 motion-safe:animate-pulse motion-safe:[animation-duration:2.5s] group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -188,7 +201,9 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
           {/* Brain icon */}
           <div className="relative z-10">
             {/* Primary brain icon */}
-            <Brain className={`${baseClasses} text-white drop-shadow-2xl group-hover:scale-110 group-hover:rotate-2 transition-all duration-300 filter brightness-125`} />
+            <Brain
+              className={`${baseClasses} text-white drop-shadow-2xl group-hover:scale-110 group-hover:rotate-2 transition-all duration-300 filter brightness-125`}
+            />
           </div>
 
           {/* Enhanced sparkle effects on hover */}
@@ -197,16 +212,16 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
         </div>
       );
 
-    case 'liquid':
+    case "liquid":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           {/* Liquid glass container */}
           <div className="relative p-2 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-xl border border-white/30 rounded-2xl shadow-2xl transition-all duration-700 gpu-accelerated liquid-glass-optimized touch-responsive hover-optimized">
@@ -220,34 +235,43 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
             <Brain
               className={`${baseClasses} text-white relative z-10 drop-shadow-2xl gpu-accelerated smooth-60fps`}
               style={{
-                filter: `brightness(${1 + (isHovered ? 0.05 : 0)}) saturate(${1 + (isHovered ? 0.05 : 0)})`,
+                filter: `brightness(${1 + (isHovered ? 0.05 : 0)}) saturate(${
+                  1 + (isHovered ? 0.05 : 0)
+                })`,
                 transform: `scale(${pulseIntensity})`,
-                willChange: 'transform, filter',
+                willChange: "transform, filter",
               }}
             />
-
-
           </div>
         </div>
       );
 
-    case 'neural':
+    case "neural":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           {/* Neural network background */}
           <div className="absolute -inset-6 opacity-40 group-hover:opacity-45 transition-opacity duration-500">
             {/* Neural connections */}
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 100 100"
+            >
               <defs>
-                <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient
+                  id="neuralGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
                   <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.6" />
                   <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.8" />
                   <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6" />
@@ -285,7 +309,9 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
             <Brain
               className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-105`}
               style={{
-                filter: `hue-rotate(${isHovered ? '10deg' : '0deg'}) saturate(${1 + (pulseIntensity - 1) * 0.5})`,
+                filter: `hue-rotate(${isHovered ? "10deg" : "0deg"}) saturate(${
+                  1 + (pulseIntensity - 1) * 0.5
+                })`,
                 transform: `scale(${0.95 + pulseIntensity * 0.05})`,
               }}
             />
@@ -302,16 +328,16 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
         </div>
       );
 
-    case 'purple':
+    case "purple":
       return (
         <div
-          className={`relative ${onClick ? 'cursor-pointer' : ''} group`}
+          className={`relative ${onClick ? "cursor-pointer" : ""} group`}
           onClick={handleClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          role={onClick ? 'button' : undefined}
+          role={onClick ? "button" : undefined}
           tabIndex={onClick ? 0 : undefined}
-          aria-label={onClick ? 'Brain icon button' : 'Brain icon'}
+          aria-label={onClick ? "Brain icon button" : "Brain icon"}
         >
           {/* Purple ripple effects */}
           <div className="absolute -inset-8 pointer-events-none">
@@ -326,9 +352,18 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
 
           {/* Neural network background with purple theme */}
           <div className="absolute -inset-4 opacity-30 group-hover:opacity-35 transition-opacity duration-500">
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 100 100"
+            >
               <defs>
-                <linearGradient id="purpleNeuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient
+                  id="purpleNeuralGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
                   <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.8" />
                   <stop offset="50%" stopColor="#a855f7" stopOpacity="0.9" />
                   <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.7" />
@@ -336,10 +371,42 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
               </defs>
 
               {/* Animated neural connections */}
-              <line x1="20" y1="30" x2="80" y2="70" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity" />
-              <line x1="30" y1="80" x2="70" y2="20" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity animation-delay-75" />
-              <line x1="10" y1="60" x2="90" y2="40" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity animation-delay-150" />
-              <line x1="40" y1="10" x2="60" y2="90" stroke="url(#purpleNeuralGradient)" strokeWidth="1" className="animate-purple-neural-activity animation-delay-300" />
+              <line
+                x1="20"
+                y1="30"
+                x2="80"
+                y2="70"
+                stroke="url(#purpleNeuralGradient)"
+                strokeWidth="1"
+                className="animate-purple-neural-activity"
+              />
+              <line
+                x1="30"
+                y1="80"
+                x2="70"
+                y2="20"
+                stroke="url(#purpleNeuralGradient)"
+                strokeWidth="1"
+                className="animate-purple-neural-activity animation-delay-75"
+              />
+              <line
+                x1="10"
+                y1="60"
+                x2="90"
+                y2="40"
+                stroke="url(#purpleNeuralGradient)"
+                strokeWidth="1"
+                className="animate-purple-neural-activity animation-delay-150"
+              />
+              <line
+                x1="40"
+                y1="10"
+                x2="60"
+                y2="90"
+                stroke="url(#purpleNeuralGradient)"
+                strokeWidth="1"
+                className="animate-purple-neural-activity animation-delay-300"
+              />
             </svg>
 
             {/* Purple neural nodes */}
@@ -355,19 +422,24 @@ const EnhancedBrainIcon: React.FC<EnhancedBrainIconProps> = ({
               className={`${baseClasses} text-white relative z-10 drop-shadow-lg group-hover:brightness-105`}
               style={{
                 filter: isHovered
-                  ? `hue-rotate(5deg) saturate(${1 + (pulseIntensity - 1) * 0.3})`
+                  ? `hue-rotate(5deg) saturate(${
+                      1 + (pulseIntensity - 1) * 0.3
+                    })`
                   : `saturate(${1 + (pulseIntensity - 1) * 0.3})`,
-                transform: `translateZ(0) scale(${0.95 + pulseIntensity * 0.03})`,
-                willChange: 'transform, filter',
+                transform: `translateZ(0) scale(${
+                  0.95 + pulseIntensity * 0.03
+                })`,
+                willChange: "transform, filter",
               }}
             />
             {/* Separate drop shadow element for better performance */}
             <div
               className="absolute inset-0 pointer-events-none rounded-xl"
               style={{
-                boxShadow: '0 0 4px rgba(139, 92, 246, 0.3), 0 0 8px rgba(139, 92, 246, 0.15)',
+                boxShadow:
+                  "0 0 4px rgba(139, 92, 246, 0.3), 0 0 8px rgba(139, 92, 246, 0.15)",
                 opacity: pulseIntensity * 0.4,
-                transform: 'translateZ(0)',
+                transform: "translateZ(0)",
               }}
             />
           </div>
@@ -397,7 +469,11 @@ const StepperContainer = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <div role="list" aria-label="Progress" className={cn("flex w-full", className)}>
+  <div
+    role="list"
+    aria-label="Progress"
+    className={cn("flex w-full", className)}
+  >
     {children}
   </div>
 );
@@ -475,429 +551,8 @@ const StepperStep = ({
   </div>
 );
 
-// Mapping of MBTI types to famous people examples
-const famousPeopleByMBTI: Record<string, string[]> = {
-  INTJ: [
-    "Elon Musk",
-    "Mark Zuckerberg",
-    "Stephen Hawking",
-    "Nikola Tesla",
-    "Michelle Obama",
-  ],
-  ENTJ: [
-    "Steve Jobs",
-    "Margaret Thatcher",
-    "Jack Welch",
-    "Gordon Ramsay",
-    "Jim Carrey",
-  ],
-  INTP: [
-    "Albert Einstein",
-    "Larry Page",
-    "Bill Gates",
-    "Isaac Newton",
-    "Marie Curie",
-  ],
-  ENTP: [
-    "Leonardo da Vinci",
-    "Richard Feynman",
-    "Barack Obama",
-    "Thomas Edison",
-    "Celine Dion",
-  ],
-  INFJ: [
-    "Martin Luther King Jr.",
-    "Nelson Mandela",
-    "Mahatma Gandhi",
-    "Taylor Swift",
-    "Plato",
-  ],
-  ENFJ: [
-    "Oprah Winfrey",
-    "Barack Obama",
-    "Jennifer Lawrence",
-    "Maya Angelou",
-    "Neil deGrasse Tyson",
-  ],
-  INFP: [
-    "J.R.R. Tolkien",
-    "William Shakespeare",
-    "Johnny Depp",
-    "Princess Diana",
-    "Bob Dylan",
-  ],
-  ENFP: [
-    "Robin Williams",
-    "Walt Disney",
-    "Robert Downey Jr.",
-    "Ellen DeGeneres",
-    "Mark Twain",
-  ],
-  ISTJ: [
-    "Jeff Bezos",
-    "Queen Elizabeth II",
-    "Warren Buffett",
-    "George Washington",
-    "Hermione Granger",
-  ],
-  ESTJ: [
-    "Henry Ford",
-    "Sheryl Sandberg",
-    "Martha Stewart",
-    "John D. Rockefeller",
-    "Sonia Sotomayor",
-  ],
-  ISFJ: [
-    "Mother Teresa",
-    "Kate Middleton",
-    "Beyoncé",
-    "Rosa Parks",
-    "Dr. Fauci",
-  ],
-  ESFJ: [
-    "Taylor Swift",
-    "Jennifer Garner",
-    "Bill Clinton",
-    "Hugh Jackman",
-    "Steve Harvey",
-  ],
-  ISTP: [
-    "Michael Jordan",
-    "Tom Cruise",
-    "Clint Eastwood",
-    "Amelia Earhart",
-    "Erwin Rommel",
-  ],
-  ESTP: [
-    "Donald Trump",
-    "Ernest Hemingway",
-    "Madonna",
-    "Eddie Murphy",
-    "Winston Churchill",
-  ],
-  ISFP: [
-    "Michael Jackson",
-    "Frida Kahlo",
-    "Keanu Reeves",
-    "David Bowie",
-    "Marilyn Monroe",
-  ],
-  ESFP: [
-    "Adele",
-    'Dwayne "The Rock" Johnson',
-    "Jamie Foxx",
-    "Miley Cyrus",
-    "Elvis Presley",
-  ],
-};
-
-// Mapping of MBTI types to characters from The Office
-const officeCharactersByMBTI: Record<string, string[]> = {
-  INTJ: ["Oscar Martinez"],
-  ENTJ: ["Jan Levinson"],
-  INTP: ["Gabe Lewis"],
-  ENTP: ["Jim Halpert"],
-  INFJ: ["Toby Flenderson"],
-  ENFJ: ["Andy Bernard"],
-  INFP: ["Erin Hannon"],
-  ENFP: ["Michael Scott"],
-  ISTJ: ["Dwight Schrute"],
-  ESTJ: ["Angela Martin"],
-  ISFJ: ["Pam Beesly"],
-  ESFJ: ["Phyllis Vance"],
-  ISTP: ["Stanley Hudson"],
-  ESTP: ["Todd Packer"],
-  ISFP: ["Holly Flax"],
-  ESFP: ["Kelly Kapoor"],
-};
-
-// Mapping of MBTI types to characters from Harry Potter
-const harryPotterCharactersByMBTI: Record<string, string[]> = {
-  INTJ: ["Severus Snape", "Tom Riddle"],
-  ENTJ: ["Hermione Granger", "McGonagall"],
-  INTP: ["Luna Lovegood", "Newt Scamander"],
-  ENTP: ["Fred Weasley", "George Weasley"],
-  INFJ: ["Dumbledore", "Remus Lupin"],
-  ENFJ: ["Harry Potter", "Molly Weasley"],
-  INFP: ["Dobby", "Neville Longbottom"],
-  ENFP: ["Ron Weasley", "Tonks"],
-  ISTJ: ["Percy Weasley", "Barty Crouch Sr."],
-  ESTJ: ["Dolores Umbridge", "Vernon Dursley"],
-  ISFJ: ["Hagrid", "Mrs. Weasley"],
-  ESFJ: ["Cedric Diggory", "Fleur Delacour"],
-  ISTP: ["Sirius Black", "Mad-Eye Moody"],
-  ESTP: ["Draco Malfoy", "Gilderoy Lockhart"],
-  ISFP: ["Cho Chang", "Lavender Brown"],
-  ESFP: ["Peeves", "Rita Skeeter"],
-};
-
-// Character pools organized by franchise for cycling functionality
-const characterPoolsByMBTI: Record<string, Record<string, string[]>> = {
-  INTJ: {
-    "The Office": ["Oscar Martinez", "Toby Flenderson"],
-    "Harry Potter": ["Severus Snape", "Professor McGonagall", "Hermione Granger"],
-    "Marvel": ["Doctor Strange", "Vision", "Tony Stark", "Doctor Doom", "Thanos", "Ultron"],
-    "DC": ["Batman", "Martian Manhunter", "Cyborg", "Lex Luthor", "Brainiac", "The Riddler"]
-  },
-  ENTJ: {
-    "The Office": ["Jan Levinson", "Charles Miner"],
-    "Harry Potter": ["Hermione Granger", "Dolores Umbridge", "Voldemort"],
-    "Marvel": ["Nick Fury", "Captain America", "Carol Danvers", "Magneto", "Kingpin", "Norman Osborn"],
-    "DC": ["Wonder Woman", "Amanda Waller", "Ra's al Ghul", "Darkseid", "General Zod", "Lex Luthor"]
-  },
-  INTP: {
-    "The Office": ["Gabe Lewis", "Ryan Howard"],
-    "Harry Potter": ["Luna Lovegood", "Xenophilius Lovegood", "Ollivander"],
-    "Marvel": ["Tony Stark", "Bruce Banner", "Reed Richards", "Green Goblin", "Ultron", "Doctor Octopus"],
-    "DC": ["Mr. Terrific", "Cyborg", "The Atom", "The Riddler", "Scarecrow", "Calculator"]
-  },
-  ENTP: {
-    "The Office": ["Jim Halpert", "Todd Packer"],
-    "Harry Potter": ["Fred Weasley", "George Weasley", "Gilderoy Lockhart"],
-    "Marvel": ["Spider-Man", "Deadpool", "Star-Lord", "Loki", "Mysterio", "Green Goblin"],
-    "DC": ["The Flash", "Green Lantern", "Booster Gold", "The Joker", "Trickster", "Captain Cold"]
-  },
-  INFJ: {
-    "The Office": ["Toby Flenderson", "Karen Filippelli"],
-    "Harry Potter": ["Dumbledore", "Remus Lupin", "Newt Scamander"],
-    "Marvel": ["Professor X", "Daredevil", "Vision", "Mystique", "Silver Surfer", "Magneto"],
-    "DC": ["Superman", "Raven", "Martian Manhunter", "Two-Face", "Poison Ivy", "Mr. Freeze"]
-  },
-  ENFJ: {
-    "The Office": ["Andy Bernard", "Holly Flax"],
-    "Harry Potter": ["Harry Potter", "Molly Weasley", "Minerva McGonagall"],
-    "Marvel": ["Captain Marvel", "Storm", "Captain America", "Emma Frost", "Venom", "Loki"],
-    "DC": ["Aquaman", "Starfire", "Wonder Woman", "Catwoman", "Black Manta", "Talia al Ghul"]
-  },
-  INFP: {
-    "The Office": ["Erin Hannon", "Pam Beesly"],
-    "Harry Potter": ["Dobby", "Luna Lovegood", "Neville Longbottom"],
-    "Marvel": ["Wanda Maximoff", "Peter Parker", "Groot", "Bucky Barnes", "Gambit", "Rogue"],
-    "DC": ["Beast Boy", "Shazam", "Zatanna", "Harley Quinn", "Mr. Freeze", "Clayface"]
-  },
-  ENFP: {
-    "The Office": ["Michael Scott", "Kelly Kapoor"],
-    "Harry Potter": ["Ron Weasley", "Tonks", "Hagrid"],
-    "Marvel": ["Star-Lord", "Ant-Man", "Human Torch", "Rocket Raccoon", "Carnage", "Deadpool"],
-    "DC": ["Booster Gold", "Plastic Man", "The Flash", "Captain Cold", "Clayface", "Trickster"]
-  },
-  ISTJ: {
-    "The Office": ["Dwight Schrute", "Oscar Martinez"],
-    "Harry Potter": ["Percy Weasley", "Barty Crouch Sr.", "Kingsley Shacklebolt"],
-    "Marvel": ["Captain America", "Hawkeye", "Falcon", "Red Skull", "Taskmaster", "Winter Soldier"],
-    "DC": ["Commissioner Gordon", "Green Arrow", "Alfred Pennyworth", "Deathstroke", "Penguin", "Two-Face"]
-  },
-  ESTJ: {
-    "The Office": ["Angela Martin", "Jan Levinson"],
-    "Harry Potter": ["Dolores Umbridge", "Vernon Dursley", "Cornelius Fudge"],
-    "Marvel": ["J. Jonah Jameson", "Maria Hill", "Nick Fury", "Norman Osborn", "Baron Zemo", "Kingpin"],
-    "DC": ["Amanda Waller", "Alfred Pennyworth", "General Zod", "Lex Luthor", "Commissioner Gordon"]
-  },
-  ISFJ: {
-    "The Office": ["Pam Beesly", "Phyllis Vance"],
-    "Harry Potter": ["Hagrid", "Mrs. Weasley", "Neville Longbottom"],
-    "Marvel": ["Aunt May", "Pepper Potts", "Captain America", "Sandman", "Lizard", "Rhino"],
-    "DC": ["Martha Kent", "Lois Lane", "Alfred Pennyworth", "Killer Croc", "Calendar Man", "Clayface"]
-  },
-  ESFJ: {
-    "The Office": ["Phyllis Vance", "Meredith Palmer"],
-    "Harry Potter": ["Cedric Diggory", "Cho Chang", "Fleur Delacour"],
-    "Marvel": ["Spider-Man", "Falcon", "Captain Marvel", "Electro", "Rhino", "Shocker"],
-    "DC": ["Supergirl", "Batgirl", "Wonder Woman", "Cheetah", "Mirror Master", "Livewire"]
-  },
-  ISTP: {
-    "The Office": ["Stanley Hudson", "Creed Bratton"],
-    "Harry Potter": ["Sirius Black", "Mad-Eye Moody", "Kingsley Shacklebolt"],
-    "Marvel": ["Wolverine", "Punisher", "Black Widow", "Winter Soldier", "Bullseye", "Crossbones"],
-    "DC": ["Batman", "Red Hood", "Green Arrow", "Deadshot", "Bane", "Deathstroke"]
-  },
-  ESTP: {
-    "The Office": ["Todd Packer", "Roy Anderson"],
-    "Harry Potter": ["Draco Malfoy", "James Potter", "Sirius Black"],
-    "Marvel": ["Thor", "Gambit", "Iron Man", "Sabretooth", "Juggernaut", "Venom"],
-    "DC": ["Guy Gardner", "Lobo", "Hal Jordan", "Captain Boomerang", "Gorilla Grodd", "Parasite"]
-  },
-  ISFP: {
-    "The Office": ["Holly Flax", "Erin Hannon"],
-    "Harry Potter": ["Cho Chang", "Lavender Brown", "Colin Creevey"],
-    "Marvel": ["Groot", "Mantis", "Wanda Maximoff", "Rogue", "Quicksilver", "Gambit"],
-    "DC": ["Nightwing", "Zatanna", "Beast Boy", "Scarecrow", "Mad Hatter", "Poison Ivy"]
-  },
-  ESFP: {
-    "The Office": ["Kelly Kapoor", "Meredith Palmer"],
-    "Harry Potter": ["Rita Skeeter", "Gilderoy Lockhart", "Peeves"],
-    "Marvel": ["Deadpool", "Human Torch", "Spider-Man", "Shocker", "Toad", "Carnage"],
-    "DC": ["The Flash", "Impulse", "Plastic Man", "Trickster", "Captain Cold", "Mirror Master"]
-  },
-};
-
-// Franchise categories for consistent ordering
-const franchiseCategories = [
-  "The Office",
-  "Harry Potter",
-  "Marvel",
-  "DC"
-];
 
 
-
-// Office Departments mapping for MBTI types
-const officeDepartmentsByMBTI: Record<
-  string,
-  {
-    department: string;
-    color: string;
-    role: string;
-    traits: string[];
-  }
-> = {
-  // Management - Leadership and strategic oversight
-  ENFP: {
-    department: "Management",
-    color: "#1e40af", // Blue
-    role: "Regional Manager",
-    traits: ["charismatic", "enthusiastic", "people-focused", "creative"],
-  },
-  ENTJ: {
-    department: "Management",
-    color: "#1e40af",
-    role: "Corporate Executive",
-    traits: ["strategic", "decisive", "results-oriented", "authoritative"],
-  },
-  ENFJ: {
-    department: "Management",
-    color: "#1e40af",
-    role: "Regional Director",
-    traits: ["inspiring", "collaborative", "goal-oriented", "diplomatic"],
-  },
-  // Sales - Revenue generation and client relations
-  ENTP: {
-    department: "Sales",
-    color: "#059669", // Green
-    role: "Sales Representative",
-    traits: ["persuasive", "adaptable", "relationship-building", "innovative"],
-  },
-  ESTP: {
-    department: "Sales",
-    color: "#059669",
-    role: "Traveling Salesman",
-    traits: ["aggressive", "competitive", "action-oriented", "opportunistic"],
-  },
-  ISTJ: {
-    department: "Sales",
-    color: "#059669",
-    role: "Top Salesman",
-    traits: ["persistent", "methodical", "reliable", "detail-focused"],
-  },
-  // Accounting - Financial oversight and compliance
-  INTJ: {
-    department: "Accounting",
-    color: "#7c2d12", // Brown
-    role: "Senior Accountant",
-    traits: ["analytical", "precise", "logical", "independent"],
-  },
-  ESTJ: {
-    department: "Accounting",
-    color: "#7c2d12",
-    role: "Head of Accounting",
-    traits: ["organized", "efficient", "rule-following", "authoritative"],
-  },
-  ISTP: {
-    department: "Accounting",
-    color: "#7c2d12",
-    role: "Financial Analyst",
-    traits: ["practical", "logical", "independent", "problem-solving"],
-  },
-  // Reception/Admin - Support and coordination
-  ISFJ: {
-    department: "Reception",
-    color: "#be185d", // Pink
-    role: "Receptionist",
-    traits: ["supportive", "organized", "helpful", "detail-oriented"],
-  },
-  INFP: {
-    department: "Reception",
-    color: "#be185d",
-    role: "Reception Assistant",
-    traits: ["caring", "adaptable", "creative", "people-focused"],
-  },
-  ESFJ: {
-    department: "Reception",
-    color: "#be185d",
-    role: "Office Coordinator",
-    traits: ["social", "organized", "supportive", "team-oriented"],
-  },
-  // HR - People management and compliance
-  INFJ: {
-    department: "HR",
-    color: "#7c3aed", // Purple
-    role: "HR Representative",
-    traits: ["empathetic", "principled", "conflict-resolution", "systematic"],
-  },
-  ISFP: {
-    department: "HR",
-    color: "#7c3aed",
-    role: "HR Liaison",
-    traits: ["compassionate", "flexible", "people-focused", "harmonious"],
-  },
-  // Customer Service - Client support and relations
-  ESFP: {
-    department: "Customer Service",
-    color: "#ea580c", // Orange
-    role: "Customer Service Rep",
-    traits: ["energetic", "people-oriented", "spontaneous", "enthusiastic"],
-  },
-  // Corporate/Special Projects - Strategic initiatives
-  INTP: {
-    department: "Corporate",
-    color: "#6b7280", // Gray
-    role: "Corporate Liaison",
-    traits: ["analytical", "strategic", "independent", "innovative"],
-  },
-};
-
-// Department information and characteristics
-const officeDepartmentInfo: Record<string, {
-  description: string;
-  motto: string;
-  characteristics: string[];
-}> = {
-  Management: {
-    description: "Visionary leaders who drive company culture and strategic direction through inspiration and decisive action.",
-    motto: "That's what she said... about leadership excellence!",
-    characteristics: ["Strategic thinking", "Team motivation", "Decision authority", "Cultural influence"]
-  },
-  Sales: {
-    description: "Results-driven professionals who build relationships and close deals through persistence and adaptability.",
-    motto: "Bears. Beets. Battlestar Galactica. Sales.",
-    characteristics: ["Revenue focus", "Client relationships", "Competitive drive", "Adaptability"]
-  },
-  Accounting: {
-    description: "Detail-oriented analysts who ensure financial accuracy and compliance through systematic processes.",
-    motto: "Actually, the numbers don't lie.",
-    characteristics: ["Precision", "Compliance", "Analytical thinking", "Process adherence"]
-  },
-  Reception: {
-    description: "Supportive coordinators who maintain office operations and provide excellent internal customer service.",
-    motto: "Dunder Mifflin, this is Pam... I mean, how can we help?",
-    characteristics: ["Organization", "Communication", "Support", "Coordination"]
-  },
-  HR: {
-    description: "People-focused professionals who balance employee needs with company policies and conflict resolution.",
-    motto: "I'm not superstitious, but I am a little stitious about HR policies.",
-    characteristics: ["Employee relations", "Policy enforcement", "Conflict resolution", "Compliance"]
-  },
-  "Customer Service": {
-    description: "Energetic representatives who maintain client satisfaction through enthusiasm and problem-solving.",
-    motto: "OMG, like, customer satisfaction is totally our thing!",
-    characteristics: ["Client satisfaction", "Problem solving", "Energy", "Responsiveness"]
-  },
-  Corporate: {
-    description: "Strategic thinkers who analyze company operations and implement corporate initiatives.",
-    motto: "Synergy and optimization through strategic corporate alignment.",
-    characteristics: ["Strategic analysis", "Process improvement", "Corporate alignment", "Innovation"]
-  },
-};
 
 // Helper function to get Office department for a MBTI type
 const getOfficeDepartment = (mbtiType: string): string => {
@@ -905,7 +560,9 @@ const getOfficeDepartment = (mbtiType: string): string => {
 };
 
 // Group MBTI results by Office departments
-const groupResultsByOfficeDepartments = (results: DecisionService.SimulationResult[]) => {
+const groupResultsByOfficeDepartments = (
+  results: DecisionService.SimulationResult[]
+) => {
   const departmentGroups: Record<
     string,
     {
@@ -1049,8 +706,6 @@ const mbtiImageSeeds: Record<string, string> = {
   ESFP: "performer",
 };
 
-
-
 // Enhanced Personality Card Component with Liquid Glass Design
 interface EnhancedPersonalityCardProps {
   type: string;
@@ -1061,320 +716,365 @@ interface EnhancedPersonalityCardProps {
   characterPoolsByMBTI: any;
   cycleCharacter: (type: string, franchise: string) => void;
   shuffleAllCharacters: (type: string) => void;
-  getFranchiseColors: (franchise: string) => { backgroundColor: string; color: string };
+  getFranchiseColors: (franchise: string) => {
+    backgroundColor: string;
+    color: string;
+  };
 }
 
 // Memoized component to prevent unnecessary re-renders
-const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> = React.memo(({
-  type,
-  info,
-  img,
-  isUserType,
-  characterExamples,
-  characterPoolsByMBTI,
-  cycleCharacter,
-  shuffleAllCharacters,
-  getFranchiseColors,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+const EnhancedPersonalityCard: React.FC<EnhancedPersonalityCardProps> =
+  React.memo(
+    ({
+      type,
+      info,
+      img,
+      isUserType,
+      characterExamples,
+      characterPoolsByMBTI,
+      cycleCharacter,
+      shuffleAllCharacters,
+      getFranchiseColors,
+    }) => {
+      const [isExpanded, setIsExpanded] = useState(false);
+      const [isHovered, setIsHovered] = useState(false);
 
-  // Direct hover handlers without debouncing to prevent flickering
-  const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
-  }, []);
+      // Direct hover handlers without debouncing to prevent flickering
+      const handleMouseEnter = useCallback(() => {
+        setIsHovered(true);
+      }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-  }, []);
+      const handleMouseLeave = useCallback(() => {
+        setIsHovered(false);
+      }, []);
 
-  // Handle card click to shuffle all characters
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent triggering when clicking on interactive elements
-    const target = e.target as HTMLElement;
-    if (target.tagName === 'BUTTON' || target.closest('button')) {
-      return;
-    }
-    shuffleAllCharacters(type);
-  };
+      // Handle card click to shuffle all characters
+      const handleCardClick = (e: React.MouseEvent) => {
+        // Prevent triggering when clicking on interactive elements
+        const target = e.target as HTMLElement;
+        if (target.tagName === "BUTTON" || target.closest("button")) {
+          return;
+        }
+        shuffleAllCharacters(type);
+      };
 
-  return (
-    <div
-      className={cn(
-        "group relative overflow-hidden rounded-3xl transition-all duration-300 ease-out cursor-pointer transform-gpu",
-        isHovered ? "scale-[1.02] -translate-y-1 shadow-4xl" : "shadow-2xl",
-        isUserType
-          ? "ring-2 ring-[#007aff] ring-offset-4 ring-offset-white/50"
-          : ""
-      )}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleCardClick}
-      title="Click to shuffle character examples"
-    >
-      {/* Enhanced Liquid Glass Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-2xl"></div>
-      <div className="absolute inset-0 bg-gradient-to-tl from-white/8 via-transparent to-white/12 backdrop-blur-xl"></div>
-
-      {/* Dynamic color overlay based on personality type */}
-      <div
-        className="absolute inset-0 opacity-8 bg-gradient-to-br from-transparent via-current/20 to-current/10 transition-opacity duration-500"
-        style={{ color: info.color }}
-      ></div>
-
-      {/* Enhanced border effects */}
-      <div className="absolute inset-0 rounded-3xl border border-white/30 pointer-events-none"></div>
-      <div className="absolute inset-[1px] rounded-3xl border border-white/15 pointer-events-none"></div>
-
-      {/* Interactive glow effect */}
-      {isHovered && (
+      return (
         <div
-          className="absolute inset-0 rounded-3xl opacity-20 bg-gradient-to-r from-transparent via-current/30 to-transparent animate-glass-shimmer transition-opacity duration-700"
-          style={{ color: info.color }}
-        ></div>
-      )}
+          className={cn(
+            "group relative overflow-hidden rounded-3xl transition-all duration-300 ease-out cursor-pointer transform-gpu",
+            isHovered ? "scale-[1.02] -translate-y-1 shadow-4xl" : "shadow-2xl",
+            isUserType
+              ? "ring-2 ring-[#007aff] ring-offset-4 ring-offset-white/50"
+              : ""
+          )}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleCardClick}
+          title="Click to shuffle character examples"
+        >
+          {/* Enhanced Liquid Glass Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/15 to-white/10 backdrop-blur-2xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-tl from-white/8 via-transparent to-white/12 backdrop-blur-xl"></div>
 
-      {/* Subtle noise texture for realism */}
-      <div
-        className="absolute inset-0 rounded-3xl opacity-[0.02] mix-blend-overlay pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
+          {/* Dynamic color overlay based on personality type */}
+          <div
+            className="absolute inset-0 opacity-8 bg-gradient-to-br from-transparent via-current/20 to-current/10 transition-opacity duration-500"
+            style={{ color: info.color }}
+          ></div>
 
-      <div className="relative z-10 p-6 space-y-5">
-        {/* Header Section */}
-        <div className="flex items-start gap-4">
-          <div className="relative">
-            {/* Enhanced image container with liquid glass effect */}
-            <div className="relative p-1 bg-gradient-to-br from-white/25 via-white/15 to-white/10 backdrop-blur-lg rounded-3xl shadow-xl">
-              <Image
-                src={img}
-                alt={`${type} icon`}
-                width={56}
-                height={56}
-                className="w-14 h-14 rounded-2xl object-cover shadow-lg"
-              />
-              {/* Inner glow effect */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 via-transparent to-white/10 pointer-events-none"></div>
-            </div>
+          {/* Enhanced border effects */}
+          <div className="absolute inset-0 rounded-3xl border border-white/30 pointer-events-none"></div>
+          <div className="absolute inset-[1px] rounded-3xl border border-white/15 pointer-events-none"></div>
 
-            {isUserType && (
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-[#007aff] to-[#5856d6] rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                <span className="text-white text-xs font-bold">✓</span>
+          {/* Interactive glow effect */}
+          {isHovered && (
+            <div
+              className="absolute inset-0 rounded-3xl opacity-20 bg-gradient-to-r from-transparent via-current/30 to-transparent animate-glass-shimmer transition-opacity duration-700"
+              style={{ color: info.color }}
+            ></div>
+          )}
+
+          {/* Subtle noise texture for realism */}
+          <div
+            className="absolute inset-0 rounded-3xl opacity-[0.02] mix-blend-overlay pointer-events-none"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            }}
+          />
+
+          <div className="relative z-10 p-6 space-y-5">
+            {/* Header Section */}
+            <div className="flex items-start gap-4">
+              <div className="relative">
+                {/* Enhanced image container with liquid glass effect */}
+                <div className="relative p-1 bg-gradient-to-br from-white/25 via-white/15 to-white/10 backdrop-blur-lg rounded-3xl shadow-xl">
+                  <Image
+                    src={img}
+                    alt={`${type} icon`}
+                    width={56}
+                    height={56}
+                    className="w-14 h-14 rounded-2xl object-cover shadow-lg"
+                  />
+                  {/* Inner glow effect */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/20 via-transparent to-white/10 pointer-events-none"></div>
+                </div>
+
+                {isUserType && (
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-[#007aff] to-[#5856d6] rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                    <span className="text-white text-xs font-bold">✓</span>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <div className="flex-1 space-y-3">
-            <div className="flex items-center gap-3">
-              <h4
-                className="text-xl font-bold tracking-tight bg-gradient-to-r bg-clip-text text-transparent filter drop-shadow-sm"
-                style={{
-                  backgroundImage: `linear-gradient(135deg, ${info.color}, ${info.color}dd)`,
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
-              >
-                {info.name}
-              </h4>
-              {isUserType && (
-                <span className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white rounded-full shadow-lg animate-pulse">
-                  Your Type
-                </span>
-              )}
-            </div>
-            <p className="text-gray-800 leading-relaxed text-sm font-medium bg-white/30 backdrop-blur-sm rounded-xl p-3 border border-white/20">
-              {info.description}
-            </p>
-          </div>
-        </div>
-
-        {/* Enhanced Scientific Factors Preview */}
-        <div className="space-y-4">
-          <div className="flex flex-wrap gap-2">
-            {info.scientificFactors.keyTraits.slice(0, 3).map((trait: string, index: number) => (
-              <span
-                key={index}
-                className="px-4 py-2 text-xs font-medium rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/50 hover:scale-105 transition-all duration-300 transform-gpu"
-                style={{ color: info.color }}
-              >
-                {trait}
-              </span>
-            ))}
-            {info.scientificFactors.keyTraits.length > 3 && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="px-4 py-2 text-xs font-medium rounded-2xl bg-gradient-to-r from-white/30 to-white/20 backdrop-blur-md border border-white/25 text-gray-700 hover:from-white/40 hover:to-white/30 hover:scale-105 transition-all duration-300 transform-gpu shadow-lg"
-              >
-                +{info.scientificFactors.keyTraits.length - 3} more
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Enhanced Expandable Scientific Details */}
-        {isExpanded && (
-          <div className="space-y-5 pt-5 border-t border-white/30 bg-white/20 backdrop-blur-sm rounded-2xl p-4 -mx-2">
-            <div className="grid grid-cols-1 gap-4">
-              {/* Enhanced Decision Process */}
-              <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
-                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
-                  <span
-                    className="w-3 h-3 rounded-full shadow-lg animate-pulse"
-                    style={{ backgroundColor: info.color }}
-                  ></span>
-                  Decision Process
-                </h5>
-                <p className="text-xs text-gray-700 leading-relaxed pl-6 bg-white/40 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-                  {info.scientificFactors.decisionProcess}
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-3">
+                  <h4
+                    className="text-xl font-bold tracking-tight bg-gradient-to-r bg-clip-text text-transparent filter drop-shadow-sm"
+                    style={{
+                      backgroundImage: `linear-gradient(135deg, ${info.color}, ${info.color}dd)`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {info.name}
+                  </h4>
+                  {isUserType && (
+                    <span className="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#007aff] to-[#5856d6] text-white rounded-full shadow-lg animate-pulse">
+                      Your Type
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-800 leading-relaxed text-sm font-medium bg-white/30 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                  {info.description}
                 </p>
               </div>
+            </div>
 
-              {/* Enhanced Strengths */}
-              <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
-                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
-                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-600 shadow-lg animate-pulse"></span>
-                  Strengths
-                </h5>
-                <div className="flex flex-wrap gap-2 pl-6">
-                  {info.scientificFactors.strengths.map((strength: string, index: number) => (
+            {/* Enhanced Scientific Factors Preview */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                {info.scientificFactors.keyTraits
+                  .slice(0, 3)
+                  .map((trait: string, index: number) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 text-xs bg-gradient-to-r from-green-50/80 to-green-100/80 text-green-700 rounded-xl border border-green-200/50 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform duration-200"
+                      className="px-4 py-2 text-xs font-medium rounded-2xl bg-white/40 backdrop-blur-md border border-white/30 shadow-lg hover:bg-white/50 hover:scale-105 transition-all duration-300 transform-gpu"
+                      style={{ color: info.color }}
                     >
-                      {strength}
+                      {trait}
                     </span>
                   ))}
-                </div>
-              </div>
-
-              {/* Enhanced Challenges */}
-              {info.scientificFactors.challenges && (
-                <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
-                  <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
-                    <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg animate-pulse"></span>
-                    Challenges
-                  </h5>
-                  <div className="flex flex-wrap gap-2 pl-6">
-                    {info.scientificFactors.challenges.map((challenge: string, index: number) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1.5 text-xs bg-gradient-to-r from-amber-50/80 to-amber-100/80 text-amber-700 rounded-xl border border-amber-200/50 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform duration-200"
-                      >
-                        {challenge}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Enhanced Character Examples Section */}
-        {characterExamples.length > 0 && (
-          <div className="pt-5 border-t border-white/30 space-y-4">
-            <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
-              <span className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 shadow-lg animate-pulse"></span>
-              Character Examples
-              <span className="text-xs text-gray-600 font-normal bg-white/40 backdrop-blur-sm px-2 py-1 rounded-lg border border-white/20">
-                (click card to shuffle all, click character to cycle)
-              </span>
-            </h5>
-            <div className="grid grid-cols-2 gap-3">
-              {characterExamples.map((character, index) => {
-                const pool = characterPoolsByMBTI[type]?.[character.franchise] || [];
-                const hasMultiple = pool.length > 1;
-                const colors = getFranchiseColors(character.franchise);
-
-                return (
+                {info.scientificFactors.keyTraits.length > 3 && (
                   <button
-                    key={character.franchise}
-                    onClick={() => hasMultiple && cycleCharacter(type, character.franchise)}
-                    className={cn(
-                      "p-3 rounded-2xl text-left transition-all duration-300 border border-white/30 bg-white/40 backdrop-blur-md shadow-lg transform-gpu",
-                      hasMultiple
-                        ? "hover:scale-105 hover:shadow-xl hover:bg-white/50 cursor-pointer"
-                        : "cursor-default",
-                      "hover:-translate-y-0.5"
-                    )}
-                    disabled={!hasMultiple}
-                    title={hasMultiple ? `Click to cycle through ${character.franchise} characters` : character.name}
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="px-4 py-2 text-xs font-medium rounded-2xl bg-gradient-to-r from-white/30 to-white/20 backdrop-blur-md border border-white/25 text-gray-700 hover:from-white/40 hover:to-white/30 hover:scale-105 transition-all duration-300 transform-gpu shadow-lg"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-gray-800 truncate flex items-center gap-1">
-                          {character.name}
-                          {hasMultiple && (
-                            <span className="text-purple-500 opacity-70 animate-spin">↻</span>
-                          )}
-                        </p>
-                        <p
-                          className="text-xs font-medium mt-2 px-3 py-1 rounded-xl text-center backdrop-blur-sm border border-white/20 shadow-sm"
-                          style={{
-                            backgroundColor: `${colors.backgroundColor}40`,
-                            color: colors.color,
-                            borderColor: `${colors.backgroundColor}60`
-                          }}
-                        >
-                          {character.franchise}
-                        </p>
+                    +{info.scientificFactors.keyTraits.length - 3} more
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Enhanced Expandable Scientific Details */}
+            {isExpanded && (
+              <div className="space-y-5 pt-5 border-t border-white/30 bg-white/20 backdrop-blur-sm rounded-2xl p-4 -mx-2">
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Enhanced Decision Process */}
+                  <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
+                    <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                      <span
+                        className="w-3 h-3 rounded-full shadow-lg animate-pulse"
+                        style={{ backgroundColor: info.color }}
+                      ></span>
+                      Decision Process
+                    </h5>
+                    <p className="text-xs text-gray-700 leading-relaxed pl-6 bg-white/40 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                      {info.scientificFactors.decisionProcess}
+                    </p>
+                  </div>
+
+                  {/* Enhanced Strengths */}
+                  <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
+                    <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                      <span className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-600 shadow-lg animate-pulse"></span>
+                      Strengths
+                    </h5>
+                    <div className="flex flex-wrap gap-2 pl-6">
+                      {info.scientificFactors.strengths.map(
+                        (strength: string, index: number) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1.5 text-xs bg-gradient-to-r from-green-50/80 to-green-100/80 text-green-700 rounded-xl border border-green-200/50 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform duration-200"
+                          >
+                            {strength}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Enhanced Challenges */}
+                  {info.scientificFactors.challenges && (
+                    <div className="space-y-3 p-3 bg-white/30 backdrop-blur-md rounded-xl border border-white/20">
+                      <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                        <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg animate-pulse"></span>
+                        Challenges
+                      </h5>
+                      <div className="flex flex-wrap gap-2 pl-6">
+                        {info.scientificFactors.challenges.map(
+                          (challenge: string, index: number) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1.5 text-xs bg-gradient-to-r from-amber-50/80 to-amber-100/80 text-amber-700 rounded-xl border border-amber-200/50 backdrop-blur-sm shadow-sm hover:scale-105 transition-transform duration-200"
+                            >
+                              {challenge}
+                            </span>
+                          )
+                        )}
                       </div>
                     </div>
-                  </button>
-                );
-              })}
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Enhanced Character Examples Section */}
+            {characterExamples.length > 0 && (
+              <div className="pt-5 border-t border-white/30 space-y-4">
+                <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 shadow-lg animate-pulse"></span>
+                  Character Examples
+                  <span className="text-xs text-gray-600 font-normal bg-white/40 backdrop-blur-sm px-2 py-1 rounded-lg border border-white/20">
+                    (click card to shuffle all, click character to cycle)
+                  </span>
+                </h5>
+                <div className="grid grid-cols-2 gap-3">
+                  {characterExamples.map((character, index) => {
+                    const pool =
+                      characterPoolsByMBTI[type]?.[character.franchise] || [];
+                    const hasMultiple = pool.length > 1;
+                    const colors = getFranchiseColors(character.franchise);
+
+                    return (
+                      <button
+                        key={character.franchise}
+                        onClick={() =>
+                          hasMultiple &&
+                          cycleCharacter(type, character.franchise)
+                        }
+                        className={cn(
+                          "p-3 rounded-2xl text-left transition-all duration-300 border border-white/30 bg-white/40 backdrop-blur-md shadow-lg transform-gpu",
+                          hasMultiple
+                            ? "hover:scale-105 hover:shadow-xl hover:bg-white/50 cursor-pointer"
+                            : "cursor-default",
+                          "hover:-translate-y-0.5"
+                        )}
+                        disabled={!hasMultiple}
+                        title={
+                          hasMultiple
+                            ? `Click to cycle through ${character.franchise} characters`
+                            : character.name
+                        }
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-gray-800 truncate flex items-center gap-1">
+                              {character.name}
+                              {hasMultiple && (
+                                <span className="text-purple-500 opacity-70 animate-spin">
+                                  ↻
+                                </span>
+                              )}
+                            </p>
+                            <p
+                              className="text-xs font-medium mt-2 px-3 py-1 rounded-xl text-center backdrop-blur-sm border border-white/20 shadow-sm"
+                              style={{
+                                backgroundColor: `${colors.backgroundColor}40`,
+                                color: colors.color,
+                                borderColor: `${colors.backgroundColor}60`,
+                              }}
+                            >
+                              {character.franchise}
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Enhanced Expand/Collapse Button */}
+            <div className="flex justify-center pt-4">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center gap-3 px-6 py-3 text-sm font-medium rounded-2xl bg-gradient-to-r from-white/50 to-white/40 backdrop-blur-lg border border-white/30 hover:from-white/60 hover:to-white/50 hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-lg transform-gpu"
+                style={{ color: info.color }}
+              >
+                {isExpanded ? (
+                  <>
+                    <span>Show Less</span>
+                    <svg
+                      className="w-4 h-4 transition-transform duration-300 group-hover:scale-110"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 15l7-7 7 7"
+                      />
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    <span>Explore Details</span>
+                    <svg
+                      className="w-4 h-4 transition-transform duration-300 group-hover:scale-110"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </>
+                )}
+              </button>
             </div>
           </div>
-        )}
-
-        {/* Enhanced Expand/Collapse Button */}
-        <div className="flex justify-center pt-4">
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-3 px-6 py-3 text-sm font-medium rounded-2xl bg-gradient-to-r from-white/50 to-white/40 backdrop-blur-lg border border-white/30 hover:from-white/60 hover:to-white/50 hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-lg transform-gpu"
-            style={{ color: info.color }}
-          >
-            {isExpanded ? (
-              <>
-                <span>Show Less</span>
-                <svg className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                </svg>
-              </>
-            ) : (
-              <>
-                <span>Explore Details</span>
-                <svg className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </>
-            )}
-          </button>
         </div>
-      </div>
-    </div>
-  );
-}, (prevProps, nextProps) => {
-  // Custom comparison function for React.memo
-  // Check if character examples have actually changed (not just length)
-  const characterExamplesChanged =
-    prevProps.characterExamples.length !== nextProps.characterExamples.length ||
-    prevProps.characterExamples.some((char, index) =>
-      char.name !== nextProps.characterExamples[index]?.name ||
-      char.franchise !== nextProps.characterExamples[index]?.franchise
-    );
+      );
+    },
+    (prevProps, nextProps) => {
+      // Custom comparison function for React.memo
+      // Check if character examples have actually changed (not just length)
+      const characterExamplesChanged =
+        prevProps.characterExamples.length !==
+          nextProps.characterExamples.length ||
+        prevProps.characterExamples.some(
+          (char, index) =>
+            char.name !== nextProps.characterExamples[index]?.name ||
+            char.franchise !== nextProps.characterExamples[index]?.franchise
+        );
 
-  return (
-    prevProps.type === nextProps.type &&
-    prevProps.isUserType === nextProps.isUserType &&
-    !characterExamplesChanged &&
-    prevProps.img === nextProps.img
+      return (
+        prevProps.type === nextProps.type &&
+        prevProps.isUserType === nextProps.isUserType &&
+        !characterExamplesChanged &&
+        prevProps.img === nextProps.img
+      );
+    }
   );
-});
 
-EnhancedPersonalityCard.displayName = 'EnhancedPersonalityCard';
+EnhancedPersonalityCard.displayName = "EnhancedPersonalityCard";
 
 // Types for the charts component
 type ChartProps = {
@@ -1423,14 +1123,22 @@ const SliderInput: React.FC<SliderInputProps> = ({
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <span className={`transition-transform duration-300 ${isHovered ? 'scale-125' : ''}`}>ⓘ</span>
+              <span
+                className={`transition-transform duration-300 ${
+                  isHovered ? "scale-125" : ""
+                }`}
+              >
+                ⓘ
+              </span>
             </button>
           </PopoverTrigger>
           <PopoverContent
             id={`${id}-info`}
             className="max-w-xs bg-white/20 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-2xl p-4"
           >
-            <p className="font-semibold text-gray-800 mb-3">{info.description}</p>
+            <p className="font-semibold text-gray-800 mb-3">
+              {info.description}
+            </p>
             <div className="mt-3 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
               <div className="bg-white/30 backdrop-blur-md p-3 rounded-xl border border-white/20 shadow-lg">
                 <span className="font-bold text-gray-800">Low:</span>{" "}
@@ -1453,7 +1161,9 @@ const SliderInput: React.FC<SliderInputProps> = ({
             max={1}
             step={0.05}
             value={value}
-            onChange={(_, v) => onChange((Array.isArray(v) ? v[0] : v).toString())}
+            onChange={(_, v) =>
+              onChange((Array.isArray(v) ? v[0] : v).toString())
+            }
             aria-label={info.label}
             aria-describedby={`${id}-info`}
             className="flex-grow"
@@ -1499,8 +1209,6 @@ const Charts = dynamic(() => import("@/components/UserDecisionCharts"), {
   ),
 });
 
-
-
 // Enhanced Tabs Component
 export const StyledTabs: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -1535,203 +1243,6 @@ type MBTIType =
   | "ISFP"
   | "ESTP"
   | "ESFP";
-
-// Harry Potter Houses mapping for MBTI types
-const harryPotterHousesByMBTI: Record<
-  string,
-  {
-    house: string;
-    color: string;
-    traits: string[];
-  }
-> = {
-  // Gryffindor - brave, daring, chivalrous
-  ENFJ: {
-    house: "Gryffindor",
-    color: "#740001", // Gryffindor red
-    traits: ["bravery", "courage", "determination", "leadership"],
-  },
-  ENTJ: {
-    house: "Gryffindor",
-    color: "#740001",
-    traits: ["bravery", "leadership", "boldness", "confidence"],
-  },
-  ESFP: {
-    house: "Gryffindor",
-    color: "#740001",
-    traits: ["courage", "adventurous", "enthusiastic", "spontaneous"],
-  },
-  ESTP: {
-    house: "Gryffindor",
-    color: "#740001",
-    traits: ["boldness", "risk-taking", "action-oriented", "adaptable"],
-  },
-  // Hufflepuff - loyal, patient, fair, hard-working
-  ISFJ: {
-    house: "Hufflepuff",
-    color: "#FFD800", // Hufflepuff yellow
-    traits: ["loyalty", "patience", "fairness", "hard-working"],
-  },
-  ESFJ: {
-    house: "Hufflepuff",
-    color: "#FFD800",
-    traits: ["loyalty", "supportive", "caring", "inclusive"],
-  },
-  ISFP: {
-    house: "Hufflepuff",
-    color: "#FFD800",
-    traits: ["patience", "kindness", "harmony", "authenticity"],
-  },
-  ENFP: {
-    house: "Hufflepuff",
-    color: "#FFD800",
-    traits: ["enthusiasm", "inclusivity", "optimism", "empathy"],
-  },
-  // Ravenclaw - intelligent, wise, creative
-  INTJ: {
-    house: "Ravenclaw",
-    color: "#0E1A40", // Ravenclaw blue
-    traits: ["intelligence", "strategy", "independence", "vision"],
-  },
-  INTP: {
-    house: "Ravenclaw",
-    color: "#0E1A40",
-    traits: ["wisdom", "analysis", "creativity", "logic"],
-  },
-  INFJ: {
-    house: "Ravenclaw",
-    color: "#0E1A40",
-    traits: ["insight", "intuition", "wisdom", "idealism"],
-  },
-  INFP: {
-    house: "Ravenclaw",
-    color: "#0E1A40",
-    traits: ["creativity", "individuality", "depth", "authenticity"],
-  },
-  // Slytherin - ambitious, cunning, resourceful
-  ESTJ: {
-    house: "Slytherin",
-    color: "#1A472A", // Slytherin green
-    traits: ["ambition", "leadership", "efficiency", "determination"],
-  },
-  ISTJ: {
-    house: "Slytherin",
-    color: "#1A472A",
-    traits: ["resourcefulness", "persistence", "strategy", "reliability"],
-  },
-  ENTP: {
-    house: "Slytherin",
-    color: "#1A472A",
-    traits: ["cunning", "adaptability", "innovation", "persuasion"],
-  },
-  ISTP: {
-    house: "Slytherin",
-    color: "#1A472A",
-    traits: ["resourcefulness", "pragmatism", "independence", "efficiency"],
-  },
-};
-
-// Example characters and quotes for each Hogwarts house
-const hogwartsHouseInfo: Record<string, { characters: string[]; quote: string }> = {
-  Gryffindor: {
-    characters: ["Harry Potter", "Hermione Granger", "Ron Weasley"],
-    quote: "Daring, nerve, and chivalry set Gryffindors apart.",
-  },
-  Hufflepuff: {
-    characters: ["Cedric Diggory", "Nymphadora Tonks", "Pomona Sprout"],
-    quote: "Those patient Hufflepuffs are true and unafraid of toil.",
-  },
-  Ravenclaw: {
-    characters: ["Luna Lovegood", "Cho Chang", "Garrick Ollivander"],
-    quote: "Wit beyond measure is man's greatest treasure.",
-  },
-  Slytherin: {
-    characters: ["Severus Snape", "Draco Malfoy", "Tom Riddle"],
-    quote: "Those cunning folk use any means to achieve their ends.",
-  },
-};
-
-// Helper function to get Harry Potter house for a MBTI type
-const getHarryPotterHouse = (mbtiType: string): string => {
-  return harryPotterHousesByMBTI[mbtiType]?.house || "Unknown";
-};
-
-// Group MBTI results by Hogwarts houses
-const groupResultsByHogwartsHouses = (results: DecisionService.SimulationResult[]) => {
-  const houseGroups: Record<
-    string,
-    {
-      name: string;
-      color: string;
-      count: number;
-      types: string[];
-      decisions: Record<string, number>;
-      averageScore: number;
-    }
-  > = {
-    Gryffindor: {
-      name: "Gryffindor",
-      color: "#740001",
-      count: 0,
-      types: [],
-      decisions: {},
-      averageScore: 0,
-    },
-    Hufflepuff: {
-      name: "Hufflepuff",
-      color: "#FFD800",
-      count: 0,
-      types: [],
-      decisions: {},
-      averageScore: 0,
-    },
-    Ravenclaw: {
-      name: "Ravenclaw",
-      color: "#0E1A40",
-      count: 0,
-      types: [],
-      decisions: {},
-      averageScore: 0,
-    },
-    Slytherin: {
-      name: "Slytherin",
-      color: "#1A472A",
-      count: 0,
-      types: [],
-      decisions: {},
-      averageScore: 0,
-    },
-  };
-
-  // Group results by house
-  let totalScores: Record<string, number> = {
-    Gryffindor: 0,
-    Hufflepuff: 0,
-    Ravenclaw: 0,
-    Slytherin: 0,
-  };
-
-  results.forEach((result) => {
-    const house = getHarryPotterHouse(result.name);
-    if (houseGroups[house]) {
-      houseGroups[house].count++;
-      houseGroups[house].types.push(result.name);
-      houseGroups[house].decisions[result.decision] =
-        (houseGroups[house].decisions[result.decision] || 0) + 1;
-      totalScores[house] += result.score;
-    }
-  });
-
-  // Calculate average scores
-  Object.keys(houseGroups).forEach((house) => {
-    if (houseGroups[house].count > 0) {
-      houseGroups[house].averageScore =
-        totalScores[house] / houseGroups[house].count;
-    }
-  });
-
-  return houseGroups;
-};
 
 // Houses Content Component
 const HousesContent: React.FC<{
@@ -1817,33 +1328,31 @@ const HousesContent: React.FC<{
 
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Decisions:</p>
-                  {Object.entries(house.decisions).map(
-                    ([decision, count]) => {
-                      const decisionColor =
-                        decision === "Proceed Strategically"
-                          ? "#4ade80"
-                          : decision === "Request Clarification"
-                          ? "#facc15"
-                          : "#f87171";
+                  {Object.entries(house.decisions).map(([decision, count]) => {
+                    const decisionColor =
+                      decision === "Proceed Strategically"
+                        ? "#4ade80"
+                        : decision === "Request Clarification"
+                        ? "#facc15"
+                        : "#f87171";
 
-                      return (
-                        <div
-                          key={decision}
-                          className="flex items-center justify-between text-xs mb-1"
+                    return (
+                      <div
+                        key={decision}
+                        className="flex items-center justify-between text-xs mb-1"
+                      >
+                        <span
+                          style={{ color: decisionColor }}
+                          className="font-medium"
                         >
-                          <span
-                            style={{ color: decisionColor }}
-                            className="font-medium"
-                          >
-                            {decision}
-                          </span>
-                          <span className="bg-gray-100 px-2 py-0.5 rounded">
-                            {count}/{house.count}
-                          </span>
-                        </div>
-                      );
-                    }
-                  )}
+                          {decision}
+                        </span>
+                        <span className="bg-gray-100 px-2 py-0.5 rounded">
+                          {count}/{house.count}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1862,10 +1371,7 @@ const HousesContent: React.FC<{
                 </div>
                 <div className="flex justify-between text-xs">
                   <span>0%</span>
-                  <span
-                    className="font-medium"
-                    style={{ color: house.color }}
-                  >
+                  <span className="font-medium" style={{ color: house.color }}>
                     {(house.averageScore * 100).toFixed(1)}%
                   </span>
                   <span>100%</span>
@@ -1988,7 +1494,9 @@ const OfficeContent: React.FC<{
   results: DecisionService.SimulationResult[];
   mbtiDescriptions: Record<string, DecisionService.MBTIDescription>;
 }> = ({ results, mbtiDescriptions }) => {
-  const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(null);
+  const [hoveredDepartment, setHoveredDepartment] = useState<string | null>(
+    null
+  );
 
   const handleDepartmentMouseEnter = (department: string) => {
     setHoveredDepartment(department);
@@ -2004,146 +1512,151 @@ const OfficeContent: React.FC<{
   return (
     <div className="space-y-6">
       <div className="mb-4 text-sm text-[#007aff] font-medium bg-[#007aff]/5 p-3 rounded-lg">
-        Welcome to Dunder Mifflin Scranton! See how different office departments approach decisions
-        based on their workplace roles and team dynamics. That&apos;s what she said... about decision analysis!
+        Welcome to Dunder Mifflin Scranton! See how different office departments
+        approach decisions based on their workplace roles and team dynamics.
+        That&apos;s what she said... about decision analysis!
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {Object.values(officeDepartmentsData).filter(dept => dept.count > 0).map((department) => {
-          // Find majority decision for this department
-          const departmentDecisions = Object.entries(department.decisions);
-          const majorityDecision =
-            departmentDecisions.length > 0
-              ? departmentDecisions.reduce((a, b) => (a[1] > b[1] ? a : b))[0]
-              : "No decision";
+        {Object.values(officeDepartmentsData)
+          .filter((dept) => dept.count > 0)
+          .map((department) => {
+            // Find majority decision for this department
+            const departmentDecisions = Object.entries(department.decisions);
+            const majorityDecision =
+              departmentDecisions.length > 0
+                ? departmentDecisions.reduce((a, b) => (a[1] > b[1] ? a : b))[0]
+                : "No decision";
 
-          const isHighlighted = hoveredDepartment === department.name;
+            const isHighlighted = hoveredDepartment === department.name;
 
-          return (
-            <div
-              key={department.name}
-              className={`p-4 rounded-xl shadow-sm transition-all duration-300 ${
-                hoveredDepartment && !isHighlighted ? "opacity-50" : "opacity-100"
-              }`}
-              style={{
-                backgroundColor: `${department.color}15`,
-                borderLeft: `4px solid ${department.color}`,
-              }}
-              onMouseEnter={() => handleDepartmentMouseEnter(department.name)}
-              onMouseLeave={handleDepartmentMouseLeave}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: department.color }}
-                ></div>
-                <h3
-                  className="font-bold text-lg"
-                  style={{ color: department.color }}
-                >
-                  {department.name}
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Personalities:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {department.types.map((type) => (
-                      <span
-                        key={type}
-                        className="text-xs font-medium px-2 py-1 rounded-md"
-                        style={{
-                          backgroundColor: `${mbtiDescriptions[type].color}20`,
-                          color: mbtiDescriptions[type].color,
-                        }}
-                      >
-                        {type}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Characters: {department.characters.join(", ")}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Decisions:</p>
-                  {Object.entries(department.decisions).map(
-                    ([decision, count]) => {
-                      const decisionColor =
-                        decision === "Proceed Strategically"
-                          ? "#4ade80"
-                          : decision === "Request Clarification"
-                          ? "#facc15"
-                          : "#f87171";
-
-                      return (
-                        <div
-                          key={decision}
-                          className="flex items-center justify-between text-xs mb-1"
-                        >
-                          <span
-                            style={{ color: decisionColor }}
-                            className="font-medium"
-                          >
-                            {decision}
-                          </span>
-                          <span className="bg-gray-100 px-2 py-0.5 rounded">
-                            {count}/{department.count}
-                          </span>
-                        </div>
-                      );
-                    }
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <p className="text-sm text-gray-600 mb-1">
-                  Average Confidence:
-                </p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+            return (
+              <div
+                key={department.name}
+                className={`p-4 rounded-xl shadow-sm transition-all duration-300 ${
+                  hoveredDepartment && !isHighlighted
+                    ? "opacity-50"
+                    : "opacity-100"
+                }`}
+                style={{
+                  backgroundColor: `${department.color}15`,
+                  borderLeft: `4px solid ${department.color}`,
+                }}
+                onMouseEnter={() => handleDepartmentMouseEnter(department.name)}
+                onMouseLeave={handleDepartmentMouseLeave}
+              >
+                <div className="flex items-center gap-2 mb-3">
                   <div
-                    className="h-2.5 rounded-full"
-                    style={{
-                      width: `${department.averageScore * 100}%`,
-                      backgroundColor: department.color,
-                    }}
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: department.color }}
                   ></div>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>0%</span>
-                  <span
-                    className="font-medium"
+                  <h3
+                    className="font-bold text-lg"
                     style={{ color: department.color }}
                   >
-                    {(department.averageScore * 100).toFixed(1)}%
-                  </span>
-                  <span>100%</span>
+                    {department.name}
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Personalities:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {department.types.map((type) => (
+                        <span
+                          key={type}
+                          className="text-xs font-medium px-2 py-1 rounded-md"
+                          style={{
+                            backgroundColor: `${mbtiDescriptions[type].color}20`,
+                            color: mbtiDescriptions[type].color,
+                          }}
+                        >
+                          {type}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Characters: {department.characters.join(", ")}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Decisions:</p>
+                    {Object.entries(department.decisions).map(
+                      ([decision, count]) => {
+                        const decisionColor =
+                          decision === "Proceed Strategically"
+                            ? "#4ade80"
+                            : decision === "Request Clarification"
+                            ? "#facc15"
+                            : "#f87171";
+
+                        return (
+                          <div
+                            key={decision}
+                            className="flex items-center justify-between text-xs mb-1"
+                          >
+                            <span
+                              style={{ color: decisionColor }}
+                              className="font-medium"
+                            >
+                              {decision}
+                            </span>
+                            <span className="bg-gray-100 px-2 py-0.5 rounded">
+                              {count}/{department.count}
+                            </span>
+                          </div>
+                        );
+                      }
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600 mb-1">
+                    Average Confidence:
+                  </p>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div
+                      className="h-2.5 rounded-full"
+                      style={{
+                        width: `${department.averageScore * 100}%`,
+                        backgroundColor: department.color,
+                      }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span>0%</span>
+                    <span
+                      className="font-medium"
+                      style={{ color: department.color }}
+                    >
+                      {(department.averageScore * 100).toFixed(1)}%
+                    </span>
+                    <span>100%</span>
+                  </div>
+                </div>
+
+                <div
+                  className="mt-4 p-3 rounded-lg"
+                  style={{ backgroundColor: `${department.color}10` }}
+                >
+                  <p
+                    className="text-sm font-medium mb-1"
+                    style={{ color: department.color }}
+                  >
+                    Department Verdict: {majorityDecision}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {officeDepartmentInfo[department.name]?.description}
+                  </p>
+                  <p className="text-[10px] italic text-gray-500 mt-1">
+                    &quot;{officeDepartmentInfo[department.name]?.motto}&quot;
+                  </p>
                 </div>
               </div>
-
-              <div
-                className="mt-4 p-3 rounded-lg"
-                style={{ backgroundColor: `${department.color}10` }}
-              >
-                <p
-                  className="text-sm font-medium mb-1"
-                  style={{ color: department.color }}
-                >
-                  Department Verdict: {majorityDecision}
-                </p>
-                <p className="text-xs text-gray-600">
-                  {officeDepartmentInfo[department.name]?.description}
-                </p>
-                <p className="text-[10px] italic text-gray-500 mt-1">
-                  &quot;{officeDepartmentInfo[department.name]?.motto}&quot;
-                </p>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
       </div>
 
       {/* Department Comparison Chart */}
@@ -2153,7 +1666,11 @@ const OfficeContent: React.FC<{
         </h3>
 
         <div className="space-y-4">
-          {["Proceed Strategically", "Request Clarification", "Delay or Disengage"].map((decision) => {
+          {[
+            "Proceed Strategically",
+            "Request Clarification",
+            "Delay or Disengage",
+          ].map((decision) => {
             const decisionColor =
               decision === "Proceed Strategically"
                 ? "#4ade80"
@@ -2163,15 +1680,21 @@ const OfficeContent: React.FC<{
 
             return (
               <div key={decision} className="space-y-2">
-                <h4 className="font-medium text-sm" style={{ color: decisionColor }}>
+                <h4
+                  className="font-medium text-sm"
+                  style={{ color: decisionColor }}
+                >
                   {decision}
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
                   {Object.values(officeDepartmentsData)
-                    .filter(dept => dept.count > 0)
+                    .filter((dept) => dept.count > 0)
                     .map((department) => {
                       const count = department.decisions[decision] || 0;
-                      const percentage = department.count > 0 ? (count / department.count) * 100 : 0;
+                      const percentage =
+                        department.count > 0
+                          ? (count / department.count) * 100
+                          : 0;
 
                       return (
                         <div
@@ -2179,7 +1702,10 @@ const OfficeContent: React.FC<{
                           className="flex items-center justify-between p-2 rounded"
                           style={{ backgroundColor: `${department.color}10` }}
                         >
-                          <span className="text-xs font-medium" style={{ color: department.color }}>
+                          <span
+                            className="text-xs font-medium"
+                            style={{ color: department.color }}
+                          >
                             {department.name}
                           </span>
                           <span className="text-xs font-mono">
@@ -2209,10 +1735,7 @@ const OfficeContent: React.FC<{
                 backgroundColor: `${deptData.color}15`,
               }}
             >
-              <p
-                className="font-medium mb-1"
-                style={{ color: deptData.color }}
-              >
+              <p className="font-medium mb-1" style={{ color: deptData.color }}>
                 {deptName} Characteristics
               </p>
               <p className="text-xs text-gray-600 mb-2">
@@ -2237,7 +1760,7 @@ export default function UserDecisionDashboard() {
     performanceLevel,
     shouldReduceAnimations,
     shouldReduceEffects,
-    getAnimationDuration
+    getAnimationDuration,
   } = useAdaptivePerformance();
   const mbtiTypes: MBTIType[] = DecisionService.archetypes.map(
     (a) => a.name as MBTIType
@@ -2256,15 +1779,14 @@ export default function UserDecisionDashboard() {
   const [mbtiSubTab, setMbtiSubTab] = useState("descriptions");
   const [resultsSubTab, setResultsSubTab] = useState("analysis");
 
-
-
-
   // Character cycling state - tracks current index for each MBTI type and franchise
-  const [characterIndices, setCharacterIndices] = useState<Record<string, Record<string, number>>>(() => {
+  const [characterIndices, setCharacterIndices] = useState<
+    Record<string, Record<string, number>>
+  >(() => {
     const initialIndices: Record<string, Record<string, number>> = {};
-    mbtiTypes.forEach(mbtiType => {
+    mbtiTypes.forEach((mbtiType) => {
       initialIndices[mbtiType] = {};
-      franchiseCategories.forEach(franchise => {
+      franchiseCategories.forEach((franchise) => {
         initialIndices[mbtiType][franchise] = 0;
       });
     });
@@ -2273,7 +1795,7 @@ export default function UserDecisionDashboard() {
 
   // Optimized function to cycle to next character in a franchise for a specific MBTI type
   const cycleCharacter = useCallback((mbtiType: string, franchise: string) => {
-    setCharacterIndices(prev => {
+    setCharacterIndices((prev) => {
       const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
       if (pool.length <= 1) return prev; // No cycling needed if only one character
 
@@ -2287,21 +1809,21 @@ export default function UserDecisionDashboard() {
         ...prev,
         [mbtiType]: {
           ...prev[mbtiType],
-          [franchise]: nextIndex
-        }
+          [franchise]: nextIndex,
+        },
       };
     });
   }, []);
 
   // Optimized function to shuffle all characters for a specific MBTI type
   const shuffleAllCharacters = useCallback((mbtiType: string) => {
-    setCharacterIndices(prev => {
+    setCharacterIndices((prev) => {
       const currentIndices = prev[mbtiType] || {};
       const newIndices: Record<string, number> = {};
       let hasChanges = false;
 
       // Shuffle each franchise's character index
-      franchiseCategories.forEach(franchise => {
+      franchiseCategories.forEach((franchise) => {
         const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
         if (pool.length > 1) {
           // Generate a random index different from the current one
@@ -2322,7 +1844,7 @@ export default function UserDecisionDashboard() {
 
       return {
         ...prev,
-        [mbtiType]: newIndices
+        [mbtiType]: newIndices,
       };
     });
   }, []);
@@ -2337,29 +1859,35 @@ export default function UserDecisionDashboard() {
   }, [mbtiTypes]);
 
   // Memoized helper function to get current character for display
-  const getCurrentCharacterForFranchise = useCallback((
-    mbtiType: string,
-    franchise: string,
-    characterIndices: Record<string, Record<string, number>>
-  ): { name: string; franchise: string } => {
-    const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
-    if (pool.length === 0) return { name: "Unknown", franchise };
+  const getCurrentCharacterForFranchise = useCallback(
+    (
+      mbtiType: string,
+      franchise: string,
+      characterIndices: Record<string, Record<string, number>>
+    ): { name: string; franchise: string } => {
+      const pool = characterPoolsByMBTI[mbtiType]?.[franchise] || [];
+      if (pool.length === 0) return { name: "Unknown", franchise };
 
-    const currentIndex = characterIndices[mbtiType]?.[franchise] || 0;
-    const characterName = pool[currentIndex % pool.length];
+      const currentIndex = characterIndices[mbtiType]?.[franchise] || 0;
+      const characterName = pool[currentIndex % pool.length];
 
-    return { name: characterName, franchise };
-  }, []);
+      return { name: characterName, franchise };
+    },
+    []
+  );
 
   // Memoized helper function to get all current characters for an MBTI type
-  const getCurrentCharactersForMBTI = useCallback((
-    mbtiType: string,
-    characterIndices: Record<string, Record<string, number>>
-  ): Array<{ name: string; franchise: string }> => {
-    return franchiseCategories.map(franchise =>
-      getCurrentCharacterForFranchise(mbtiType, franchise, characterIndices)
-    );
-  }, [getCurrentCharacterForFranchise]);
+  const getCurrentCharactersForMBTI = useCallback(
+    (
+      mbtiType: string,
+      characterIndices: Record<string, Record<string, number>>
+    ): Array<{ name: string; franchise: string }> => {
+      return franchiseCategories.map((franchise) =>
+        getCurrentCharacterForFranchise(mbtiType, franchise, characterIndices)
+      );
+    },
+    [getCurrentCharacterForFranchise]
+  );
 
   // Memoized MBTI image generation
   const getMBTIImage = useMemo(() => {
@@ -2374,22 +1902,23 @@ export default function UserDecisionDashboard() {
   }, []);
 
   // Memoized helper function to get franchise colors
-  const getFranchiseColors = useCallback((franchise: string): { backgroundColor: string; color: string } => {
-    switch (franchise) {
-      case "The Office":
-        return { backgroundColor: "#e3f2fd", color: "#1976d2" };
-      case "Harry Potter":
-        return { backgroundColor: "#f3e5f5", color: "#7b1fa2" };
-      case "Marvel":
-        return { backgroundColor: "#ffebee", color: "#c62828" };
-      case "DC":
-        return { backgroundColor: "#e8f5e8", color: "#2e7d32" };
-      default:
-        return { backgroundColor: "#f5f5f5", color: "#666666" };
-    }
-  }, []);
-
-
+  const getFranchiseColors = useCallback(
+    (franchise: string): { backgroundColor: string; color: string } => {
+      switch (franchise) {
+        case "The Office":
+          return { backgroundColor: "#e3f2fd", color: "#1976d2" };
+        case "Harry Potter":
+          return { backgroundColor: "#f3e5f5", color: "#7b1fa2" };
+        case "Marvel":
+          return { backgroundColor: "#ffebee", color: "#c62828" };
+        case "DC":
+          return { backgroundColor: "#e8f5e8", color: "#2e7d32" };
+        default:
+          return { backgroundColor: "#f5f5f5", color: "#666666" };
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -2430,25 +1959,29 @@ export default function UserDecisionDashboard() {
   }, []);
 
   // Optimized input change handler with immediate UI update and debounced calculation
-  const handleInputChange = useCallback((key: DecisionService.FactorKey, value: string) => {
-    const numericValue = parseFloat(value);
+  const handleInputChange = useCallback(
+    (key: DecisionService.FactorKey, value: string) => {
+      const numericValue = parseFloat(value);
 
-    // Immediate UI update for responsiveness
-    setInputs((prev) => ({ ...prev, [key]: numericValue }));
+      // Immediate UI update for responsiveness
+      setInputs((prev) => ({ ...prev, [key]: numericValue }));
 
-    // Clear active preset when manually adjusting inputs
-    if (activePreset) {
-      setActivePreset(null);
-    }
-  }, [activePreset]);
+      // Clear active preset when manually adjusting inputs
+      if (activePreset) {
+        setActivePreset(null);
+      }
+    },
+    [activePreset]
+  );
 
-  const applyPreset = useCallback((
-    presetName: keyof typeof DecisionService.presetScenarios
-  ) => {
-    setInputs(DecisionService.presetScenarios[presetName]);
-    setActivePreset(presetName);
-    setActiveTab("factors");
-  }, []);
+  const applyPreset = useCallback(
+    (presetName: keyof typeof DecisionService.presetScenarios) => {
+      setInputs(DecisionService.presetScenarios[presetName]);
+      setActivePreset(presetName);
+      setActiveTab("factors");
+    },
+    []
+  );
 
   // Compute majority decision from simulation results
   const majorityDecisionData =
@@ -2470,16 +2003,13 @@ export default function UserDecisionDashboard() {
         decision,
         count,
         percentage: (count / results.length) * 100,
-        color:
-          results.find((r) => r.decision === decision)?.color || "#94a3b8",
+        color: results.find((r) => r.decision === decision)?.color || "#94a3b8",
       }))
       .sort((a, b) => b.count - a.count);
   }, [decisionCounts, results]);
 
   return (
     <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
-
-
       {/* Enhanced Neural Network Background */}
       <LiquidBackground
         variant="primary"
@@ -2528,8 +2058,9 @@ export default function UserDecisionDashboard() {
                   </h1>
                 </div>
                 <p className="text-sm sm:text-base text-enhanced-contrast max-w-2xl leading-relaxed">
-                  Explore how different personality types approach your decisions.
-                  Select a scenario, adjust factors, and discover diverse perspectives.
+                  Explore how different personality types approach your
+                  decisions. Select a scenario, adjust factors, and discover
+                  diverse perspectives.
                 </p>
               </div>
 
@@ -2545,7 +2076,10 @@ export default function UserDecisionDashboard() {
                   value={userMBTI}
                   onValueChange={(v) => setUserMBTI(v as MBTIType)}
                 >
-                  <SelectTrigger id="user-mbti" className="w-32 bg-white/10 border-white/20 text-white">
+                  <SelectTrigger
+                    id="user-mbti"
+                    className="w-32 bg-white/10 border-white/20 text-white"
+                  >
                     <SelectValue aria-label={userMBTI}>{userMBTI}</SelectValue>
                   </SelectTrigger>
                   <SelectContent>
@@ -2686,42 +2220,42 @@ export default function UserDecisionDashboard() {
                 <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
                   <div className="absolute bottom-10 left-10 w-[200px] h-[200px] bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-full blur-xl"></div>
                 </div>
-                  {activePreset && (
-                    <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                      <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
-                        <FaCheck className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <span className="text-sm font-medium text-[#1d1d1f]">
-                          Using preset: {activePreset}
-                        </span>
-                        <p className="text-xs text-gray-600 mt-1">
-                          Values are pre-set for this scenario. Adjust any
-                          slider to customize.
-                        </p>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-sm border-[#007aff] text-[#007aff] rounded-full px-4 py-2"
-                        onClick={handleReset}
-                      >
-                        Reset
-                      </Button>
+                {activePreset && (
+                  <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
+                      <FaCheck className="h-5 w-5" />
                     </div>
-                  )}
-
-                  {preview.decision && (
-                    <div className="flex justify-center mb-4">
-                      <span className="text-sm">Likely decision:</span>
-                      <span
-                        className="ml-2 text-sm font-medium px-2 py-1 rounded-full text-white"
-                        style={{ backgroundColor: preview.color }}
-                      >
-                        {preview.decision}
+                    <div className="flex-1">
+                      <span className="text-sm font-medium text-[#1d1d1f]">
+                        Using preset: {activePreset}
                       </span>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Values are pre-set for this scenario. Adjust any slider
+                        to customize.
+                      </p>
                     </div>
-                  )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-sm border-[#007aff] text-[#007aff] rounded-full px-4 py-2"
+                      onClick={handleReset}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                )}
+
+                {preview.decision && (
+                  <div className="flex justify-center mb-4">
+                    <span className="text-sm">Likely decision:</span>
+                    <span
+                      className="ml-2 text-sm font-medium px-2 py-1 rounded-full text-white"
+                      style={{ backgroundColor: preview.color }}
+                    >
+                      {preview.decision}
+                    </span>
+                  </div>
+                )}
 
                 {/* Decision Factor Controls */}
                 <GlassContainer
@@ -2739,7 +2273,10 @@ export default function UserDecisionDashboard() {
                           Adjust Decision Factors
                         </h2>
                         <p className="text-enhanced-contrast max-w-2xl mx-auto leading-relaxed">
-                          Fine-tune the six key factors that influence decision-making. Each slider represents a different cognitive dimension that affects how personalities approach complex choices.
+                          Fine-tune the six key factors that influence
+                          decision-making. Each slider represents a different
+                          cognitive dimension that affects how personalities
+                          approach complex choices.
                         </p>
                       </div>
 
@@ -2774,42 +2311,61 @@ export default function UserDecisionDashboard() {
                   </div>
                 </GlassContainer>
 
-                  <div className="flex justify-center mt-8">
-                    <div className="relative group">
-                      {/* Enhanced glow effect */}
-                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-700 animate-pulse"></div>
+                <div className="flex justify-center mt-8">
+                  <div className="relative group">
+                    {/* Enhanced glow effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-700 animate-pulse"></div>
 
-                      <Button
-                        onClick={() => {
-                          handleSimulate();
-                        }}
-                        variant="liquid"
-                        size="xl"
-                        className="relative w-full sm:w-auto min-w-[200px] hover-liquid gpu-accelerated touch-responsive hover-optimized font-bold text-lg shadow-liquid"
-                      >
-                        <span className="flex items-center gap-3">
-                          <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse"></span>
-                          Run Simulation
-                          <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse animation-delay-300"></span>
-                        </span>
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={() => {
+                        handleSimulate();
+                      }}
+                      variant="liquid"
+                      size="xl"
+                      className="relative w-full sm:w-auto min-w-[200px] hover-liquid gpu-accelerated touch-responsive hover-optimized font-bold text-lg shadow-liquid"
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse"></span>
+                        Run Simulation
+                        <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse animation-delay-300"></span>
+                      </span>
+                    </Button>
                   </div>
-                </TabsContent>
+                </div>
+              </TabsContent>
 
               {/* Results Tab */}
               <TabsContent value="results" className="space-y-6 relative">
                 <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
                   <div className="absolute top-10 right-10 w-[180px] h-[180px] bg-gradient-to-bl from-blue-500 to-purple-600 rounded-full blur-xl"></div>
                 </div>
-                  {results.length > 0 ? (
-                    <Tabs value={resultsSubTab} onValueChange={setResultsSubTab} className="w-full space-y-4">
-                      <TabsList className="grid w-full grid-cols-3 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
-                        <TabsTrigger value="analysis" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Analysis</TabsTrigger>
-                        <TabsTrigger value="office" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Office</TabsTrigger>
-                        <TabsTrigger value="houses" className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium">Houses</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="analysis" className="space-y-6">
+                {results.length > 0 ? (
+                  <Tabs
+                    value={resultsSubTab}
+                    onValueChange={setResultsSubTab}
+                    className="w-full space-y-4"
+                  >
+                    <TabsList className="grid w-full grid-cols-3 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                      <TabsTrigger
+                        value="analysis"
+                        className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                      >
+                        Analysis
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="office"
+                        className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                      >
+                        Office
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="houses"
+                        className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                      >
+                        Houses
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="analysis" className="space-y-6">
                       <div className="bg-gradient-to-br from-blue-500/90 via-purple-600/90 to-cyan-500/90 backdrop-blur-xl text-white p-6 sm:p-8 rounded-3xl shadow-liquid border border-white/20 relative overflow-hidden">
                         {/* Enhanced background effects */}
                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 pointer-events-none"></div>
@@ -2820,17 +2376,17 @@ export default function UserDecisionDashboard() {
                             Decision Analysis
                           </h2>
                         </div>
-                          {userResult && (
-                            <div className="mb-4 text-sm">
-                              <span>Your ({userMBTI}) decision:</span>
-                              <span
-                                className="ml-2 px-2 py-1 rounded-full text-white"
-                                style={{ backgroundColor: userResult.color }}
-                              >
-                                {userResult.decision}
-                              </span>
-                            </div>
-                          )}
+                        {userResult && (
+                          <div className="mb-4 text-sm">
+                            <span>Your ({userMBTI}) decision:</span>
+                            <span
+                              className="ml-2 px-2 py-1 rounded-full text-white"
+                              style={{ backgroundColor: userResult.color }}
+                            >
+                              {userResult.decision}
+                            </span>
+                          </div>
+                        )}
 
                         <div className="space-y-6">
                           <div className="space-y-2 text-sm">
@@ -2844,7 +2400,13 @@ export default function UserDecisionDashboard() {
                               </span>
                               {majorityDecision && (
                                 <span className="ml-1">
-                                  ({((decisionCounts[majorityDecision] / results.length) * 100).toFixed(1)}%)
+                                  (
+                                  {(
+                                    (decisionCounts[majorityDecision] /
+                                      results.length) *
+                                    100
+                                  ).toFixed(1)}
+                                  %)
                                 </span>
                               )}
                             </div>
@@ -2853,7 +2415,9 @@ export default function UserDecisionDashboard() {
                                 Public opinion favors:
                                 <span
                                   className="ml-1 px-2 py-1 rounded-full text-white"
-                                  style={{ backgroundColor: publicResult.color }}
+                                  style={{
+                                    backgroundColor: publicResult.color,
+                                  }}
                                 >
                                   {publicResult.mostLikely}
                                 </span>
@@ -2862,72 +2426,97 @@ export default function UserDecisionDashboard() {
                           </div>
 
                           <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
-                            {decisionBreakdown.map(({ decision, count, percentage, color }, index) => (
-                              <div
-                                key={decision}
-                                className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
-                              >
-                                {index < 3 && (
-                                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
-                                    #{index + 1}
-                                  </div>
-                                )}
-                                <div className="relative z-10">
-                                  <span className="text-sm font-medium text-white/90 mb-2 block">{decision}</span>
-                                  <div className="flex items-end gap-2">
-                                    <div className="text-lg font-bold">{count}</div>
-                                    <div className="text-xs text-white/70 mb-1">({percentage.toFixed(1)}%)</div>
-                                  </div>
-                                  <div className="text-xs text-white/60 mt-1">
-                                    MBTI types
-                                  </div>
-                                  {index < 2 && (
-                                    <div className="flex flex-wrap gap-1 mt-1">
-                                      {results
-                                        .filter((r) => r.decision === decision)
-                                        .map((r) => (
-                                          <span
-                                            key={r.name}
-                                            className="px-2 py-0.5 text-[10px] bg-white/20 rounded-full"
-                                          >
-                                            {r.name}
-                                          </span>
-                                        ))}
+                            {decisionBreakdown.map(
+                              (
+                                { decision, count, percentage, color },
+                                index
+                              ) => (
+                                <div
+                                  key={decision}
+                                  className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
+                                >
+                                  {index < 3 && (
+                                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
+                                      #{index + 1}
                                     </div>
                                   )}
+                                  <div className="relative z-10">
+                                    <span className="text-sm font-medium text-white/90 mb-2 block">
+                                      {decision}
+                                    </span>
+                                    <div className="flex items-end gap-2">
+                                      <div className="text-lg font-bold">
+                                        {count}
+                                      </div>
+                                      <div className="text-xs text-white/70 mb-1">
+                                        ({percentage.toFixed(1)}%)
+                                      </div>
+                                    </div>
+                                    <div className="text-xs text-white/60 mt-1">
+                                      MBTI types
+                                    </div>
+                                    {index < 2 && (
+                                      <div className="flex flex-wrap gap-1 mt-1">
+                                        {results
+                                          .filter(
+                                            (r) => r.decision === decision
+                                          )
+                                          .map((r) => (
+                                            <span
+                                              key={r.name}
+                                              className="px-2 py-0.5 text-[10px] bg-white/20 rounded-full"
+                                            >
+                                              {r.name}
+                                            </span>
+                                          ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div
+                                    className="absolute bottom-0 left-0 h-1 transition-all duration-500"
+                                    style={{
+                                      width: `${percentage}%`,
+                                      backgroundColor: color,
+                                    }}
+                                  ></div>
                                 </div>
-                                <div
-                                  className="absolute bottom-0 left-0 h-1 transition-all duration-500"
-                                  style={{ width: `${percentage}%`, backgroundColor: color }}
-                                ></div>
-                              </div>
-                            ))}
+                              )
+                            )}
                             {publicResult && (
                               <div
                                 key="public"
                                 className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
                               >
                                 <div className="relative z-10">
-                                  <span className="text-sm font-medium text-white/90 mb-2 block">Public Opinion</span>
+                                  <span className="text-sm font-medium text-white/90 mb-2 block">
+                                    Public Opinion
+                                  </span>
                                   <div className="flex items-end gap-2">
-                                    <div className="text-lg font-bold">{publicResult.mostLikely}</div>
+                                    <div className="text-lg font-bold">
+                                      {publicResult.mostLikely}
+                                    </div>
                                   </div>
-                                  <div className="text-xs text-white/60 mt-1">Consensus View</div>
+                                  <div className="text-xs text-white/60 mt-1">
+                                    Consensus View
+                                  </div>
                                 </div>
                                 <div
                                   className="absolute bottom-0 left-0 h-1 transition-all duration-500"
-                                  style={{ width: `100%`, backgroundColor: publicResult.color }}
+                                  style={{
+                                    width: `100%`,
+                                    backgroundColor: publicResult.color,
+                                  }}
                                 ></div>
                               </div>
                             )}
                           </div>
                         </div>
-                          </div>
-                    <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
-                      <div className="mb-4">
-                        <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
-                          Detailed Analysis
-                        </h3>
+                      </div>
+                      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
+                        <div className="mb-4">
+                          <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
+                            Detailed Analysis
+                          </h3>
                           <p className="text-gray-600 text-sm">
                             The charts below show how different MBTI
                             personalities analyze and approach this decision.
@@ -2945,108 +2534,65 @@ export default function UserDecisionDashboard() {
                           />
                         </div>
                       </div>
-                      </TabsContent>
-                      <TabsContent value="office" className="space-y-4">
-                        <OfficeContent
-                          results={results}
-                          mbtiDescriptions={DecisionService.mbtiDescriptions}
-                        />
-                      </TabsContent>
-                      <TabsContent value="houses" className="space-y-4">
-                        <HousesContent
-                          results={results}
-                          mbtiDescriptions={DecisionService.mbtiDescriptions}
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  ) : (
-                    <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
-                      <div className="text-[#8e8e93] mb-4">
-                        <BsFileText className="h-12 w-12 mx-auto" />
-                      </div>
-                      <p className="text-[#1d1d1f] font-medium">
-                        No simulation results yet
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Run a simulation to see results
-                      </p>
-                      <Button
-                        onClick={() => setActiveTab("factors")}
-                        className="mt-4 bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-6 py-2 shadow-sm transition-all active:scale-95"
-                      >
-                        Go to Factors
-                      </Button>
+                    </TabsContent>
+                    <TabsContent value="office" className="space-y-4">
+                      <OfficeContent
+                        results={results}
+                        mbtiDescriptions={DecisionService.mbtiDescriptions}
+                      />
+                    </TabsContent>
+                    <TabsContent value="houses" className="space-y-4">
+                      <HousesContent
+                        results={results}
+                        mbtiDescriptions={DecisionService.mbtiDescriptions}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div className="text-[#8e8e93] mb-4">
+                      <BsFileText className="h-12 w-12 mx-auto" />
                     </div>
-                  )}
-                </TabsContent>
-
+                    <p className="text-[#1d1d1f] font-medium">
+                      No simulation results yet
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Run a simulation to see results
+                    </p>
+                    <Button
+                      onClick={() => setActiveTab("factors")}
+                      className="mt-4 bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-6 py-2 shadow-sm transition-all active:scale-95"
+                    >
+                      Go to Factors
+                    </Button>
+                  </div>
+                )}
+              </TabsContent>
 
               {/* Personalities Tab */}
-              <TabsContent value="personalities" className="space-y-6 relative">
-                <div className="absolute inset-0 opacity-[0.04] pointer-events-none overflow-hidden">
-                  <div className="absolute top-20 right-20 w-[200px] h-[200px] bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full blur-3xl"></div>
-                  <div className="absolute bottom-20 left-20 w-[150px] h-[150px] bg-gradient-to-tr from-indigo-500 to-cyan-500 rounded-full blur-2xl"></div>
-                </div>
-
-                {/* Enhanced Section Header */}
-                <div className="text-center space-y-6 relative z-10">
-                  <div className="space-y-4">
-                    <h2 className="text-3xl sm:text-4xl font-bold text-liquid-gradient drop-shadow-lg tracking-tight leading-tight">
-                      MBTI Personality Types
-                    </h2>
-                    <p className="text-enhanced-contrast max-w-3xl mx-auto leading-relaxed text-lg">
-                      Explore the 16 personality types and their unique decision-making approaches.
-                      Each type brings distinct cognitive preferences and scientific insights to complex decisions.
-                    </p>
-                  </div>
-
-                  {/* Enhanced visual separator */}
-                  <div className="flex items-center justify-center space-x-6 py-4">
-                    <div className="h-px bg-gradient-to-r from-transparent via-blue-300/40 to-transparent flex-1 max-w-32"></div>
-                    <div className="flex space-x-2">
-                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 animate-pulse"></div>
-                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 animate-pulse animation-delay-150"></div>
-                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-400 animate-pulse animation-delay-300"></div>
-                    </div>
-                    <div className="h-px bg-gradient-to-r from-transparent via-purple-300/40 to-transparent flex-1 max-w-32"></div>
-                  </div>
-                </div>
-
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {useMemo(() =>
-                          Object.entries(DecisionService.mbtiDescriptions).map(([type, info]) => {
-                            const characterExamples = getCurrentCharactersForMBTI(type, characterIndices);
-                            const img = getMBTIImage(type);
-                            const isUserType = type === userMBTI;
-
-                            return (
-                              <EnhancedPersonalityCard
-                                key={type}
-                                type={type}
-                                info={info}
-                                img={img}
-                                isUserType={isUserType}
-                                characterExamples={characterExamples}
-                                characterPoolsByMBTI={characterPoolsByMBTI}
-                                cycleCharacter={cycleCharacter}
-                                shuffleAllCharacters={shuffleAllCharacters}
-                                getFranchiseColors={getFranchiseColors}
-                              />
-                            );
-                          }), [characterIndices, userMBTI, getCurrentCharactersForMBTI, getMBTIImage, cycleCharacter, shuffleAllCharacters, getFranchiseColors]
-                        )}
-                    </div>
-                  </div>
-                </TabsContent>
-
-
-
-
+              <TabsContent value="personalities">
+                <PerformanceOptimizedTypesTab
+                  userMBTI={userMBTI}
+                  characterIndices={characterIndices}
+                  characterPoolsByMBTI={characterPoolsByMBTI}
+                  cycleCharacter={cycleCharacter}
+                  shuffleAllCharacters={shuffleAllCharacters}
+                  getFranchiseColors={getFranchiseColors}
+                  getCurrentCharactersForMBTI={getCurrentCharactersForMBTI}
+                  getMBTIImage={getMBTIImage}
+                />
+              </TabsContent>
             </div>
           </Tabs>
         </CardContent>
       </GlassContainer>
+      <EnhancedPerformanceMonitor
+        enabled={process.env.NODE_ENV === "development"}
+        showDetails={true}
+        onPerformanceIssue={(issue, metrics) => {
+          console.warn("Performance issue:", issue, metrics);
+        }}
+      />
     </div>
   );
 }

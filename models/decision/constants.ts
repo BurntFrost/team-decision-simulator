@@ -1,5 +1,15 @@
 import { FactorInfoMap } from "./types";
 
+export const DECISION_THRESHOLDS = [
+  { minScore: 0.85, text: "Full Speed Ahead", color: "#22c55e" },
+  { minScore: 0.65, text: "Proceed Strategically", color: "#4ade80" },
+  { minScore: 0.55, text: "Implement with Oversight", color: "#a3e635" },
+  { minScore: 0.35, text: "Request Clarification", color: "#facc15" },
+  { minScore: -Infinity, text: "Delay or Disengage", color: "#f87171" },
+] as const;
+
+export type DecisionThreshold = typeof DECISION_THRESHOLDS[number];
+
 // Factor information with descriptions - Updated with modern decision-making research
 export const factorInfo: FactorInfoMap = {
   data_quality: {

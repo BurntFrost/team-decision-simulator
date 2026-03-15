@@ -7,7 +7,7 @@ import {
   PublicOpinionResult,
 } from "./types";
 import { archetypes } from "./mbti/constants";
-import { publicOpinionWeights } from "./constants";
+import { DECISION_THRESHOLDS, publicOpinionWeights } from "./constants";
 
 // Calculate score based on weights and inputs
 export const calculateScore = (weights: Weights, inputs: Inputs): number =>
@@ -18,64 +18,121 @@ export const calculateScore = (weights: Weights, inputs: Inputs): number =>
 
 // Get decision based on score
 export const getDecision = (score: number): Decision => {
-  if (score > 0.85) return { text: "Full Speed Ahead", color: "#22c55e" }; // Bright Green
-  if (score > 0.65) return { text: "Proceed Strategically", color: "#4ade80" }; // Green
-  if (score > 0.55)
-    return { text: "Implement with Oversight", color: "#a3e635" }; // Lime
-  if (score > 0.35) return { text: "Request Clarification", color: "#facc15" }; // Yellow
-  return { text: "Delay or Disengage", color: "#f87171" }; // Red
+  const threshold = DECISION_THRESHOLDS.find(t => score > t.minScore) ?? DECISION_THRESHOLDS[DECISION_THRESHOLDS.length - 1];
+  return { text: threshold.text, color: threshold.color };
 };
+
+// Distribution config: primary category gets a calculated probability,
+// then remaining categories each take a fraction of what's left in order.
+// The last category receives whatever remains (1 - sum of others).
+type DistributionConfig = {
+  primaryCalc: (score: number) => number;
+  // Ordered list of [categoryName, fractionOfRemaining] — last entry gets the remainder
+  allocation: [string, number][];
+};
+
+const PROBABILITY_DISTRIBUTIONS: { minScore: number; config: DistributionConfig }[] = [
+  {
+    minScore: 0.85,
+    config: {
+      primaryCalc: (s) => Math.min(0.95, Math.max(0.6, s * 0.8)),
+      allocation: [
+        ["Full Speed Ahead", -1], // -1 = primary
+        ["Proceed Strategically", 0.6],
+        ["Implement with Oversight", 0.7],
+        ["Request Clarification", 0.8],
+        ["Delay or Disengage", 1], // remainder
+      ],
+    },
+  },
+  {
+    minScore: 0.65,
+    config: {
+      primaryCalc: (s) => Math.min(0.9, Math.max(0.5, s * 0.7)),
+      allocation: [
+        ["Proceed Strategically", -1],
+        ["Full Speed Ahead", 0.3],
+        ["Implement with Oversight", 0.5],
+        ["Request Clarification", 0.7],
+        ["Delay or Disengage", 1],
+      ],
+    },
+  },
+  {
+    minScore: 0.55,
+    config: {
+      primaryCalc: (s) => Math.min(0.85, Math.max(0.4, s * 0.6)),
+      allocation: [
+        ["Implement with Oversight", -1],
+        ["Proceed Strategically", 0.4],
+        ["Full Speed Ahead", 0.1],
+        ["Request Clarification", 0.7],
+        ["Delay or Disengage", 1],
+      ],
+    },
+  },
+  {
+    minScore: 0.35,
+    config: {
+      primaryCalc: (s) => Math.min(0.8, Math.max(0.3, (1 - s) * 0.6)),
+      allocation: [
+        ["Request Clarification", -1],
+        ["Implement with Oversight", 0.3],
+        ["Proceed Strategically", 0.2],
+        ["Full Speed Ahead", 0.05],
+        ["Delay or Disengage", 1],
+      ],
+    },
+  },
+  {
+    minScore: -Infinity,
+    config: {
+      primaryCalc: (s) => Math.min(0.9, Math.max(0.5, (1 - s) * 0.8)),
+      allocation: [
+        ["Delay or Disengage", -1],
+        ["Request Clarification", 0.6],
+        ["Implement with Oversight", 0.3],
+        ["Proceed Strategically", 0.1],
+        ["Full Speed Ahead", 1],
+      ],
+    },
+  },
+];
 
 // Calculate public decision probabilities based on total score
 export const getPublicProbabilities = (
   score: number
 ): { [key: string]: number } => {
-  // Base probabilities distribution based on the score
-  let fullSpeed = 0;
-  let proceed = 0;
-  let implement = 0;
-  let clarify = 0;
-  let disengage = 0;
+  const dist = PROBABILITY_DISTRIBUTIONS.find(d => score > d.minScore) ?? PROBABILITY_DISTRIBUTIONS[PROBABILITY_DISTRIBUTIONS.length - 1];
+  const { primaryCalc, allocation } = dist.config;
 
-  // Distribute probabilities based on score ranges
-  if (score > 0.85) {
-    fullSpeed = Math.min(0.95, Math.max(0.6, score * 0.8));
-    proceed = (1 - fullSpeed) * 0.6;
-    implement = (1 - fullSpeed - proceed) * 0.7;
-    clarify = (1 - fullSpeed - proceed - implement) * 0.8;
-    disengage = 1 - fullSpeed - proceed - implement - clarify;
-  } else if (score > 0.65) {
-    proceed = Math.min(0.9, Math.max(0.5, score * 0.7));
-    fullSpeed = (1 - proceed) * 0.3;
-    implement = (1 - proceed - fullSpeed) * 0.5;
-    clarify = (1 - proceed - fullSpeed - implement) * 0.7;
-    disengage = 1 - proceed - fullSpeed - implement - clarify;
-  } else if (score > 0.55) {
-    implement = Math.min(0.85, Math.max(0.4, score * 0.6));
-    proceed = (1 - implement) * 0.4;
-    fullSpeed = (1 - implement - proceed) * 0.1;
-    clarify = (1 - implement - proceed - fullSpeed) * 0.7;
-    disengage = 1 - implement - proceed - fullSpeed - clarify;
-  } else if (score > 0.35) {
-    clarify = Math.min(0.8, Math.max(0.3, (1 - score) * 0.6));
-    implement = (1 - clarify) * 0.3;
-    proceed = (1 - clarify - implement) * 0.2;
-    fullSpeed = (1 - clarify - implement - proceed) * 0.05;
-    disengage = 1 - clarify - implement - proceed - fullSpeed;
-  } else {
-    disengage = Math.min(0.9, Math.max(0.5, (1 - score) * 0.8));
-    clarify = (1 - disengage) * 0.6;
-    implement = (1 - disengage - clarify) * 0.3;
-    proceed = (1 - disengage - clarify - implement) * 0.1;
-    fullSpeed = 1 - disengage - clarify - implement - proceed;
+  const primaryValue = primaryCalc(score);
+  const result: { [key: string]: number } = {};
+  let allocated = 0;
+
+  for (let i = 0; i < allocation.length; i++) {
+    const [name, factor] = allocation[i];
+    if (factor === -1) {
+      // Primary category
+      result[name] = primaryValue;
+      allocated += primaryValue;
+    } else if (i === allocation.length - 1) {
+      // Last category gets the remainder
+      result[name] = 1 - allocated;
+    } else {
+      // Takes a fraction of what remains
+      const value = (1 - allocated) * factor;
+      result[name] = value;
+      allocated += value;
+    }
   }
 
   return {
-    "Full Speed Ahead": parseFloat(fullSpeed.toFixed(3)),
-    "Proceed Strategically": parseFloat(proceed.toFixed(3)),
-    "Implement with Oversight": parseFloat(implement.toFixed(3)),
-    "Request Clarification": parseFloat(clarify.toFixed(3)),
-    "Delay or Disengage": parseFloat(disengage.toFixed(3)),
+    "Full Speed Ahead": parseFloat(result["Full Speed Ahead"].toFixed(3)),
+    "Proceed Strategically": parseFloat(result["Proceed Strategically"].toFixed(3)),
+    "Implement with Oversight": parseFloat(result["Implement with Oversight"].toFixed(3)),
+    "Request Clarification": parseFloat(result["Request Clarification"].toFixed(3)),
+    "Delay or Disengage": parseFloat(result["Delay or Disengage"].toFixed(3)),
   };
 };
 

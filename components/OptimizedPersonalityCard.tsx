@@ -29,10 +29,10 @@ const CharacterButton = React.memo<{
     onClick={onCycle}
     disabled={!hasMultiple}
     className={cn(
-      "group relative flex items-center justify-between p-3 rounded-2xl transition-all duration-200 ease-out transform-gpu",
-      "bg-white/40 backdrop-blur-sm border border-white/30 shadow-lg",
+      "group relative flex items-center justify-between p-3 rounded-xl transition-colors",
+      "bg-gray-50 border border-gray-100",
       hasMultiple
-        ? "hover:bg-white/60 hover:scale-[1.02] hover:shadow-xl cursor-pointer active:scale-[0.98]"
+        ? "hover:border-gray-200 hover:bg-gray-100 cursor-pointer active:bg-gray-200"
         : "cursor-default opacity-75"
     )}
     type="button"
@@ -115,31 +115,17 @@ export const OptimizedPersonalityCard: React.FC<OptimizedPersonalityCardProps> =
     }), [characterExamples, characterPoolsByMBTI, type, getFranchiseColors, cycleCharacter]
   );
 
-  // Memoized styles
-  const cardStyles = useMemo(() => ({
-    background: `linear-gradient(135deg, 
-      ${info.color}15 0%, 
-      ${info.color}08 50%, 
-      transparent 100%
-    )`,
-  }), [info.color]);
-
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-3xl transition-all duration-300 ease-out cursor-pointer transform-gpu",
-        isHovered ? "scale-[1.02] -translate-y-1 shadow-4xl" : "shadow-2xl",
-        isUserType
-          ? "ring-2 ring-[#007aff] ring-offset-4 ring-offset-white/50"
-          : ""
+        "relative overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow duration-200 cursor-pointer",
+        isHovered ? "shadow-md" : "shadow-sm",
+        isUserType ? "ring-2 ring-indigo-500" : ""
       )}
-      style={cardStyles}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleCardClick}
     >
-      {/* Glass morphism background */}
-      <div className="absolute inset-0 bg-white/20 backdrop-blur-xl border border-white/30" />
       
       {/* Content */}
       <div className="relative p-6 space-y-4">
@@ -156,8 +142,8 @@ export const OptimizedPersonalityCard: React.FC<OptimizedPersonalityCardProps> =
                 loading="lazy"
               />
             </div>
-            {isUserType && (
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#007aff] rounded-full flex items-center justify-center shadow-lg">
+          {isUserType && (
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center shadow-sm">
                 <span className="text-white text-xs font-bold">★</span>
               </div>
             )}
@@ -175,7 +161,7 @@ export const OptimizedPersonalityCard: React.FC<OptimizedPersonalityCardProps> =
 
         {/* Character Examples */}
         {characterExamples.length > 0 && (
-          <div className="pt-4 border-t border-white/30 space-y-3">
+          <div className="pt-4 border-t border-gray-100 space-y-3">
             <div className="flex items-center justify-between">
               <h5 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 shadow-sm animate-pulse"></span>

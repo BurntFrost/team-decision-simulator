@@ -17,8 +17,6 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { GlassContainer } from "@/components/ui/glass-container";
-import { LiquidBackground } from "@/components/ui/liquid-background";
 import { PerformanceOptimizedTypesTab } from "@/components/PerformanceOptimizedTypesTab";
 import { EnhancedPerformanceMonitor } from "@/components/EnhancedPerformanceMonitor";
 import dynamic from "next/dynamic";
@@ -1095,7 +1093,7 @@ type SliderInputProps = {
   info: DecisionService.FactorInfo;
 };
 
-// Enhanced Slider Input Component with liquid glass styling
+// Clean Slider Input Component
 const SliderInput: React.FC<SliderInputProps> = ({
   id,
   label,
@@ -1103,93 +1101,62 @@ const SliderInput: React.FC<SliderInputProps> = ({
   onChange,
   info,
 }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const [isFocused, setIsFocused] = React.useState(false);
-
   return (
-    <div className="flex flex-col mb-6 p-4 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 hover:bg-white/25">
-      <div className="flex justify-between items-center mb-3">
+    <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors">
+      <div className="flex items-center justify-between mb-3">
         <label
           htmlFor={id}
-          className="font-semibold text-md text-gray-800 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent"
+          className="text-sm font-medium text-gray-800"
         >
           {info.label}
         </label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              aria-label={`More information about ${info.label}`}
-              className="text-sm text-gray-600 cursor-help bg-white/40 backdrop-blur-md w-8 h-8 flex items-center justify-center rounded-full border border-white/30 hover:bg-white/50 hover:scale-110 transition-all duration-300 shadow-lg"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <span
-                className={`transition-transform duration-300 ${
-                  isHovered ? "scale-125" : ""
-                }`}
-              >
-                ⓘ
-              </span>
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            id={`${id}-info`}
-            className="max-w-xs bg-white/20 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-2xl p-4"
-          >
-            <p className="font-semibold text-gray-800 mb-3">
-              {info.description}
-            </p>
-            <div className="mt-3 text-sm grid grid-cols-1 xs:grid-cols-2 gap-3">
-              <div className="bg-white/30 backdrop-blur-md p-3 rounded-xl border border-white/20 shadow-lg">
-                <span className="font-bold text-gray-800">Low:</span>{" "}
-                <span className="text-gray-700">{info.lowDesc}</span>
-              </div>
-              <div className="bg-white/30 backdrop-blur-md p-3 rounded-xl border border-white/20 shadow-lg">
-                <span className="font-bold text-gray-800">High:</span>{" "}
-                <span className="text-gray-700">{info.highDesc}</span>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      <div className="flex items-center space-x-4">
-        <div className="flex-grow relative">
-          <Slider
-            id={id}
-            min={0}
-            max={1}
-            step={0.05}
-            value={value}
-            onChange={(_, v) =>
-              onChange((Array.isArray(v) ? v[0] : v).toString())
-            }
-            aria-label={info.label}
-            aria-describedby={`${id}-info`}
-            className="flex-grow"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
-          {/* Subtle focus indicator - liquid glass style */}
-          {isFocused && (
-            <div className="absolute inset-0 border-2 border-blue-400/40 rounded-lg pointer-events-none transition-all duration-300"></div>
-          )}
-        </div>
-
-        <div className="w-16 text-right">
-          <span className="font-mono text-lg font-bold bg-gradient-to-r from-[#007aff] to-[#5856d6] bg-clip-text text-transparent filter drop-shadow-sm">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-indigo-600 w-10 text-right tabular-nums">
             {(value * 100).toFixed(0)}%
           </span>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                aria-label={`More information about ${info.label}`}
+                className="text-gray-400 hover:text-gray-600 w-5 h-5 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors text-xs"
+              >
+                ⓘ
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              id={`${id}-info`}
+              className="max-w-xs rounded-xl p-4"
+            >
+              <p className="font-medium text-gray-900 text-sm mb-2">
+                {info.description}
+              </p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-gray-50 rounded-lg p-2">
+                  <span className="font-medium text-gray-700">Low:</span>{" "}
+                  <span className="text-gray-600">{info.lowDesc}</span>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2">
+                  <span className="font-medium text-gray-700">High:</span>{" "}
+                  <span className="text-gray-600">{info.highDesc}</span>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
-      {/* Progress indicator */}
-      <div className="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 rounded-full transition-all duration-500 ease-out shadow-lg"
-          style={{ width: `${value * 100}%` }}
-        />
-      </div>
+      <Slider
+        id={id}
+        min={0}
+        max={1}
+        step={0.05}
+        value={value}
+        onChange={(_, v) =>
+          onChange((Array.isArray(v) ? v[0] : v).toString())
+        }
+        aria-label={info.label}
+        aria-describedby={`${id}-info`}
+      />
     </div>
   );
 };
@@ -2009,161 +1976,115 @@ export default function UserDecisionDashboard() {
   }, [decisionCounts, results]);
 
   return (
-    <div className="min-h-screen safe-area-inset-bottom relative overflow-hidden">
-      {/* Enhanced Neural Network Background */}
-      <LiquidBackground
-        variant="primary"
-        intensity={shouldReduceEffects ? "subtle" : "medium"}
-        animated={!shouldReduceAnimations}
-        particles={!shouldReduceEffects}
-        neuralNetwork={true}
-        interactionIntensity={shouldReduceEffects ? "low" : "medium"}
-        className="z-0"
-      />
-
-      {/* Unified Header and Main Container */}
-      <GlassContainer
-        variant="premium"
-        rounded="3xl"
-        shadow="3xl"
-        shimmer={true}
-        borderGlow={true}
-        animated={true}
-        className="bg-white/8 border-white/25 overflow-hidden gpu-accelerated liquid-glass-optimized touch-responsive"
-      >
-        <div className="absolute inset-0 bg-grid opacity-5"></div>
+    <div className="min-h-screen safe-area-inset-bottom px-4 py-6">
+      {/* Main card */}
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
 
         {/* Header Section */}
-        <header className="relative">
-          <div className="bg-gradient-to-r from-slate-800/90 via-blue-900/90 to-indigo-900/90 p-4 sm:p-6 rounded-t-3xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/10 rounded-t-3xl"></div>
-            <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-gradient-to-br from-white/5 to-transparent rounded-full blur-2xl"></div>
-            <div className="absolute bottom-0 left-0 w-[200px] h-[100px] bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-2xl"></div>
-
-            <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Brand Section */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                  <div>
-                    <EnhancedBrainIcon
-                      variant="purple"
-                      size="3xl"
-                      className="flex-shrink-0"
-                      interactive={true}
-                      neuralActivity={true}
-                    />
-                  </div>
-                  <h1 className="text-xl sm:text-2xl font-bold text-liquid-gradient drop-shadow-lg">
-                    MBTI Brain
-                  </h1>
-                </div>
-                <p className="text-sm sm:text-base text-enhanced-contrast max-w-2xl leading-relaxed">
-                  Explore how different personality types approach your
-                  decisions. Select a scenario, adjust factors, and discover
-                  diverse perspectives.
-                </p>
-              </div>
-
-              {/* User Controls */}
-              <div className="flex flex-col items-start sm:items-end">
-                <label
-                  htmlFor="user-mbti"
-                  className="text-xs font-medium text-white/70 mb-1"
-                >
-                  Your MBTI Type
-                </label>
-                <Select
-                  value={userMBTI}
-                  onValueChange={(v) => setUserMBTI(v as MBTIType)}
-                >
-                  <SelectTrigger
-                    id="user-mbti"
-                    className="w-32 bg-white/10 border-white/20 text-white"
-                  >
-                    <SelectValue aria-label={userMBTI}>{userMBTI}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mbtiTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        <header className="px-5 sm:px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Brand */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-indigo-100 rounded-xl flex-shrink-0">
+              <Brain className="h-6 w-6 text-indigo-600" />
             </div>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">MBTI Brain</h1>
+              <p className="text-sm text-gray-500">
+                See how personality types approach decisions
+              </p>
+            </div>
+          </div>
+
+          {/* User type selector */}
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="user-mbti"
+              className="text-sm font-medium text-gray-600 whitespace-nowrap"
+            >
+              Your type:
+            </label>
+            <Select
+              value={userMBTI}
+              onValueChange={(v) => setUserMBTI(v as MBTIType)}
+            >
+              <SelectTrigger
+                id="user-mbti"
+                className="w-28 bg-white border-gray-200 text-gray-900 text-sm h-9"
+              >
+                <SelectValue aria-label={userMBTI}>{userMBTI}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {mbtiTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </header>
 
         {/* Main Content */}
-        <CardContent className="p-0 relative">
+        <div className="relative">
           <Tabs
             value={activeTab}
-            onValueChange={(value) => {
-              setActiveTab(value);
-            }}
+            onValueChange={setActiveTab}
             className="w-full"
           >
             {/* Navigation Tabs */}
-            <div className="bg-white/12 backdrop-blur-xl border-b border-white/20 px-4 py-4">
-              <TabsList className="grid w-full grid-cols-4 mb-0 p-1.5 h-auto overflow-hidden gpu-accelerated touch-responsive">
+            <div className="border-b border-gray-100 px-2">
+              <TabsList className="grid w-full grid-cols-4 h-11 bg-transparent p-0 rounded-none">
                 <TabsTrigger
                   value="scenarios"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-gray-700 font-medium transition-colors h-full"
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <MdOutlineAssessment className="h-4 w-4" />
-                    <span className="text-xs">Scenarios</span>
+                  <div className="flex items-center gap-1.5">
+                    <MdOutlineAssessment className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm">Scenarios</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger
                   value="factors"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-gray-700 font-medium transition-colors h-full"
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <MdFactCheck className="h-4 w-4" />
-                    <span className="text-xs">Factors</span>
+                  <div className="flex items-center gap-1.5">
+                    <MdFactCheck className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm">Factors</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger
                   value="results"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-gray-700 font-medium transition-colors h-full"
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <IoMdAnalytics className="h-4 w-4" />
-                    <span className="text-xs">Results</span>
+                  <div className="flex items-center gap-1.5">
+                    <IoMdAnalytics className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm">Results</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger
                   value="personalities"
-                  className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium hover-optimized touch-responsive"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-gray-500 hover:text-gray-700 font-medium transition-colors h-full"
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <MdPsychology className="h-4 w-4" />
-                    <span className="text-xs">Types</span>
+                  <div className="flex items-center gap-1.5">
+                    <MdPsychology className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-sm">Types</span>
                   </div>
                 </TabsTrigger>
               </TabsList>
             </div>
 
             {/* Tab Content */}
-            <div className="p-4 sm:p-6 overflow-auto">
+            <div className="p-5 sm:p-6">
               {/* Scenarios Tab */}
-              <TabsContent
-                value="scenarios"
-                className="space-y-4 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:zoom-in-95 relative"
-              >
-                <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                  <div className="absolute top-10 right-10 w-[150px] h-[150px] bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full blur-xl"></div>
-                </div>
+              <TabsContent value="scenarios" className="space-y-6">
                 <div className="space-y-6">
                   {Object.entries(DecisionService.presetCategories).map(
                     ([category, scenarios]) => (
                       <div key={category}>
-                        <h2 className="font-semibold text-[#1d1d1f] mb-1">
+                        <h2 className="text-base font-semibold text-gray-900 mb-0.5">
                           {category}
                         </h2>
-                        <p className="text-xs text-gray-600 mb-3">
+                        <p className="text-sm text-gray-500 mb-3">
                           {
                             DecisionService.presetCategoryDescriptions[
                               category as keyof typeof DecisionService.presetCategoryDescriptions
@@ -2177,10 +2098,10 @@ export default function UserDecisionDashboard() {
                               <Card
                                 key={scenario}
                                 className={cn(
-                                  "cursor-pointer transition-all duration-200 hover:shadow-md border",
+                                  "cursor-pointer transition-all duration-150 hover:shadow-sm",
                                   isActive
-                                    ? "border-[#007aff] bg-[#007aff]/5"
-                                    : "border-gray-100"
+                                    ? "border-indigo-400 bg-indigo-50 shadow-sm"
+                                    : "border-gray-200 hover:border-gray-300"
                                 )}
                                 onClick={() => {
                                   applyPreset(
@@ -2189,10 +2110,10 @@ export default function UserDecisionDashboard() {
                                 }}
                               >
                                 <CardContent className="p-4">
-                                  <h3 className="font-semibold text-[#1d1d1f]">
+                                  <h3 className="font-medium text-gray-900 text-sm">
                                     {scenario}
                                   </h3>
-                                  <p className="text-sm text-gray-600 mt-2">
+                                  <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
                                     {
                                       DecisionService.presetDescriptions[
                                         scenario as keyof typeof DecisionService.presetDescriptions
@@ -2200,7 +2121,8 @@ export default function UserDecisionDashboard() {
                                     }
                                   </p>
                                   {isActive && (
-                                    <div className="mt-3 text-xs bg-[#007aff] text-white px-3 py-1 rounded-full inline-block">
+                                    <div className="mt-2.5 flex items-center gap-1 text-xs font-medium text-indigo-600">
+                                      <FaCheck className="h-3 w-3" />
                                       Selected
                                     </div>
                                   )}
@@ -2216,28 +2138,24 @@ export default function UserDecisionDashboard() {
               </TabsContent>
 
               {/* Factors Tab */}
-              <TabsContent value="factors" className="space-y-6 relative">
-                <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                  <div className="absolute bottom-10 left-10 w-[200px] h-[200px] bg-gradient-to-tr from-blue-600 to-indigo-700 rounded-full blur-xl"></div>
-                </div>
+              <TabsContent value="factors" className="space-y-5">
                 {activePreset && (
-                  <div className="mb-6 p-3 bg-[#007aff]/5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                    <div className="text-[#007aff] bg-[#007aff]/10 p-2 rounded-full">
-                      <FaCheck className="h-5 w-5" />
-                    </div>
+                  <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     <div className="flex-1">
-                      <span className="text-sm font-medium text-[#1d1d1f]">
-                        Using preset: {activePreset}
-                      </span>
-                      <p className="text-xs text-gray-600 mt-1">
-                        Values are pre-set for this scenario. Adjust any slider
-                        to customize.
+                      <div className="flex items-center gap-2">
+                        <FaCheck className="h-3.5 w-3.5 text-indigo-600" />
+                        <span className="text-sm font-medium text-indigo-900">
+                          Preset: {activePreset}
+                        </span>
+                      </div>
+                      <p className="text-xs text-indigo-700/70 mt-0.5 ml-5">
+                        Adjust any slider to customize.
                       </p>
                     </div>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-sm border-[#007aff] text-[#007aff] rounded-full px-4 py-2"
+                      className="text-xs border-indigo-300 text-indigo-700 hover:bg-indigo-100 rounded-lg h-8 px-3"
                       onClick={handleReset}
                     >
                       Reset
@@ -2246,10 +2164,10 @@ export default function UserDecisionDashboard() {
                 )}
 
                 {preview.decision && (
-                  <div className="flex justify-center mb-4">
-                    <span className="text-sm">Likely decision:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Likely outcome:</span>
                     <span
-                      className="ml-2 text-sm font-medium px-2 py-1 rounded-full text-white"
+                      className="text-sm font-medium px-3 py-1 rounded-full text-white"
                       style={{ backgroundColor: preview.color }}
                     >
                       {preview.decision}
@@ -2257,271 +2175,162 @@ export default function UserDecisionDashboard() {
                   </div>
                 )}
 
-                {/* Decision Factor Controls */}
-                <GlassContainer
-                  variant="premium"
-                  rounded="2xl"
-                  shadow="3xl"
-                  shimmer={true}
-                  depth="floating"
-                  className="p-4 sm:p-6 gpu-accelerated"
-                >
-                  <div className="space-y-4">
-                    <div className="mb-6 space-y-4">
-                      <div className="text-center space-y-3">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-liquid-gradient tracking-tight leading-tight">
-                          Adjust Decision Factors
-                        </h2>
-                        <p className="text-enhanced-contrast max-w-2xl mx-auto leading-relaxed">
-                          Fine-tune the six key factors that influence
-                          decision-making. Each slider represents a different
-                          cognitive dimension that affects how personalities
-                          approach complex choices.
-                        </p>
-                      </div>
-
-                      {/* Enhanced visual separator */}
-                      <div className="flex items-center justify-center space-x-4 py-2">
-                        <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent flex-1 max-w-20"></div>
-                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 animate-pulse"></div>
-                        <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent flex-1 max-w-20"></div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {Object.keys(inputs).map((key) => (
-                        <SliderInput
-                          key={key}
-                          id={key}
-                          label={key}
-                          value={inputs[key as DecisionService.FactorKey]}
-                          onChange={(value) =>
-                            handleInputChange(
-                              key as DecisionService.FactorKey,
-                              value
-                            )
-                          }
-                          info={
-                            DecisionService.factorInfo[
-                              key as DecisionService.FactorKey
-                            ]
-                          }
-                        />
-                      ))}
-                    </div>
+                <div>
+                  <h2 className="text-base font-semibold text-gray-900 mb-0.5">
+                    Decision Factors
+                  </h2>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Adjust six cognitive dimensions that shape how personality types approach decisions.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.keys(inputs).map((key) => (
+                      <SliderInput
+                        key={key}
+                        id={key}
+                        label={key}
+                        value={inputs[key as DecisionService.FactorKey]}
+                        onChange={(value) =>
+                          handleInputChange(
+                            key as DecisionService.FactorKey,
+                            value
+                          )
+                        }
+                        info={
+                          DecisionService.factorInfo[
+                            key as DecisionService.FactorKey
+                          ]
+                        }
+                      />
+                    ))}
                   </div>
-                </GlassContainer>
+                </div>
 
-                <div className="flex justify-center mt-8">
-                  <div className="relative group">
-                    {/* Enhanced glow effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-500 to-cyan-400 rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-700 animate-pulse"></div>
-
-                    <Button
-                      onClick={() => {
-                        handleSimulate();
-                      }}
-                      variant="liquid"
-                      size="xl"
-                      className="relative w-full sm:w-auto min-w-[200px] hover-liquid gpu-accelerated touch-responsive hover-optimized font-bold text-lg shadow-liquid"
-                    >
-                      <span className="flex items-center gap-3">
-                        <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse"></span>
-                        Run Simulation
-                        <span className="w-2 h-2 rounded-full bg-white/80 animate-pulse animation-delay-300"></span>
-                      </span>
-                    </Button>
-                  </div>
+                <div className="flex justify-center pt-2">
+                  <Button
+                    onClick={handleSimulate}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-10 rounded-xl font-medium text-sm shadow-sm transition-colors"
+                  >
+                    Run Simulation
+                  </Button>
                 </div>
               </TabsContent>
 
               {/* Results Tab */}
-              <TabsContent value="results" className="space-y-6 relative">
-                <div className="absolute inset-0 opacity-[0.06] pointer-events-none overflow-hidden">
-                  <div className="absolute top-10 right-10 w-[180px] h-[180px] bg-gradient-to-bl from-blue-500 to-purple-600 rounded-full blur-xl"></div>
-                </div>
+              <TabsContent value="results" className="space-y-5">
                 {results.length > 0 ? (
                   <Tabs
                     value={resultsSubTab}
                     onValueChange={setResultsSubTab}
                     className="w-full space-y-4"
                   >
-                    <TabsList className="grid w-full grid-cols-3 bg-[#f2f2f7] p-1 rounded-full h-auto overflow-hidden">
+                    <TabsList className="grid w-full grid-cols-3 bg-gray-100 p-1 rounded-xl h-auto">
                       <TabsTrigger
                         value="analysis"
-                        className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                        className="rounded-lg py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
                       >
                         Analysis
                       </TabsTrigger>
                       <TabsTrigger
                         value="office"
-                        className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                        className="rounded-lg py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
                       >
                         Office
                       </TabsTrigger>
                       <TabsTrigger
                         value="houses"
-                        className="rounded-full py-2 px-3 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-[#007aff] data-[state=active]:font-medium"
+                        className="rounded-lg py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
                       >
                         Houses
                       </TabsTrigger>
                     </TabsList>
-                    <TabsContent value="analysis" className="space-y-6">
-                      <div className="bg-gradient-to-br from-blue-500/90 via-purple-600/90 to-cyan-500/90 backdrop-blur-xl text-white p-6 sm:p-8 rounded-3xl shadow-liquid border border-white/20 relative overflow-hidden">
-                        {/* Enhanced background effects */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 pointer-events-none"></div>
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-white/20 to-transparent rounded-full blur-2xl"></div>
-
-                        <div className="relative z-10">
-                          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-white drop-shadow-lg tracking-tight leading-tight">
-                            Decision Analysis
-                          </h2>
-                        </div>
-                        {userResult && (
-                          <div className="mb-4 text-sm">
-                            <span>Your ({userMBTI}) decision:</span>
-                            <span
-                              className="ml-2 px-2 py-1 rounded-full text-white"
-                              style={{ backgroundColor: userResult.color }}
-                            >
-                              {userResult.decision}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="space-y-6">
-                          <div className="space-y-2 text-sm">
-                            <div>
-                              Most common decision:
+                    <TabsContent value="analysis" className="space-y-5">
+                      {/* Summary card */}
+                      <div className="bg-indigo-600 text-white p-5 rounded-2xl">
+                        <h2 className="text-lg font-semibold mb-4">Decision Summary</h2>
+                        <div className="space-y-2 text-sm mb-4">
+                          {userResult && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-indigo-200">Your type ({userMBTI}):</span>
                               <span
-                                className="ml-1 px-2 py-1 rounded-full text-white"
-                                style={{ backgroundColor: majorityColor }}
+                                className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
+                                style={{ backgroundColor: userResult.color }}
                               >
-                                {majorityDecision || "N/A"}
+                                {userResult.decision}
                               </span>
-                              {majorityDecision && (
-                                <span className="ml-1">
-                                  (
-                                  {(
-                                    (decisionCounts[majorityDecision] /
-                                      results.length) *
-                                    100
-                                  ).toFixed(1)}
-                                  %)
-                                </span>
-                              )}
                             </div>
-                            {publicResult && (
-                              <div>
-                                Public opinion favors:
-                                <span
-                                  className="ml-1 px-2 py-1 rounded-full text-white"
-                                  style={{
-                                    backgroundColor: publicResult.color,
-                                  }}
-                                >
-                                  {publicResult.mostLikely}
-                                </span>
-                              </div>
+                          )}
+                          <div className="flex items-center gap-2">
+                            <span className="text-indigo-200">Most common:</span>
+                            <span
+                              className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
+                              style={{ backgroundColor: majorityColor }}
+                            >
+                              {majorityDecision || "N/A"}
+                            </span>
+                            {majorityDecision && (
+                              <span className="text-indigo-300 text-xs">
+                                ({((decisionCounts[majorityDecision] / results.length) * 100).toFixed(1)}%)
+                              </span>
                             )}
                           </div>
-
-                          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
-                            {decisionBreakdown.map(
-                              (
-                                { decision, count, percentage, color },
-                                index
-                              ) => (
-                                <div
-                                  key={decision}
-                                  className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
-                                >
-                                  {index < 3 && (
-                                    <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
-                                      #{index + 1}
-                                    </div>
-                                  )}
-                                  <div className="relative z-10">
-                                    <span className="text-sm font-medium text-white/90 mb-2 block">
-                                      {decision}
-                                    </span>
-                                    <div className="flex items-end gap-2">
-                                      <div className="text-lg font-bold">
-                                        {count}
-                                      </div>
-                                      <div className="text-xs text-white/70 mb-1">
-                                        ({percentage.toFixed(1)}%)
-                                      </div>
-                                    </div>
-                                    <div className="text-xs text-white/60 mt-1">
-                                      MBTI types
-                                    </div>
-                                    {index < 2 && (
-                                      <div className="flex flex-wrap gap-1 mt-1">
-                                        {results
-                                          .filter(
-                                            (r) => r.decision === decision
-                                          )
-                                          .map((r) => (
-                                            <span
-                                              key={r.name}
-                                              className="px-2 py-0.5 text-[10px] bg-white/20 rounded-full"
-                                            >
-                                              {r.name}
-                                            </span>
-                                          ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div
-                                    className="absolute bottom-0 left-0 h-1 transition-all duration-500"
-                                    style={{
-                                      width: `${percentage}%`,
-                                      backgroundColor: color,
-                                    }}
-                                  ></div>
-                                </div>
-                              )
-                            )}
-                            {publicResult && (
-                              <div
-                                key="public"
-                                className="bg-white/10 p-3 rounded-xl relative overflow-hidden border border-white/30"
+                          {publicResult && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-indigo-200">Public opinion:</span>
+                              <span
+                                className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
+                                style={{ backgroundColor: publicResult.color }}
                               >
-                                <div className="relative z-10">
-                                  <span className="text-sm font-medium text-white/90 mb-2 block">
-                                    Public Opinion
-                                  </span>
-                                  <div className="flex items-end gap-2">
-                                    <div className="text-lg font-bold">
-                                      {publicResult.mostLikely}
-                                    </div>
-                                  </div>
-                                  <div className="text-xs text-white/60 mt-1">
-                                    Consensus View
-                                  </div>
-                                </div>
-                                <div
-                                  className="absolute bottom-0 left-0 h-1 transition-all duration-500"
-                                  style={{
-                                    width: `100%`,
-                                    backgroundColor: publicResult.color,
-                                  }}
-                                ></div>
+                                {publicResult.mostLikely}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5">
+                          {decisionBreakdown.map(({ decision, count, percentage, color }, index) => (
+                            <div
+                              key={decision}
+                              className="bg-white/10 rounded-xl p-3 relative overflow-hidden"
+                            >
+                              <div className="flex items-start justify-between mb-1">
+                                <span className="text-sm font-medium text-white/90">{decision}</span>
+                                {index === 0 && (
+                                  <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full">#1</span>
+                                )}
                               </div>
-                            )}
-                          </div>
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-2xl font-bold">{count}</span>
+                                <span className="text-xs text-white/60">types · {percentage.toFixed(0)}%</span>
+                              </div>
+                              {index < 2 && (
+                                <div className="flex flex-wrap gap-1 mt-1.5">
+                                  {results.filter(r => r.decision === decision).map(r => (
+                                    <span key={r.name} className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded-full">{r.name}</span>
+                                  ))}
+                                </div>
+                              )}
+                              <div
+                                className="absolute bottom-0 left-0 h-0.5 transition-all duration-500"
+                                style={{ width: `${percentage}%`, backgroundColor: color }}
+                              />
+                            </div>
+                          ))}
+                          {publicResult && (
+                            <div className="bg-white/10 rounded-xl p-3">
+                              <span className="text-sm font-medium text-white/90 block mb-1">Public Opinion</span>
+                              <span className="text-2xl font-bold">{publicResult.mostLikely}</span>
+                              <div className="text-xs text-white/60 mt-0.5">Consensus View</div>
+                            </div>
+                          )}
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
-                        <div className="mb-4">
-                          <h3 className="text-lg sm:text-xl font-semibold text-[#1d1d1f] mb-2">
-                            Detailed Analysis
-                          </h3>
-                          <p className="text-gray-600 text-sm">
-                            The charts below show how different MBTI
-                            personalities analyze and approach this decision.
-                          </p>
-                        </div>
+
+                      {/* Charts */}
+                      <div className="bg-white rounded-xl p-5 border border-gray-200">
+                        <h3 className="text-base font-semibold text-gray-900 mb-1">Detailed Breakdown</h3>
+                        <p className="text-sm text-gray-500 mb-4">
+                          How different MBTI types approach this decision
+                        </p>
                         <div className="w-full max-w-full overflow-hidden">
                           <Charts
                             results={results}
@@ -2549,19 +2358,18 @@ export default function UserDecisionDashboard() {
                     </TabsContent>
                   </Tabs>
                 ) : (
-                  <div className="text-center py-12 px-4 bg-white rounded-xl shadow-sm border border-gray-100">
-                    <div className="text-[#8e8e93] mb-4">
-                      <BsFileText className="h-12 w-12 mx-auto" />
+                  <div className="text-center py-16 px-4">
+                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <BsFileText className="h-8 w-8 text-gray-400" />
                     </div>
-                    <p className="text-[#1d1d1f] font-medium">
-                      No simulation results yet
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Run a simulation to see results
+                    <p className="font-medium text-gray-900">No results yet</p>
+                    <p className="text-sm text-gray-500 mt-1 mb-5">
+                      Choose a scenario and run the simulation
                     </p>
                     <Button
                       onClick={() => setActiveTab("factors")}
-                      className="mt-4 bg-[#007aff] hover:bg-[#0066cc] text-white rounded-full px-6 py-2 shadow-sm transition-all active:scale-95"
+                      variant="outline"
+                      className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl px-5 h-9 text-sm"
                     >
                       Go to Factors
                     </Button>
@@ -2584,8 +2392,8 @@ export default function UserDecisionDashboard() {
               </TabsContent>
             </div>
           </Tabs>
-        </CardContent>
-      </GlassContainer>
+        </div>
+      </div>
       <EnhancedPerformanceMonitor
         enabled={process.env.NODE_ENV === "development"}
         showDetails={true}

@@ -1725,7 +1725,7 @@ export default function UserDecisionDashboard() {
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("scenarios");
   const [mbtiSubTab, setMbtiSubTab] = useState("descriptions");
-  const [resultsSubTab, setResultsSubTab] = useState("analysis");
+  const [typesSubTab, setTypesSubTab] = useState("all");
 
   // Character cycling state - tracks current index for each MBTI type and franchise
   const [characterIndices, setCharacterIndices] = useState<
@@ -2198,148 +2198,107 @@ export default function UserDecisionDashboard() {
                 </div>
               </TabsContent>
 
-              {/* Results Tab */}
+              {/* Results Tab — flat layout, no sub-tabs */}
               <TabsContent value="results" className="space-y-5">
                 {results.length > 0 ? (
-                  <Tabs
-                    value={resultsSubTab}
-                    onValueChange={setResultsSubTab}
-                    className="w-full space-y-4"
-                  >
-                    <TabsList className="grid w-full grid-cols-3 bg-gray-100 p-1 rounded-xl h-auto">
-                      <TabsTrigger
-                        value="analysis"
-                        className="rounded-lg py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
-                      >
-                        Analysis
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="office"
-                        className="rounded-lg py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
-                      >
-                        Office
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="houses"
-                        className="rounded-lg py-1.5 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
-                      >
-                        Houses
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="analysis" className="space-y-5">
-                      {/* Summary card */}
-                      <div className="bg-indigo-600 text-white p-5 rounded-2xl">
-                        <h2 className="text-lg font-semibold mb-4">Decision Summary</h2>
-                        <div className="space-y-2 text-sm mb-4">
-                          {userResult && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-indigo-200">Your type ({userMBTI}):</span>
-                              <span
-                                className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
-                                style={{ backgroundColor: userResult.color }}
-                              >
-                                {userResult.decision}
-                              </span>
-                            </div>
-                          )}
+                  <>
+                    {/* Summary card — light design */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
+                      <h2 className="text-base font-semibold text-gray-900 mb-3">Decision Summary</h2>
+
+                      {/* Key stats row */}
+                      <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-4">
+                        {userResult && (
                           <div className="flex items-center gap-2">
-                            <span className="text-indigo-200">Most common:</span>
+                            <span className="text-gray-500">Your type ({userMBTI}):</span>
                             <span
                               className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
-                              style={{ backgroundColor: majorityColor }}
+                              style={{ backgroundColor: userResult.color }}
                             >
-                              {majorityDecision || "N/A"}
+                              {userResult.decision}
                             </span>
-                            {majorityDecision && (
-                              <span className="text-indigo-300 text-xs">
-                                ({((decisionCounts[majorityDecision] / results.length) * 100).toFixed(1)}%)
-                              </span>
-                            )}
                           </div>
-                          {publicResult && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-indigo-200">Public opinion:</span>
-                              <span
-                                className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
-                                style={{ backgroundColor: publicResult.color }}
-                              >
-                                {publicResult.mostLikely}
-                              </span>
-                            </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-500">Most common:</span>
+                          <span
+                            className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
+                            style={{ backgroundColor: majorityColor }}
+                          >
+                            {majorityDecision || "N/A"}
+                          </span>
+                          {majorityDecision && (
+                            <span className="text-gray-400 text-xs">
+                              ({((decisionCounts[majorityDecision] / results.length) * 100).toFixed(1)}%)
+                            </span>
                           )}
                         </div>
-
-                        <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5">
-                          {decisionBreakdown.map(({ decision, count, percentage, color }, index) => (
-                            <div
-                              key={decision}
-                              className="bg-white/10 rounded-xl p-3 relative overflow-hidden"
+                        {publicResult && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-500">Public opinion:</span>
+                            <span
+                              className="px-2.5 py-0.5 rounded-full text-white text-xs font-medium"
+                              style={{ backgroundColor: publicResult.color }}
                             >
-                              <div className="flex items-start justify-between mb-1">
-                                <span className="text-sm font-medium text-white/90">{decision}</span>
-                                {index === 0 && (
-                                  <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full">#1</span>
-                                )}
-                              </div>
-                              <div className="flex items-baseline gap-1.5">
-                                <span className="text-2xl font-bold">{count}</span>
-                                <span className="text-xs text-white/60">types · {percentage.toFixed(0)}%</span>
-                              </div>
-                              {index < 2 && (
-                                <div className="flex flex-wrap gap-1 mt-1.5">
-                                  {results.filter(r => r.decision === decision).map(r => (
-                                    <span key={r.name} className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded-full">{r.name}</span>
-                                  ))}
-                                </div>
-                              )}
-                              <div
-                                className="absolute bottom-0 left-0 h-0.5 transition-all duration-500"
-                                style={{ width: `${percentage}%`, backgroundColor: color }}
-                              />
-                            </div>
-                          ))}
-                          {publicResult && (
-                            <div className="bg-white/10 rounded-xl p-3">
-                              <span className="text-sm font-medium text-white/90 block mb-1">Public Opinion</span>
-                              <span className="text-2xl font-bold">{publicResult.mostLikely}</span>
-                              <div className="text-xs text-white/60 mt-0.5">Consensus View</div>
-                            </div>
-                          )}
-                        </div>
+                              {publicResult.mostLikely}
+                            </span>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Charts */}
-                      <div className="bg-white rounded-xl p-5 border border-gray-200">
-                        <h3 className="text-base font-semibold text-gray-900 mb-1">Detailed Breakdown</h3>
-                        <p className="text-sm text-gray-500 mb-4">
-                          How different MBTI types approach this decision
-                        </p>
-                        <div className="w-full max-w-full overflow-hidden">
-                          <Charts
-                            results={results}
-                            radarData={radarData}
-                            archetypes={DecisionService.archetypes}
-                            mbtiDescriptions={DecisionService.mbtiDescriptions}
-                            inputs={inputs}
-                            publicResult={publicResult}
-                            publicWeights={DecisionService.publicOpinionWeights}
-                          />
-                        </div>
+                      {/* Decision breakdown cards */}
+                      <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5">
+                        {decisionBreakdown.map(({ decision, count, percentage, color }, index) => (
+                          <div
+                            key={decision}
+                            className="bg-white rounded-xl border border-gray-100 p-3 relative overflow-hidden"
+                          >
+                            <div className="flex items-start justify-between mb-1">
+                              <span className="text-sm font-medium text-gray-800">{decision}</span>
+                              {index === 0 && (
+                                <span className="text-[10px] font-medium bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded-full">#1</span>
+                              )}
+                            </div>
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-2xl font-bold text-gray-900">{count}</span>
+                              <span className="text-xs text-gray-400">types · {percentage.toFixed(0)}%</span>
+                            </div>
+                            {index < 2 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {results.filter(r => r.decision === decision).map(r => (
+                                  <span key={r.name} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">{r.name}</span>
+                                ))}
+                              </div>
+                            )}
+                            <div
+                              className="absolute bottom-0 left-0 h-0.5 transition-all duration-500"
+                              style={{ width: `${percentage}%`, backgroundColor: color }}
+                            />
+                          </div>
+                        ))}
+                        {publicResult && (
+                          <div className="bg-white rounded-xl border border-gray-100 p-3">
+                            <span className="text-sm font-medium text-gray-800 block mb-1">Public Opinion</span>
+                            <span className="text-2xl font-bold text-gray-900">{publicResult.mostLikely}</span>
+                            <div className="text-xs text-gray-400 mt-0.5">Consensus View</div>
+                          </div>
+                        )}
                       </div>
-                    </TabsContent>
-                    <TabsContent value="office" className="space-y-4">
-                      <OfficeContent
+                    </div>
+
+                    {/* Charts — directly visible, no extra nesting */}
+                    <div className="w-full max-w-full overflow-hidden">
+                      <Charts
                         results={results}
+                        radarData={radarData}
+                        archetypes={DecisionService.archetypes}
                         mbtiDescriptions={DecisionService.mbtiDescriptions}
+                        inputs={inputs}
+                        publicResult={publicResult}
+                        publicWeights={DecisionService.publicOpinionWeights}
                       />
-                    </TabsContent>
-                    <TabsContent value="houses" className="space-y-4">
-                      <HousesContent
-                        results={results}
-                        mbtiDescriptions={DecisionService.mbtiDescriptions}
-                      />
-                    </TabsContent>
-                  </Tabs>
+                    </div>
+                  </>
                 ) : (
                   <div className="text-center py-16 px-4">
                     <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -2360,18 +2319,93 @@ export default function UserDecisionDashboard() {
                 )}
               </TabsContent>
 
-              {/* Personalities Tab */}
+              {/* Types Tab — All Types + Office + Houses sub-views */}
               <TabsContent value="personalities">
-                <PerformanceOptimizedTypesTab
-                  userMBTI={userMBTI}
-                  characterIndices={characterIndices}
-                  characterPoolsByMBTI={characterPoolsByMBTI}
-                  cycleCharacter={cycleCharacter}
-                  shuffleAllCharacters={shuffleAllCharacters}
-                  getFranchiseColors={getFranchiseColors}
-                  getCurrentCharactersForMBTI={getCurrentCharactersForMBTI}
-                  getMBTIImage={getMBTIImage}
-                />
+                <Tabs
+                  value={typesSubTab}
+                  onValueChange={setTypesSubTab}
+                  className="w-full space-y-4"
+                >
+                  <TabsList className="inline-flex bg-gray-100 p-1 rounded-xl h-auto">
+                    <TabsTrigger
+                      value="all"
+                      className="rounded-lg py-1.5 px-4 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
+                    >
+                      All Types
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="office"
+                      className="rounded-lg py-1.5 px-4 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
+                    >
+                      Office
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="houses"
+                      className="rounded-lg py-1.5 px-4 text-sm data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-indigo-600 data-[state=active]:font-medium text-gray-600"
+                    >
+                      Houses
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="all">
+                    <PerformanceOptimizedTypesTab
+                      userMBTI={userMBTI}
+                      characterIndices={characterIndices}
+                      characterPoolsByMBTI={characterPoolsByMBTI}
+                      cycleCharacter={cycleCharacter}
+                      shuffleAllCharacters={shuffleAllCharacters}
+                      getFranchiseColors={getFranchiseColors}
+                      getCurrentCharactersForMBTI={getCurrentCharactersForMBTI}
+                      getMBTIImage={getMBTIImage}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="office">
+                    {results.length > 0 ? (
+                      <OfficeContent
+                        results={results}
+                        mbtiDescriptions={DecisionService.mbtiDescriptions}
+                      />
+                    ) : (
+                      <div className="text-center py-12 px-4">
+                        <p className="font-medium text-gray-900">No simulation results</p>
+                        <p className="text-sm text-gray-500 mt-1 mb-4">
+                          Run a simulation first to see how Office departments approach the decision.
+                        </p>
+                        <Button
+                          onClick={() => setActiveTab("factors")}
+                          variant="outline"
+                          className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl px-5 h-9 text-sm"
+                        >
+                          Go to Factors
+                        </Button>
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="houses">
+                    {results.length > 0 ? (
+                      <HousesContent
+                        results={results}
+                        mbtiDescriptions={DecisionService.mbtiDescriptions}
+                      />
+                    ) : (
+                      <div className="text-center py-12 px-4">
+                        <p className="font-medium text-gray-900">No simulation results</p>
+                        <p className="text-sm text-gray-500 mt-1 mb-4">
+                          Run a simulation first to see how Hogwarts houses approach the decision.
+                        </p>
+                        <Button
+                          onClick={() => setActiveTab("factors")}
+                          variant="outline"
+                          className="border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl px-5 h-9 text-sm"
+                        >
+                          Go to Factors
+                        </Button>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
               </TabsContent>
             </div>
           </Tabs>

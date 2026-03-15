@@ -1,33 +1,32 @@
 # MBTI Brain
 
-A sophisticated decision-making simulation tool that helps teams understand how different personality types approach decisions. This application models the decision-making processes of all 16 MBTI personality types using a scientifically-informed 6-factor decision matrix and provides comprehensive insights into team dynamics and consensus building.
+A decision-making simulation tool that models how the 16 MBTI personality types approach decisions. It uses a 6-factor decision matrix informed by personality psychology research and provides visual analytics to explore team dynamics and consensus patterns.
 
 ## Features
 
-- **Personality-Based Decision Modeling**: Simulates how each of the 16 MBTI personality types would approach decisions based on their cognitive preferences and scientific research
-- **6-Factor Decision Matrix**: Evaluates decisions across research-backed factors including:
-  - **Data Quality**: Reliability and completeness of available information
-  - **ROI Visibility**: Clarity and measurability of expected returns
-  - **Autonomy Scope**: Level of control over decision execution
-  - **Time Pressure**: Urgency and deadline constraints
-  - **Social Complexity**: Number and alignment of stakeholders involved
-  - **Psychological Safety**: Trust environment for expressing concerns and ideas
-- **Advanced Visual Analytics**: Multiple sophisticated visualization tools:
-  - **Radar Charts**: Multi-dimensional factor comparison across personality types
-  - **Scatter Plots**: Decisiveness vs confidence quadrant analysis
-  - **Heat Maps**: Personality response patterns and correlations
-  - **Bar Charts**: Decision distribution and majority analysis
-  - **Sankey Diagrams**: Decision flow visualization
-- **Preset Scenario Library**: Pre-configured decision scenarios across categories:
+- **Personality-Based Decision Modeling**: Simulates how each of the 16 MBTI types would respond to a decision scenario based on their cognitive preferences
+- **6-Factor Decision Matrix**: Evaluates decisions across research-backed factors:
+  - **Data Quality** — Reliability and completeness of available information
+  - **ROI Visibility** — Clarity and measurability of expected returns
+  - **Autonomy Scope** — Level of control over decision execution
+  - **Time Pressure** — Urgency and deadline constraints
+  - **Social Complexity** — Number and alignment of stakeholders involved
+  - **Psychological Safety** — Trust environment for expressing concerns
+- **Visual Analytics** (4 chart views):
+  - **Confidence** — Bar chart showing each type's decision confidence score
+  - **Personality** — Radar chart comparing how types weigh each factor
+  - **Landscape** — Scatter plot mapping decisiveness vs. confidence
+  - **Flow** — Column-based diagram showing factor → type → decision pathways
+- **Preset Scenario Library**: Pre-configured scenarios across categories:
   - Career Choices (job moves, professional development)
   - Financial Decisions (major purchases, investments)
   - Personal Growth (health, wellness, relationships)
-- **Character Mapping Examples**: Relatable personality examples including:
-  - Famous historical and contemporary figures
-  - Fictional characters from popular franchises (Harry Potter, The Office)
-  - Hogwarts House classifications for MBTI types
-- **Public Opinion Simulation**: Models how diverse groups reach consensus using behavioral economics research
-- **Mobile-First Design**: iOS-style interface optimized for mobile and desktop experiences
+- **Themed Personality Groupings**: View types through pop-culture lenses:
+  - **Office** — Dunder Mifflin department groupings
+  - **Houses** — Hogwarts house classifications
+  - Character examples from The Office, Harry Potter, Marvel, and DC
+- **Public Opinion Simulation**: Models how the general public would approach the same decision, shown alongside individual type results
+- **Clean Design**: Indigo/white/gray design system, responsive across mobile and desktop
 
 ## Getting Started
 
@@ -55,10 +54,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## How It Works
 
-1. **Input Decision Factors**: Adjust sliders to set the importance of different factors in your decision scenario
-2. **Run Simulation**: The application will calculate how each MBTI type would likely respond
-3. **Analyze Results**: View detailed visualizations of the decision patterns and potential team dynamics
-4. **Build Consensus**: Use the insights to understand how to build consensus across different personality types
+The app is organized into four tabs:
+
+1. **Scenarios** — Pick a preset decision scenario (or go straight to Factors to build your own)
+2. **Factors** — Adjust sliders describing the situation; a live prediction updates as you drag. Hit "See all 16 results" to run the simulation.
+3. **Results** — View the decision summary and explore 4 chart views (Confidence, Personality, Landscape, Flow)
+4. **Types** — Browse all 16 personality type cards, or switch to Office / Houses sub-views to see results grouped by themed categories
 
 ## Architecture Overview
 
@@ -66,9 +67,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - **Frontend**: Next.js 15 with App Router, React 19, TypeScript 5
 - **Styling**: Tailwind CSS 4 with Radix UI component library
-- **Charts**: Recharts for comprehensive data visualization
-- **UI Components**: Radix UI primitives (Select, Tabs, Tooltip, Popover, Slider)
-- **Icons**: Lucide React and React Icons for comprehensive icon coverage
+- **Charts**: Recharts for data visualization
+- **UI Components**: Radix UI primitives (Select, Tabs, Slider, Tooltip)
+- **Icons**: Lucide React and React Icons
 - **Testing**: Vitest with coverage reporting and Testing Library for React
 - **Development**: ESLint, TypeScript strict mode, bundle analysis
 - **Deployment**: Static export optimized for GitHub Pages with sitemap generation
@@ -82,105 +83,80 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Core Components
 
-- **Decision Engine**: Research-backed algorithms modeling MBTI cognitive functions and decision-making patterns
-- **6-Factor Decision Matrix**: Enhanced framework including psychological safety based on Google's Project Aristotle
-- **MBTI Implementation**: 16 personality types with individual classes containing:
-  - Specific decision weights for each factor
-  - Scientific descriptions and research insights
-  - Historical context and real-world applications
-- **Visualization Engine**: Multiple chart types with interactive features:
-  - 3D personality space mapping
-  - Multi-dimensional radar charts
-  - Decision flow diagrams
-  - Correlation heat maps
-  - Quadrant analysis plots
+- **Decision Engine**: Algorithms modeling MBTI cognitive functions and decision-making patterns
+- **6-Factor Decision Matrix**: Framework including psychological safety based on Google's Project Aristotle
+- **MBTI Implementation**: 16 personality types with individual classes containing specific decision weights, scientific descriptions, and research context
+- **Visualization Engine**: 4 chart views — bar, radar, scatter, and flow diagrams
 
 ### Key Features
 
-- **Type-Safe**: Comprehensive TypeScript 5 implementation with strict configuration
+- **Type-Safe**: TypeScript 5 with strict configuration
 - **Modular Design**: Clean separation between UI components, business logic, and data models
-- **Mobile-First**: iOS-style responsive interface with touch-optimized interactions
-- **Performance Optimized**: Static export, bundle analysis, code splitting, and optimized builds
+- **Responsive**: Indigo/white/gray design system, works across mobile and desktop
+- **Performance Optimized**: Static export, bundle analysis, lazy-loaded MBTI types, virtualized card grid
 - **Extensible**: Factory pattern allows easy addition of new personality types or decision factors
-- **Research-Based**: Incorporates latest findings from behavioral psychology and team dynamics research
 
 ## Project Structure
 
 ```text
-├── app/                           # Next.js 15 App Router
-│   ├── globals.css               # Global styles and Tailwind imports
-│   ├── layout.tsx                # Root layout with fonts, metadata, and viewport config
-│   ├── not-found.tsx             # Custom 404 page
-│   └── page.tsx                  # Main application entry point
-├── components/                    # React components
-│   ├── ui/                       # Radix UI primitives and custom components
-│   │   ├── button.tsx            # Button component with variants
-│   │   ├── card.tsx              # Card layout components
-│   │   ├── popover.tsx           # Popover/dropdown components
-│   │   ├── select.tsx            # Select input components
-│   │   ├── slider.tsx            # Range slider components
-│   │   ├── tabs.tsx              # Tab navigation components
-│   │   └── tooltip.tsx           # Tooltip components
-│   ├── IOSStatusBar.tsx          # iOS-style status bar component
-│   ├── SliderInput.tsx           # Custom slider input with labels
-│   ├── Stepper.tsx               # Step-by-step progress component
-│   ├── StyledTabs.tsx            # Custom styled tab components
-│   ├── UserDecisionCharts.tsx    # Comprehensive visualization layer
-│   └── UserDecisionDashboard.tsx # Main application container and state management
-├── models/decision/               # Business logic and data models
-│   ├── types.ts                  # TypeScript type definitions and interfaces
-│   ├── constants.ts              # Factor definitions, presets, and configuration
-│   ├── logic.ts                  # Core calculation algorithms and decision logic
-│   └── mbti/                     # MBTI personality type implementations
-│       ├── base.ts               # Abstract BaseMBTIType class
-│       ├── index.ts              # MBTIFactory and type management
-│       ├── constants.ts          # MBTI archetypes and famous people mappings
-│       ├── intj.ts               # INTJ personality implementation
-│       ├── entj.ts               # ENTJ personality implementation
-│       ├── intp.ts               # INTP personality implementation
-│       ├── entp.ts               # ENTP personality implementation
-│       ├── infj.ts               # INFJ personality implementation
-│       ├── enfj.ts               # ENFJ personality implementation
-│       ├── infp.ts               # INFP personality implementation
-│       ├── enfp.ts               # ENFP personality implementation
-│       ├── istj.ts               # ISTJ personality implementation
-│       ├── estj.ts               # ESTJ personality implementation
-│       ├── isfj.ts               # ISFJ personality implementation
-│       ├── esfj.ts               # ESFJ personality implementation
-│       ├── istp.ts               # ISTP personality implementation
-│       ├── estp.ts               # ESTP personality implementation
-│       ├── isfp.ts               # ISFP personality implementation
-│       └── esfp.ts               # ESFP personality implementation
-├── lib/                          # Service layer and utilities
-│   ├── decisionMatrixService.ts  # Service facade re-exporting business logic
-│   └── utils.ts                  # Utility functions and helpers
-├── tests/                        # Comprehensive test suite
-│   ├── logic.test.ts             # Core business logic tests
-│   ├── additional.test.ts        # Extended functionality tests
-│   ├── edge-cases.test.ts        # Edge case and error handling tests
-│   ├── integration.test.ts       # Integration tests
-│   └── ui-components.test.ts     # UI component tests
-├── scripts/                      # Development and build scripts
-│   ├── dev.js                    # CLI task management tool
-│   ├── modules/                  # Modular script architecture
-│   └── README.md                 # Script documentation
-├── public/                       # Static assets
-│   ├── favicon.ico               # Application favicon
-│   ├── robots.txt                # SEO robots configuration
-│   └── sitemap.xml               # Generated sitemap
-└── coverage/                     # Test coverage reports
-    └── [generated files]         # Vitest coverage output
+app/                                # Next.js 15 App Router
+├── globals.css                     # Global styles and Tailwind imports
+├── layout.tsx                      # Root layout with metadata
+├── not-found.tsx                   # Custom 404 page
+└── page.tsx                        # Main entry point
+
+components/                         # React components
+├── ui/                             # Radix UI primitives and wrappers
+│   ├── button.tsx, card.tsx        # Core UI elements
+│   ├── select.tsx, slider.tsx      # Form controls
+│   ├── tabs.tsx, tooltip.tsx       # Navigation and overlays
+│   └── popover.tsx, ...            # Additional UI primitives
+├── UserDecisionDashboard.tsx       # Main container: tabs, state, layout
+├── UserDecisionCharts.tsx          # Chart views (Confidence, Personality, Landscape, Flow)
+├── OptimizedPersonalityCard.tsx    # Individual MBTI type card
+├── PerformanceOptimizedTypesTab.tsx # Virtualized grid of type cards
+├── EnhancedFactorTab.tsx           # Factor analysis visualization
+└── EnhancedPerformanceMonitor.tsx  # Dev-only performance overlay
+
+models/decision/                    # Business logic and data models
+├── types.ts                        # TypeScript interfaces
+├── constants.ts                    # Factor definitions, presets, scenario config
+├── logic.ts                        # Core calculation algorithms
+└── mbti/                           # MBTI personality type implementations
+    ├── base.ts                     # Abstract BaseMBTIType class
+    ├── index.ts                    # MBTIFactory and type registry
+    ├── constants.ts                # Archetypes and famous people mappings
+    ├── lazy-loader.ts              # Lazy loading for MBTI type classes
+    └── [intj|entj|...].ts          # 16 individual type implementations
+
+lib/                                # Service layer and utilities
+├── decisionMatrixService.ts        # Facade re-exporting business logic to UI
+├── mbtiData.ts                     # Character data, house/department mappings
+├── utils.ts                        # Utility functions (cn, etc.)
+└── hooks/                          # Custom React hooks
+    ├── useDebounce.ts              # Debounced value hook
+    └── usePerformance.ts           # Adaptive performance detection
+
+tests/                              # Test suite (Vitest)
+├── logic.test.ts                   # Core business logic
+├── additional.test.ts              # Extended functionality
+├── edge-cases.test.ts              # Edge cases and error handling
+├── integration.test.ts             # Integration tests
+└── ui-components.test.ts           # UI component tests
+
+scripts/                            # Dev tools
+├── dev.js                          # CLI task runner
+└── modules/commands.js             # Task definitions
 ```
 
 ## Data Flow
 
-1. **User Input**: Interactive sliders adjust 6-factor decision parameters in real-time
-2. **State Management**: React hooks manage application state with TypeScript interfaces
-3. **Service Facade**: `decisionMatrixService.ts` provides clean API to business logic modules
-4. **MBTI Factory**: `MBTIFactory` creates personality type instances with specific decision weights
-5. **Decision Engine**: Core algorithms calculate weighted scores for each personality type
-6. **Result Processing**: Decision categories assigned based on score thresholds
-7. **Visualization Pipeline**: Multiple chart components render interactive simulation results
+1. **User Input** — Sliders adjust 6-factor parameters; a live preview updates in real-time
+2. **Service Facade** — `decisionMatrixService.ts` provides the API boundary between UI and business logic
+3. **MBTI Factory** — `MBTIFactory` creates personality type instances with specific decision weights
+4. **Decision Engine** — Core algorithms calculate weighted scores for each of the 16 types
+5. **Result Processing** — Decision categories assigned based on score thresholds (Proceed / Clarify / Disengage)
+6. **Visualization** — Chart components render interactive results across 4 views
 
 ## Development Commands
 
@@ -246,8 +222,8 @@ This application is built on extensive research in personality psychology and de
 - **Node.js**: 20+ required
 - **Package Manager**: npm, yarn, or pnpm supported
 - **Browser Support**: Modern browsers with ES2017+ support
-- **Mobile**: iOS Safari, Chrome Mobile optimized
-- **Accessibility**: WCAG 2.1 AA compliant components
+- **Mobile**: Responsive design, tested on iOS Safari and Chrome Mobile
+- **Accessibility**: WCAG 2.1 AA compliant components (Radix UI)
 
 ## Contributing
 
